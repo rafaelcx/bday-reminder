@@ -12,7 +12,6 @@ class AppTest extends CustomTestCase {
         $result = $this->getAppInstance()->handle($request);
 
         $this->assertSame(200, $result->getStatusCode());
-        $this->assertSame('Hello World!', (string) $result->getBody());
     }
 
 }

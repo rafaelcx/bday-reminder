@@ -1,6 +1,6 @@
 # Birthday Reminder Tool
 
-This is a simple tool designed to help remember birthdays by automatically adding them as recurring events in your Google Calendar.
+This is a simple tool designed to help you remember you close ones birthdays by automatically adding them as recurring events that can be periodically forwarded to messaging apps.
 
 ---
 
