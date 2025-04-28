@@ -20,10 +20,10 @@ This will build the container, install all necessary dependency and start a PHP 
 
 To run the PHPUnit tests for the app, follow these steps:
 
-Open a terminal and execute the following command to start a bash session inside the balance-api container:
+Open a terminal and execute the following command to start a bash session inside the bday-reminder container:
 
 ```
-docker compose run --rm balance-api /bin/bash
+docker compose run --rm bday-reminder /bin/bash
 ```
 
 This will open a bash shell inside the container where the application and its dependencies are set up.
