@@ -1,6 +1,9 @@
 # Generated files
 .phpunit.result.cache
 .phpunit.cache
-
 .idea
+
+# Storage files
+/src/Repository/**/*.json
+
 /vendor/

@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\User;
+namespace Test\Support\Repository\User;
 
-class UserRepositoryInMemory {
+use App\Repository\User\User;
+use App\Repository\User\UserRepository;
+
+class UserRepositoryInMemory implements UserRepository {
 
     public static array $user_list = [];
 
