@@ -16,9 +16,9 @@
     <div class="form-container">
         <select id="userSelect">
             <option value="" disabled selected>Select your profile</option>
-            <option value="user1">User 1</option>
-            <option value="user2">User 2</option>
-            <option value="user3">User 3</option>
+            {% for user in users %}
+                <option value={{ user.name|e }}>{{ user.name|e }}</option>
+            {% endfor %}
         </select>
         <button onclick="">Go</button>
     </div>
