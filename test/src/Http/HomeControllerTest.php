@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace Test\Http;
 
-use App\Repository\User\UserRepositoryInMemory;
+use App\Repository\User\UserRepositoryResolver;
 use Test\CustomTestCase;
 
 class HomeControllerTest extends CustomTestCase {
 
-    /** @before */
-    public function resetRepositoryForTests(): void {
-        $user_repository = new UserRepositoryInMemory();
-        $user_repository::$user_list = [];
-    }
-
     public function testController_WhenSuccessful(): void {
-        $user_respository = new UserRepositoryInMemory();
+        $user_respository = UserRepositoryResolver::resolve();
         $user_respository->create('Name One');
         $user_respository->create('Name Two');
         
