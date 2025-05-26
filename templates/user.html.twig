@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday List</title>
+    <link rel="stylesheet" href="/assets/user.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Your Birthday List</h1>
+        <p>These are the birthdays you've submitted. They will be periodically sent to you via your preferred messaging apps.</p>
+
+        <div class="action-bar">
+            <form action="/" method="get">
+                <button type="submit">← Select Another User</button>
+            </form>
+            <form action="/birthday/new" method="get">
+                <button type="submit">+ Add New Birthday</button>
+            </form>
+        </div>
+
+        {% if birthdays is not empty %}
+            <table class="birthday-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date of Birth</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for birthday in birthdays %}
+                        <tr>
+                            <td>{{ birthday.name|e }}</td>
+                            <td>{{ birthday.date|date('F j, Y') }}</td>
+                            <td>
+                                <form action="/birthday/edit" method="get">
+                                    <input type="hidden" name="id" value="{{ birthday.id }}">
+                                    <button type="submit">Edit</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You haven't added any birthdays yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

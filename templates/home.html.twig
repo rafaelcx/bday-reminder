@@ -5,24 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Reminder</title>
-    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/home.css">
 </head>
 
 <body>
-    <h1>Birthday Reminder</h1>
-    <p>Stay on top of your loved ones' birthdays!</p>
-    <p>Birthday Reminder automatically adds recurring events and makes it easy to share them through your messaging apps</p>
+    <div class="container">
+        <h1>Birthday Reminder</h1>
+        <p>Stay on top of your loved ones' birthdays!</p>
+        <p>Birthday Reminder automatically adds recurring events and makes it easy to share them through your messaging apps</p>
 
-    <div class="form-container">
-        <select id="userSelect">
-            <option value="" disabled selected>Select your profile</option>
-            {% for user in users %}
-                <option value={{ user.name|e }}>{{ user.name|e }}</option>
-            {% endfor %}
-        </select>
-        <button onclick="">Go</button>
-    </div>
-
+        <form action="/user" method="get" class="form-container">
+            <select name="uid" required>
+                <option value="" disabled selected>Select your profile</option>
+                {% for user in users %}
+                    <option value="{{ user.uid|e }}">{{ user.name|e }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Go</button>
+        </form>
+    </div> 
 </body>
 
 </html>

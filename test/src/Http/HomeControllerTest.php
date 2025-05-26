@@ -22,8 +22,8 @@ class HomeControllerTest extends CustomTestCase {
 
         $this->assertSame(200, $result->getStatusCode());
 
-        $expected_html_option_tag_1 = '<option value=Name One>Name One</option>';
-        $expected_html_option_tag_2 = '<option value=Name Two>Name Two</option>';
+        $expected_html_option_tag_1 = "Name One</option>";
+        $expected_html_option_tag_2 = "Name Two</option>";
         $this->assertStringContainsString($expected_html_option_tag_1, (string) $result->getBody());
         $this->assertStringContainsString($expected_html_option_tag_2, (string) $result->getBody());
     }
