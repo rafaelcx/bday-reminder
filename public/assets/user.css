@@ -1,0 +1,83 @@
+body {
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 2rem;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.action-bar form {
+    margin: 0;
+}
+
+.action-bar button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.action-bar button:hover {
+    background-color: #1565c0;
+}
+
+.birthday-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.birthday-table th,
+.birthday-table td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.birthday-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.birthday-table td form {
+    display: inline;
+}
+
+.birthday-table button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.birthday-table button:hover {
+    background-color: #388e3c;
+}
