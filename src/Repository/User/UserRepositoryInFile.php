@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repository\User;
 
+use App\Storage\FileService;
+use App\Storage\FileServiceResolver;
+
 class UserRepositoryInFile implements UserRepository {
 
-    public string $file_name;
+    private const FILE_NAME = 'user-file.json';
 
-    public function __construct(string $file_name) {
-        $this->file_name = __DIR__ . $file_name;
-        $this->ensureFileExists();
+    private FileService $file_service;
+
+    public function __construct() {
+        $this->file_service = FileServiceResolver::resolve();
+        $this->ensureFileStructure();
     }
 
     public function create(string $name): void {
-        $file_contents = file_get_contents($this->file_name);
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         $file_contents_as_obj = json_decode($file_contents);
         
         $user_list = $file_contents_as_obj->users;
@@ -28,11 +33,11 @@ class UserRepositoryInFile implements UserRepository {
 
         $file_contents_as_obj->users = $user_list;
         $updated_file_as_json = json_encode($file_contents_as_obj);
-        file_put_contents($this->file_name, $updated_file_as_json);
+        $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
     public function findAll(): array {
-        $file_contents = file_get_contents($this->file_name);
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         $file_contents_as_obj = json_decode($file_contents);
         $persisted_users = $file_contents_as_obj->users;
 
@@ -42,13 +47,13 @@ class UserRepositoryInFile implements UserRepository {
         return array_map($fn, $persisted_users);
     }
 
-    private function ensureFileExists(): void {
-        if (file_exists($this->file_name)) {
+    private function ensureFileStructure(): void {
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+        if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = ['users' => []];
-        $initial_file_state = json_encode($initial_file_state);
-        file_put_contents($this->file_name, $initial_file_state);
+        $initial_file_state = json_encode(['users' => []]);
+        $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 
 }

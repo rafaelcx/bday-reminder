@@ -9,20 +9,11 @@ use Test\CustomTestCase;
 
 class UserRepositoryInFileTest extends CustomTestCase {
 
-    private string $file_name_for_tests;
     private UserRepositoryInFile $user_repository;
 
     /** @before */
     public function prepareUserRepositoryForTests(): void {
-        $this->file_name_for_tests = '/user-file-for-tests.json';
-        $this->user_repository = new UserRepositoryInFile($this->file_name_for_tests);
-    }
-
-    /** @after */
-    public function deleteDirtyUserFileForTests(): void {
-        if (file_exists($this->user_repository->file_name)) {
-            unlink($this->user_repository->file_name);
-        }
+        $this->user_repository = new UserRepositoryInFile();
     }
 
     public function testRepository_CreateAndFindAll(): void {
