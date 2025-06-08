@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Http;
+namespace Test\Src\Http;
 
 use Test\CustomTestCase;
 
@@ -18,7 +18,9 @@ class UserControllerTest extends CustomTestCase {
 
         $this->assertSame(200, $result->getStatusCode());
 
-        $this->assertStringContainsString('Your Birthday List', (string) $result->getBody());
+        $result_body = (string) $result->getBody();
+        $this->assertStringContainsString('Your Birthday List', $result_body);
+        $this->assertStringContainsString('Rafael Garcia de Carvalho e Outro Sobrenome e Outro', $result_body);
     }
 
 }
