@@ -9,20 +9,11 @@ use Test\CustomTestCase;
 
 class BirthdayRepositoryInFileTest extends CustomTestCase {
 
-    private string $file_name_for_tests;
     private BirthdayRepositoryInFile $birthday_repository;
 
     /** @before */
     public function prepareBirthdayRepositoryForTests(): void {
-        $this->file_name_for_tests = '/user-file-for-tests.json';
-        $this->birthday_repository = new BirthdayRepositoryInFile($this->file_name_for_tests);
-    }
-
-    /** @after */
-    public function deleteDirtyBirthdayFileForTests(): void {
-        if (file_exists($this->birthday_repository->file_name)) {
-            unlink($this->birthday_repository->file_name);
-        }
+        $this->birthday_repository = new BirthdayRepositoryInFile();
     }
 
     public function testRepository_CreateAndFindByUserUid(): void {

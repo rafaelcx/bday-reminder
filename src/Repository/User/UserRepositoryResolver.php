@@ -16,7 +16,7 @@ class UserRepositoryResolver {
     }
 
     private static function createInstance(): void {
-        self::$instance = new UserRepositoryInFile('/user-file.json');
+        self::$instance = new UserRepositoryInFile();
     }
 
 }

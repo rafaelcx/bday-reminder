@@ -16,7 +16,7 @@ class BirthdayRepositoryResolver {
     }
 
     private static function createInstance(): void {
-        self::$instance = new BirthdayRepositoryInFile('/birthday-file.json');
+        self::$instance = new BirthdayRepositoryInFile();
     }
 
 }

@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repository\Birthday;
 
+use App\Storage\FileService;
+use App\Storage\FileServiceResolver;
+
 class BirthdayRepositoryInFile implements BirthdayRepository {
 
-    public string $file_name;
+    private const FILE_NAME = 'birthday-file.json';
+    
+    private FileService $file_service;
 
-    public function __construct(string $file_name) {
-        $this->file_name = __DIR__ . $file_name;
-        $this->ensureFileExists();
+    public function __construct() {
+        $this->file_service = FileServiceResolver::resolve();
+        $this->ensureFileStructure();
     }
 
     public function create(string $user_uid, string $name, \DateTime $date): void {
-        $file_contents = file_get_contents($this->file_name);
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         $file_contents_as_obj = json_decode($file_contents);
         
         $birthday_list = $file_contents_as_obj->birthdays;
@@ -30,11 +35,11 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
 
         $file_contents_as_obj->birthdays = $birthday_list;
         $updated_file_as_json = json_encode($file_contents_as_obj);
-        file_put_contents($this->file_name, $updated_file_as_json);
+        $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
     public function findByUserUid(string $user_uid): array {
-        $file_contents = file_get_contents($this->file_name);
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         $file_contents_as_obj = json_decode($file_contents);
         $all_persisted_birthdays = $file_contents_as_obj->birthdays;
 
@@ -55,13 +60,13 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         return array_map($fn, $filtered_birthdays);
     }
 
-    private function ensureFileExists(): void {
-        if (file_exists($this->file_name)) {
+    private function ensureFileStructure(): void {
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+        if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = ['birthdays' => []];
-        $initial_file_state = json_encode($initial_file_state);
-        file_put_contents($this->file_name, $initial_file_state);
+        $initial_file_state = json_encode(['birthdays' => []]);
+        $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 
 }
