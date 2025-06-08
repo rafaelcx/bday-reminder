@@ -40,6 +40,11 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
 
     public function findByUserUid(string $user_uid): array {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+
+        if (empty($file_contents)) {
+            return [];
+        }
+
         $file_contents_as_obj = json_decode($file_contents);
         $all_persisted_birthdays = $file_contents_as_obj->birthdays;
 
