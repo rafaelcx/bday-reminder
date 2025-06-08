@@ -25,7 +25,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\": "test/src",
+            "Test\\": "test/",
+            "Test\\Src\\": "test/src",
+            "Test\\Storage\\": "test/storage",
             "Test\\Support\\": "test/support"
         }
     }

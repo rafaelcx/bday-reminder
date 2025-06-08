@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Http;
+namespace Test\Src\Http;
 
 use App\Repository\User\UserRepositoryResolver;
 use Test\CustomTestCase;
