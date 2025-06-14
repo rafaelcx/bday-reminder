@@ -12,8 +12,10 @@ class RequestSimulator {
 
     private string $method;
     private string $path;
-    private string $body;
+    private array $headers = [];
+    private string $body = '';
     private array $query_params = [];
+    private array $post_params = [];
 
     public function dispatch(): ResponseInterface {
         $app = require __DIR__ . '/../../../app/app.php';
@@ -41,14 +43,24 @@ class RequestSimulator {
         return $this;
     }
 
+    public function withPostParams(array $params): self {
+        $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        $this->post_params = $params;
+        return $this;
+    }
+
     private function buildIncomingRequest(): ServerRequestInterface {
         $uri = 'http://localhost' . $this->path;
 
         foreach ($this->query_params as $name => $value) {
             $uri = $uri . '?' . $name . '=' . $value;
         }
-        $server_request = new ServerRequest($this->method, $uri, [], $this->body);
-        return $server_request->withQueryParams($this->query_params);
+
+        $server_request = new ServerRequest($this->method, $uri, $this->headers, $this->body);
+
+        return $server_request
+            ->withQueryParams($this->query_params)
+            ->withParsedBody($this->post_params);
     }
 
 }
