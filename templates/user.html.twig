@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Birthday List</title>
     <link rel="stylesheet" href="/assets/user.css">
+    <link rel="stylesheet" href="/assets/modal.css">
 </head>
 <body>
     <div class="container">
@@ -14,9 +15,9 @@
             <form action="/" method="get">
                 <button type="submit">← Select Another User</button>
             </form>
-            <form action="/birthday/new" method="get">
-                <button type="submit">+ Add New Birthday</button>
-            </form>
+            
+            <button id="openModalBtn">+ Add New Birthday</button>
+        
         </div>
 
         {% if birthdays is not empty %}
@@ -46,6 +47,46 @@
         {% else %}
             <p>You haven't added any birthdays yet.</p>
         {% endif %}
+
+        <!-- Modal Markup -->
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" id="closeModalBtn">&times;</span>
+                <h2>Add New Birthday</h2>
+                <form method="post" action="/birthday">
+                    <label>
+                        Name:
+                        <input type="text" name="name" required>
+                    </label>
+                    <label>
+                        Date of Birth:
+                        <input type="date" name="date" required>
+                    </label>
+
+                    <!-- Hidden -->
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Modal JS -->
+    <script>
+        const openBtn = document.getElementById('openModalBtn');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+
 </body>
 </html>

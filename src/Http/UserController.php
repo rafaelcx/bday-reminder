@@ -14,11 +14,13 @@ class UserController {
     public function show(Request $request, Response $response): Response {
         $user_uid = $request->getQueryParams()['uid'];
 
-        $birthday_repository = BirthdayRepositoryResolver::resolve();
+        $birthday_list = BirthdayRepositoryResolver::resolve()
+            ->findByUserUid($user_uid);
 
         $view = Twig::fromRequest($request);
         return $view->render($response, 'user.html.twig', [
-            'birthdays' => $birthday_repository->findByUserUid($user_uid),
+            'birthdays' => $birthday_list,
+            'user_id' => $user_uid,
         ]);
     }
 

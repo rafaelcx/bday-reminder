@@ -7,6 +7,8 @@ namespace Test;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\RequestSimulator;
+use Test\Support\Repository\Birthday\BirthdayRepositoryResolverForTests;
+use Test\Support\Repository\User\UserRepositoryResolverForTests;
 
 class CustomTestCase extends TestCase {
 
@@ -25,6 +27,8 @@ class CustomTestCase extends TestCase {
     /** @after */
     public function resetOverrides(): void {
         FileServiceResolverForTests::reset();
+        BirthdayRepositoryResolverForTests::reset();
+        UserRepositoryResolverForTests::reset();
     }
 
 }
