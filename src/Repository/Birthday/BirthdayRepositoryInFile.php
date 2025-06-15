@@ -83,6 +83,25 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
+    public function delete(string $birthday_uid): void {
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+
+        $file_contents_as_obj = json_decode($file_contents);
+        $all_persisted_birthdays = $file_contents_as_obj->birthdays;
+
+        foreach ($all_persisted_birthdays as $index => $persisted_birthday) {
+            if ($persisted_birthday->uid === $birthday_uid) {
+                unset($all_persisted_birthdays[$index]);
+            }
+        }
+
+        // Reindex the array to avoid numeric keys in the updated JSON
+        $file_contents_as_obj->birthdays = array_values($all_persisted_birthdays);
+        
+        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
+    }
+
     private function ensureFileStructure(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {
