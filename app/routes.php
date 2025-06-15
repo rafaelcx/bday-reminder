@@ -21,4 +21,8 @@ return function (App $app) {
     $app->post('/birthday', function (Request $request, Response $response, $args) {
         return (new BirthdayController())->create($request, $response);
     });
+
+    $app->post('/birthday/edit', function (Request $request, Response $response, $args) {
+        return (new BirthdayController())->update($request, $response);
+    });
 };

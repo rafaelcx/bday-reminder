@@ -35,10 +35,7 @@
                             <td>{{ birthday.name|e }}</td>
                             <td>{{ birthday.date|date('F j, Y') }}</td>
                             <td>
-                                <form action="/birthday/edit" method="get">
-                                    <input type="hidden" name="id" value="{{ birthday.id }}">
-                                    <button type="submit">Edit</button>
-                                </form>
+                                <button class="edit-btn" birthday-uid="{{birthday.uid}}">Edit</button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -71,6 +68,30 @@
             </div>
         </div>
 
+        <!-- Edit Birthday - Modal Markup -->
+        <div id="editModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" id="closeEditModalBtn">&times;</span>
+                <h2>Edit Birthday</h2>
+                <form method="post" action="/birthday/edit">
+                    <label>
+                        Name:
+                        <input type="text" name="name" required>
+                    </label>
+                    <label>
+                        Date of Birth:
+                        <input type="date" name="date" required>
+                    </label>
+
+                    <!-- Hidden -->
+                    <input type="hidden" name="birthday_uid" id="editBirthdayUid">
+                    <input type="hidden" name="user_uid" value="{{ user_id }}">
+
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <!-- Modal JS -->
@@ -85,6 +106,21 @@
             if (e.target === modal) {
                 modal.classList.add('hidden');
             }
+        });
+    </script>
+
+    <!-- Edit Modal JS -->
+    <script>
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const birthday_uid = button.getAttribute('birthday-uid');
+                document.getElementById('editBirthdayUid').value = birthday_uid;
+                document.getElementById('editModal').classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('closeEditModalBtn').addEventListener('click', () => {
+            document.getElementById('editModal').classList.add('hidden');
         });
     </script>
 
