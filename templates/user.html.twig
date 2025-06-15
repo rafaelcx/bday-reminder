@@ -36,6 +36,12 @@
                             <td>{{ birthday.date|date('F j, Y') }}</td>
                             <td>
                                 <button class="edit-btn" birthday-uid="{{birthday.uid}}">Edit</button>
+
+                                <form method="post" action="/birthday/delete">
+                                    <input type="hidden" name="birthday_uid" value="{{ birthday.uid }}">
+                                    <input type="hidden" name="user_uid" value="{{ user_id }}">
+                                    <button class="delete-btn" type="submit">X</button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

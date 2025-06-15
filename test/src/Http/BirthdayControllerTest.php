@@ -59,4 +59,28 @@ class BirthdayControllerTest extends CustomTestCase {
         $this->assertSame('2000-01-01', $birthday_list[0]->date->format('Y-m-d'));
     }
 
+    public function testController_Delete_WhenSuccessful(): void {
+        $birthday_repository = BirthdayRepositoryResolver::resolve();
+        $birthday_repository->create('1', 'Jhon', new \DateTime('1900-01-01'));
+
+        $target_bday_uid = $birthday_repository->findByUserUid('1')[0]->uid;
+
+        $request_post_params = [
+            'birthday_uid' => $target_bday_uid,
+            'user_uid' => '1',
+        ];
+        
+        $result = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/birthday/delete')
+            ->withPostParams($request_post_params)
+            ->dispatch();
+
+        $birthday_list = $birthday_repository->findByUserUid('1');
+
+        $this->assertSame(302, $result->getStatusCode());
+        $this->assertSame('/user?uid=1', $result->getHeaderLine('Location'));
+        $this->assertCount(0, $birthday_list);
+    }
+
 }

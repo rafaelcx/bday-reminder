@@ -69,7 +69,6 @@ p {
 }
 
 .birthday-table button {
-    background-color: #4caf50;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -78,6 +77,18 @@ p {
     font-size: 0.85rem;
 }
 
-.birthday-table button:hover {
+.edit-btn {
+    background-color: #4caf50;
+}
+
+.edit-btn:hover {
     background-color: #388e3c;
+}
+
+.delete-btn {
+    background-color: #dd280d;
+}
+
+.delete-btn:hover {
+    background-color: #903613;
 }

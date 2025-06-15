@@ -63,4 +63,18 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
         $this->assertSame('name_3', $all_bdays_from_user_two[2]->name);
     }
 
+    public function testRepository_Delete(): void {
+        $this->birthday_repository->create('user_uid_1', 'name_1', new \DateTime('1995-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_2', new \DateTime('2000-12-01'));
+
+        $all_bdays = $this->birthday_repository->findByUserUid('user_uid_1');
+        $first_bday = $all_bdays[0];
+
+        $this->birthday_repository->delete($first_bday->uid);
+        $all_bdays = $this->birthday_repository->findByUserUid('user_uid_1');
+
+        $this->assertCount(1, $all_bdays);
+        $this->assertSame('name_2', $all_bdays[0]->name);
+    }
+
 }
