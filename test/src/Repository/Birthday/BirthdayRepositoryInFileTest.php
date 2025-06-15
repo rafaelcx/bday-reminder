@@ -42,4 +42,25 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
         $this->assertSame([], $persisted_bdays);
     }
 
+    public function testRepository_Update(): void {
+        $this->birthday_repository->create('user_uid_1', 'name_1', new \DateTime('1995-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_2', new \DateTime('2000-12-01'));
+        $this->birthday_repository->create('user_uid_2', 'name_3', new \DateTime('1970-10-15'));
+
+        $all_bdays_from_user_one = $this->birthday_repository->findByUserUid('user_uid_1');
+        $all_bdays_from_user_two = $this->birthday_repository->findByUserUid('user_uid_2');
+        
+        $first_bday = $all_bdays_from_user_one[0];
+        $this->birthday_repository->update($first_bday->uid, 'new_name', new \DateTime('2500-01-01'));
+
+        $all_bdays_from_user_one = $this->birthday_repository->findByUserUid('user_uid_1');
+        $all_bdays_from_user_two = $this->birthday_repository->findByUserUid('user_uid_2');
+
+        $this->assertCount(2, $all_bdays_from_user_one);
+        $this->assertCount(1, $all_bdays_from_user_two);
+        $this->assertSame('new_name', $all_bdays_from_user_one[0]->name);
+        $this->assertSame('name_2', $all_bdays_from_user_one[1]->name);
+        $this->assertSame('name_3', $all_bdays_from_user_two[2]->name);
+    }
+
 }

@@ -65,6 +65,24 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         return array_map($fn, $filtered_birthdays);
     }
 
+    public function update(string $birthday_uid, string $name, \DateTime $date): void {
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+
+        $file_contents_as_obj = json_decode($file_contents);
+        $all_persisted_birthdays = $file_contents_as_obj->birthdays;
+
+        foreach ($all_persisted_birthdays as $index => $persisted_birthday) {
+            if ($persisted_birthday->uid === $birthday_uid) {
+                $all_persisted_birthdays[$index]->name = $name;
+                $all_persisted_birthdays[$index]->date = $date->format('Y-m-d H:i:s');
+            }
+        }
+
+        $file_contents_as_obj->birthdays = $all_persisted_birthdays;
+        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
+    }
+
     private function ensureFileStructure(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {

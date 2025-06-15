@@ -25,4 +25,20 @@ class BirthdayController {
             ->withHeader('Location', '/user?uid=' . urlencode($bday_user_id));
     }
 
+    public function update(Request $request, Response $response): Response {
+        $parsed_body = $request->getParsedBody();
+
+        $bday_name = $parsed_body['name'];
+        $bday_date = $parsed_body['date'];
+        $bday_uid = $parsed_body['birthday_uid'];
+        $bday_user_uid = $parsed_body['user_uid'];
+
+        BirthdayRepositoryResolver::resolve()
+            ->update($bday_uid, $bday_name, new \DateTime($bday_date));
+
+        return $response
+            ->withStatus(302)
+            ->withHeader('Location', '/user?uid=' . urlencode($bday_user_uid));
+    }
+
 }
