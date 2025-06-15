@@ -20,7 +20,7 @@ class UserController {
         $view = Twig::fromRequest($request);
         return $view->render($response, 'user.html.twig', [
             'birthdays' => $birthday_list,
-            'user_id' => $user_uid,
+            'user_uid' => $user_uid,
         ]);
     }
 
