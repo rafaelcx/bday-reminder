@@ -39,7 +39,7 @@
 
                                 <form method="post" action="/birthday/delete">
                                     <input type="hidden" name="birthday_uid" value="{{ birthday.uid }}">
-                                    <input type="hidden" name="user_uid" value="{{ user_id }}">
+                                    <input type="hidden" name="user_uid" value="{{ user_uid }}">
                                     <button class="delete-btn" type="submit">X</button>
                                 </form>
 
@@ -68,7 +68,7 @@
                     </label>
 
                     <!-- Hidden -->
-                    <input type="hidden" name="user_uid" value="{{ user_id }}">
+                    <input type="hidden" name="user_uid" value="{{ user_uid }}">
 
                     <button type="submit">Save</button>
                 </form>
@@ -92,7 +92,7 @@
 
                     <!-- Hidden -->
                     <input type="hidden" name="birthday_uid" id="editBirthdayUid">
-                    <input type="hidden" name="user_uid" value="{{ user_id }}">
+                    <input type="hidden" name="user_uid" value="{{ user_uid }}">
 
                     <button type="submit">Save</button>
                 </form>

@@ -17,7 +17,6 @@ class UserControllerTest extends CustomTestCase {
        
         $result = $this->request_simulator
             ->withMethod('GET')
-            ->withBody([])
             ->withPath('/user')
             ->withQueryParam('uid', '1')
             ->dispatch();
@@ -34,7 +33,6 @@ class UserControllerTest extends CustomTestCase {
     public function testController_WhenSuccessful_AndUserHasNoBirthdays(): void {
         $result = $this->request_simulator
             ->withMethod('GET')
-            ->withBody([])
             ->withPath('/user')
             ->withQueryParam('uid', '1')
             ->dispatch();
