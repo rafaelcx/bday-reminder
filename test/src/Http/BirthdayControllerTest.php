@@ -13,7 +13,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $request_post_params = [
             'name' => 'Jhon',
             'date' => '2000-01-01',
-            'user_id' => '123',
+            'user_uid' => '123',
         ];
         
         $result = $this->request_simulator
