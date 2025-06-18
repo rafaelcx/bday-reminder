@@ -23,6 +23,17 @@ p {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+.notify-btn {
+    margin-bottom: 1.5rem;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
 .action-bar {
     display: flex;
     justify-content: space-between;

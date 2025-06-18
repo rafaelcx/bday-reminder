@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\BirthdayController;
 use App\Http\HomeController;
+use App\Http\NotificationController;
 use App\Http\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -28,5 +29,9 @@ return function (App $app) {
 
     $app->post('/birthday/delete', function (Request $request, Response $response) {
         return (new BirthdayController())->delete($request, $response);
+    });
+
+    $app->post('/notify', function (Request $request, Response $response) {
+        return (new NotificationController())->handle($request, $response);
     });
 };
