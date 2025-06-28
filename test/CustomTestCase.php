@@ -7,6 +7,7 @@ namespace Test;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\RequestSimulator;
+use Test\Support\Logger\ProcessContextForTests;
 use Test\Support\Repository\Birthday\BirthdayRepositoryResolverForTests;
 use Test\Support\Repository\User\UserRepositoryResolverForTests;
 
@@ -14,8 +15,8 @@ class CustomTestCase extends TestCase {
 
     public RequestSimulator $request_simulator;
 
-    public function __construct() {
-        parent::__construct();
+    /** @before */
+    public function setUpFakers(): void {
         $this->request_simulator = new RequestSimulator();
     }
 
@@ -29,6 +30,7 @@ class CustomTestCase extends TestCase {
         FileServiceResolverForTests::reset();
         BirthdayRepositoryResolverForTests::reset();
         UserRepositoryResolverForTests::reset();
+        ProcessContextForTests::reset();
     }
 
 }
