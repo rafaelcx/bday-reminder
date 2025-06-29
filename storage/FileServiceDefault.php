@@ -21,9 +21,14 @@ class FileServiceDefault implements FileService {
         return file_get_contents($file_path);
     }
 
-    public function putFileContents(string $file_name, string $contents): void {
+    public function putFileContents(string $file_name, string $contents, bool $append_mode = false): void {
         $file_path = $this->file_location . $file_name;
-        file_put_contents($file_path, $contents);
+        
+        if ($append_mode) {
+            file_put_contents($file_path, $contents, FILE_APPEND);
+        } else {
+            file_put_contents($file_path, $contents);
+        }
     }
 
 }

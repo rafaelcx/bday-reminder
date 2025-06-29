@@ -18,7 +18,7 @@ class FileServiceDefaultTest extends CustomTestCase {
             unlink(self::FILE_LOCATION . self::FILE_NAME);
         }
     }
-    
+
     public function testService_GetFileContents_OnExistingFile(): void {
         $file_content = 'content';
         file_put_contents(self::FILE_LOCATION . self::FILE_NAME, $file_content);
@@ -46,7 +46,7 @@ class FileServiceDefaultTest extends CustomTestCase {
         $this->assertSame($new_contents, $file_state);
     }
 
-    public function testSergice_PutFileContents_WhenFileDoesNotExist(): void {
+    public function testService_PutFileContents_WhenFileDoesNotExist(): void {
         $contents = 'more_content';
 
         $service = new FileServiceDefault(self::FILE_LOCATION);
@@ -54,6 +54,18 @@ class FileServiceDefaultTest extends CustomTestCase {
 
         $file_state = $service->getFileContents(self::FILE_NAME);
         $this->assertSame($contents, $file_state);
+    }
+
+    public function testService_PutFileContents_OnAppendMode(): void {
+        $content_1 = 'content_1';
+        $content_2 = 'content_2';
+
+        $service = new FileServiceDefault(self::FILE_LOCATION);
+        $service->putFileContents(self::FILE_NAME, $content_1, true);
+        $service->putFileContents(self::FILE_NAME, $content_2, true);
+
+        $file_state = $service->getFileContents(self::FILE_NAME);
+        $this->assertSame($content_1 . $content_2, $file_state);
     }
 
 }
