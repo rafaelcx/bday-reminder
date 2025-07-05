@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test;
 
+use App\Utils\StaticScope;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\RequestSimulator;
@@ -27,6 +28,7 @@ class CustomTestCase extends TestCase {
 
     /** @after */
     public function resetOverrides(): void {
+        StaticScope::clear();
         FileServiceResolverForTests::reset();
         BirthdayRepositoryResolverForTests::reset();
         UserRepositoryResolverForTests::reset();
