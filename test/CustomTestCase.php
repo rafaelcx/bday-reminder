@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\RequestSimulator;
 use Test\Support\Logger\ProcessContextForTests;
-use Test\Support\Repository\Birthday\BirthdayRepositoryResolverForTests;
-use Test\Support\Repository\User\UserRepositoryResolverForTests;
 
 class CustomTestCase extends TestCase {
 
@@ -30,8 +28,6 @@ class CustomTestCase extends TestCase {
     public function resetOverrides(): void {
         StaticScope::clear();
         FileServiceResolverForTests::reset();
-        BirthdayRepositoryResolverForTests::reset();
-        UserRepositoryResolverForTests::reset();
         ProcessContextForTests::reset();
     }
 

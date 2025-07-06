@@ -6,11 +6,13 @@ namespace Test\Support;
 
 use App\Storage\FileServiceDefault;
 use App\Storage\FileServiceResolver;
+use App\Utils\StaticScope;
 
 class FileServiceResolverForTests extends FileServiceResolver {
 
     public static function override(): void {
-        self::$instance = new FileServiceDefault(__DIR__ . '/');
+        $service = new FileServiceDefault(__DIR__ . '/');
+        StaticScope::set(parent::class, 'instance', $service);
     }
 
     public static function reset(): void {
