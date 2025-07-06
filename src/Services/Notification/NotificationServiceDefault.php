@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Notification;
+
+use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Repository\User\User;
+use App\Repository\User\UserRepositoryResolver;
+use App\Services\Notification\Integration\TelegramNotifier;
+use GuzzleHttp\Client;
+
+class NotificationServiceDefault implements NotificationService {
+
+    public function notify(): void {
+        // $user_list = UserRepositoryResolver::resolve()->findAll();
+
+        // foreach ($user_list as $user) {
+        //     self::notifyUser($user);
+        // }
+    }
+
+    // private static function notifyUser(User $user): void {
+    //     $birthday_list = BirthdayRepositoryResolver::resolve()->findByUserUid($user->uid);
+    //     (new TelegramNotifier(new Client()))->notifyBirthdays($user, $birthday_list);
+    // }
+
+}
