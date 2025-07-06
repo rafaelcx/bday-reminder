@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace App\Logger;
 
+use App\Utils\StaticScope;
 use Psr\Log\LoggerInterface;
 
 class LoggerResolver {
 
-    protected static ?LoggerInterface $instance = null;
-
     public static function resolve(): LoggerInterface {
-        if (is_null(self::$instance)) {
-            self::createInstance();
-        }
-        return self::$instance;
+        return StaticScope::getOrCreate(self::class, 'instance', self::createInstance(...));
     }
 
-    private static function createInstance(): void {
-        self::$instance = new LoggerDefault('log-file.json');
+    private static function createInstance(): LoggerInterface {
+        return new LoggerDefault('log-file.json');
     }
 
 }

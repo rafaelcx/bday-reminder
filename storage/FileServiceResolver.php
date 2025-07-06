@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace App\Storage;
 
+use App\Utils\StaticScope;
+
 class FileServiceResolver {
 
-    protected static ?FileService $instance = null;
-
     public static function resolve(): FileService {
-        if (is_null(self::$instance)) {
-            self::createInstance();
-        }
-        return self::$instance;
+        return StaticScope::getOrCreate(self::class, 'instance', self::createInstance(...));
     }
 
-    private static function createInstance(): void {
+    private static function createInstance(): FileService {
         $file_location = __DIR__ . '/Files/'; 
-        self::$instance = new FileServiceDefault($file_location);
+        return new FileServiceDefault($file_location);
     }
 
 }

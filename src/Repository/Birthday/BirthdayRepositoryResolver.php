@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace App\Repository\Birthday;
 
+use App\Utils\StaticScope;
+
 class BirthdayRepositoryResolver {
 
-    protected static ?BirthdayRepository $instance = null;
-
     public static function resolve(): BirthdayRepository {
-        if (is_null(self::$instance)) {
-            self::createInstance();
-        }
-        return self::$instance;
+        return StaticScope::getOrCreate(self::class, 'instance', self::createInstance(...));
     }
 
-    private static function createInstance(): void {
-        self::$instance = new BirthdayRepositoryInFile();
+    private static function createInstance(): BirthdayRepository {
+        return new BirthdayRepositoryInFile();
     }
 
 }

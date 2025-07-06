@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace App\Repository\User;
 
+use App\Utils\StaticScope;
+
 class UserRepositoryResolver {
 
-    protected static ?UserRepository $instance = null;
-
     public static function resolve(): UserRepository {
-        if (is_null(self::$instance)) {
-            self::createInstance();
-        }
-        return self::$instance;
+        return StaticScope::getOrCreate(self::class, 'instance', self::createInstance(...));
     }
 
-    private static function createInstance(): void {
-        self::$instance = new UserRepositoryInFile();
+    private static function createInstance(): UserRepository {
+        return new UserRepositoryInFile();
     }
 
 }
