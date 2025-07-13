@@ -9,7 +9,7 @@ use App\Storage\FileServiceResolver;
 
 class UserConfigRepositoryInFile implements UserConfigRepository {
 
-    private const FILE_NAME = 'config-file.json';
+    private const FILE_NAME = 'user-config-file.json';
 
     private FileService $file_service;
 
