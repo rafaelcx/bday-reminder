@@ -11,7 +11,7 @@ use App\Services\Notification\Integration\Notifier;
 class TelegramNotifier implements Notifier {
 
     public function notify(User $user, Birthday ...$birthday_list): void {
-        return;
+        TelegramNotifyRequestBuilder::build($user, ...$birthday_list);
     }
 
 }
