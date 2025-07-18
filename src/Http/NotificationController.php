@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use App\Services\Notification\NotificationServiceResolver;
+use App\Services\Notification\NotificationService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -15,7 +15,7 @@ class NotificationController {
 
         $user_uid = $parsed_body['user_uid'];
 
-        NotificationServiceResolver::resolve()->notify();
+        NotificationService::notify();
 
         return $response
             ->withStatus(302)
