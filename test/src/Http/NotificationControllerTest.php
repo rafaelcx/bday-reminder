@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Test\Src\Http;
 
 use Test\CustomTestCase;
-use Test\Support\Services\Notification\NotificationServiceForTests;
-use Test\Support\Services\Notification\NotificationServiceResolverForTests;
+use Test\Support\Services\Notification\Integration\NotifierForTests;
+use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
 
 class NotificationControllerTest extends CustomTestCase {
 
@@ -24,8 +24,8 @@ class NotificationControllerTest extends CustomTestCase {
     }
 
     private function mockNoOpNotificationService(): void {
-        $notification_service_for_tests = new NotificationServiceForTests();
-        NotificationServiceResolverForTests::override($notification_service_for_tests);
+        $notifier_for_tests = new NotifierForTests();
+        NotifierResolverForTests::override($notifier_for_tests);
     }
 
 }

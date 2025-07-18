@@ -4,8 +4,23 @@ declare(strict_types=1);
 
 namespace App\Services\Notification;
 
-interface NotificationService {
+use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Repository\User\User;
+use App\Repository\User\UserRepositoryResolver;
+use App\Services\Notification\Integration\NotifierResolver;
 
-    public function notify(): void;
+class NotificationService {
+
+    public static function notify(): void {
+        $user_list = UserRepositoryResolver::resolve()->findAll();
+        foreach ($user_list as $user) {
+            self::notifyUser($user);
+        }
+    }
+
+    private static function notifyUser(User $user): void {
+        $user_birthday_list = BirthdayRepositoryResolver::resolve()->findByUserUid($user->uid);
+        NotifierResolver::resolve()->notify($user, ...$user_birthday_list);
+    }
 
 }
