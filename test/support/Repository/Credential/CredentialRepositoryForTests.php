@@ -26,8 +26,8 @@ class CredentialRepositoryForTests implements CredentialRepository {
         return $this->mock_data[$id];
     }
 
-    public function mockCredentialData(string $id, string $data): void {
-        $this->mock_data[$id] = $data;
+    public function mockCredentialData(string $id, Credential $credential): void {
+        $this->mock_data[$id] = $credential;
     }
 
 }
