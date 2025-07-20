@@ -7,6 +7,7 @@ namespace Test;
 use App\Utils\StaticScope;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
+use Test\Support\Http\Client\HttpClientForTests;
 use Test\Support\Http\RequestSimulator;
 use Test\Support\Logger\ProcessLogContextForTests;
 
@@ -22,6 +23,7 @@ class CustomTestCase extends TestCase {
     /** @before */
     public function setUpOverrides(): void {
         FileServiceResolverForTests::override();
+        HttpClientForTests::override();
     }
 
     /** @after */
