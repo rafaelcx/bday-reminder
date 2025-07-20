@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Logger;
 
-class ProcessContext {
+class ProcessLogContext {
 
     protected static $context = [];
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Http\Middleware;
 
 use App\Http\Middleware\LogMiddleware;
-use App\Logger\ProcessContext;
+use App\Logger\ProcessLogContext;
 use App\Storage\FileServiceResolver;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -23,24 +23,24 @@ class LogMiddlewareTest extends CustomTestCase {
         (new LogMiddleware())->process($request, $request_handler);
         
         $log_content = FileServiceResolver::resolve()->getFileContents('log-file.json');
-        $log_as_obj = json_decode($log_content);
+        $log_as_array = json_decode($log_content);
         
-        $this->assertBaseInfoWasLogged($log_as_obj);
+        $this->assertBaseInfoWasLogged($log_as_array);
     }
 
-    public function testMiddleware_ShouldLogProcessContext(): void {
+    public function testMiddleware_ShouldLogProcessLogContext(): void {
         $request = $this->createFakeRequest();
         $request_handler = $this->createFakeRequestHandler();
 
-        ProcessContext::append('key', 'value');
+        ProcessLogContext::append('key', 'value');
 
         (new LogMiddleware())->process($request, $request_handler);
         
         $log_content = FileServiceResolver::resolve()->getFileContents('log-file.json');
-        $log_as_obj = json_decode($log_content);
+        $log_as_array = json_decode($log_content);
         
-        $this->assertBaseInfoWasLogged($log_as_obj);
-        $this->assertSame('value', $log_as_obj->key);
+        $this->assertBaseInfoWasLogged($log_as_array);
+        $this->assertSame('value', $log_as_array[0]->key);
     }
 
     private function createFakeRequestHandler(): RequestHandlerInterface {
@@ -56,10 +56,10 @@ class LogMiddlewareTest extends CustomTestCase {
         return new ServerRequest('GET', 'uri.com');
     }
 
-    private function assertBaseInfoWasLogged(\stdClass $log_as_obj): void {
-        $this->assertSame('info', $log_as_obj->level);
-        $this->assertSame('app_request', $log_as_obj->message);
-        $this->assertNotNull($log_as_obj->timestamp);
+    private function assertBaseInfoWasLogged(array $log_as_array): void {
+        $this->assertSame('info', $log_as_array[0]->level);
+        $this->assertSame('app_request', $log_as_array[0]->message);
+        $this->assertNotNull($log_as_array[0]->timestamp);
     }
 
 }
