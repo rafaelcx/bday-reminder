@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Logger\LoggerResolver;
-use App\Logger\ProcessContext;
+use App\Logger\ProcessLogContext;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
@@ -17,7 +17,7 @@ class LogMiddleware implements MiddlewareInterface {
         $response = $handler->handle($request);
 
         $message = 'app_request';
-        $process_context = ProcessContext::getAll();
+        $process_context = ProcessLogContext::getAll();
         LoggerResolver::resolve()->info($message, $process_context);
 
         return $response;

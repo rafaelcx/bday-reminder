@@ -49,16 +49,32 @@ class LoggerDefault implements LoggerInterface {
     }
 
     public function log($level, \Stringable|string $message, array $context = []): void {
-        $log_as_array = [
+        $log_as_array = $this->buildLogDocument($level, $message, $context);
+        $previous_logs = $this->getPreviousLogs();
+
+        $previous_logs[] = $log_as_array;
+        $updated_logs = json_encode($previous_logs, JSON_PRETTY_PRINT);
+        FileServiceResolver::resolve()->putFileContents($this->log_file, $updated_logs);
+    }
+
+    private function buildLogDocument($level, string $message, array $context): array {
+        $log_common_fields = [
             'timestamp' => date('Y-m-d H:i:s'),
             'level' => $level,
             'message' => $message,
         ];
+        return array_merge($log_common_fields, $context);
+    }
 
-        $log_as_array = array_merge($log_as_array, $context);
-        $log_as_string = json_encode($log_as_array) . "\n";
+    private function getPreviousLogs(): array {
+        $file_service = FileServiceResolver::resolve();
+        $previous_logs = $file_service->getFileContents($this->log_file);
         
-        FileServiceResolver::resolve()->putFileContents($this->log_file, $log_as_string, true);
+        $previous_logs_decoded = json_decode($previous_logs, true);
+        if (!is_array($previous_logs_decoded)) {
+            $previous_logs_decoded = [];
+        }
+        return $previous_logs_decoded;
     }
 
 }

@@ -8,7 +8,7 @@ use App\Utils\StaticScope;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\RequestSimulator;
-use Test\Support\Logger\ProcessContextForTests;
+use Test\Support\Logger\ProcessLogContextForTests;
 
 class CustomTestCase extends TestCase {
 
@@ -28,7 +28,7 @@ class CustomTestCase extends TestCase {
     public function resetOverrides(): void {
         StaticScope::clear();
         FileServiceResolverForTests::reset();
-        ProcessContextForTests::reset();
+        ProcessLogContextForTests::reset();
     }
 
 }

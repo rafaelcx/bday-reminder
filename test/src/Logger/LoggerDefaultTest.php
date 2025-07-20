@@ -35,8 +35,9 @@ class LoggerDefaultTest extends CustomTestCase {
         $logged_content = FileServiceResolver::resolve()->getFileContents(self::FILE_NAME);
         $logged_content = json_decode($logged_content);
 
-        $this->assertBaseLogData($message, $expected_level, $logged_content);
-        $this->assertSame('context_value', $logged_content->context_key);
+        $this->assertCount(1, $logged_content);
+        $this->assertBaseLogData($message, $expected_level, $logged_content[0]);
+        $this->assertSame('context_value', $logged_content[0]->context_key);
     }
 
     public function testLogger_ShouldAppend(): void {
@@ -44,12 +45,12 @@ class LoggerDefaultTest extends CustomTestCase {
         (new LoggerDefault(self::FILE_NAME))->log(LogLevel::ALERT, 'message2', []);
 
         $logged_content = FileServiceResolver::resolve()->getFileContents(self::FILE_NAME);
+        $logged_content = json_decode($logged_content);
         
-        $exploded_logged_content = explode("\n", trim($logged_content));
-        $this->assertCount(2, $exploded_logged_content);
+        $this->assertCount(2, $logged_content);
         
-        $log_1 = json_decode($exploded_logged_content[0]);
-        $log_2 = json_decode($exploded_logged_content[1]);
+        $log_1 = $logged_content[0];
+        $log_2 = $logged_content[1];
 
         $this->assertBaseLogData('message1', LogLevel::ALERT, $log_1);
         $this->assertBaseLogData('message2', LogLevel::ALERT, $log_2);
