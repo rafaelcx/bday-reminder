@@ -9,6 +9,7 @@ use App\Repository\User\User;
 use App\Repository\UserConfig\UserConfigException;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\NotificationException;
+use App\Utils\Clock;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
@@ -57,17 +58,52 @@ class TelegramNotifyRequestBuilder {
     }
 
     private static function formatBirthdayMessage(User $user, Birthday ...$birthdays): string {
-        $message = 'Hello ' . $user->name . ',' . "\n\n";
-        $message .= '🎉 Here are your upcoming birthday reminders!' . "\n\n";
-        
-        foreach ($birthdays as $birthday) {
-            $message .= sprintf(
-                "🎂 *Name:* %s\n*Date:* %s\n\n",
-                $birthday->name ?? 'Unknown',
-                $birthday->date->format('Y-m-d') ?? 'Unknown'
-            );
+        // TODO:
+        // Add a method at BirthdayRepository to fetch users with a date filter.
+        // TelegramNotifier should receive already filtered birthdays from NotificationService
+
+        $relevant_birthdays = array_filter($birthdays, self::filterForBirthdaysInTheNext30Days(...));
+        uasort($relevant_birthdays, self::sortBirthdays(...));
+    
+        return TelegramNotifyRequestMessage::build($user, ...$relevant_birthdays);
+    }
+
+    private static function filterForBirthdaysInTheNext30Days(Birthday $b): bool {
+        $today_as_md = Clock::at(Clock::now()->format('m/d'));
+        $today_as_ymd = Clock::at(Clock::now()->format('Y-m-d'));
+        $birthday_as_md = Clock::at($b->date->format('m/d'));
+
+        $birthday_is_today = $today_as_md->asDateString() === $birthday_as_md->asDateString();
+        if ($birthday_is_today) {
+            return true;
         }
-        return $message;
+
+        $has_already_celebrated_birthday_this_year = $birthday_as_md->isBefore($today_as_md);
+
+        $next_birthday_as_ydm = $has_already_celebrated_birthday_this_year
+            ? Clock::at($b->date->format('m/d'))->plusYears(1)
+            : Clock::at($b->date->format('m/d'));
+
+        return true
+            && $next_birthday_as_ydm->isAfter($today_as_ymd) 
+            && $next_birthday_as_ydm->isBefore($today_as_ymd->plusDays(31));
+    }
+
+    private static function sortBirthdays(Birthday $b1, Birthday $b2): int {
+        $today = Clock::at(Clock::now()->format('Y-m-d'));
+
+        $next_b1 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b1->date->format('m'), $b1->date->format('d')), 'Y-m-d');
+        $next_b2 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b2->date->format('m'), $b2->date->format('d')), 'Y-m-d');
+
+        if ($next_b1->getTimestamp() < $today->getTimestamp()) {
+            $next_b1 = $next_b1->plusYears(1);
+        }
+
+        if ($next_b2->getTimestamp() < $today->getTimestamp()) {
+            $next_b2 = $next_b2->plusYears(1);
+        }
+
+        return $next_b1 <=> $next_b2;
     }
 
 }

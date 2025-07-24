@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test;
 
+use App\Utils\Clock;
 use App\Utils\StaticScope;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
@@ -31,6 +32,7 @@ class CustomTestCase extends TestCase {
         StaticScope::clear();
         FileServiceResolverForTests::reset();
         ProcessLogContextForTests::reset();
+        Clock::reset();
     }
 
 }
