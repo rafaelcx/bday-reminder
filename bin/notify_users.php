@@ -11,6 +11,7 @@ use App\Services\Notification\NotificationService;
 
 ProcessLogContext::append('process_type', 'cron');
 ProcessLogContext::append('process_id', uniqid());
+ProcessLogContext::append('cron_job', 'notify_users');
 
 NotificationService::notify();
 
