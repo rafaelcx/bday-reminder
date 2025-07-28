@@ -23,12 +23,12 @@ class LogMiddlewareTest extends CustomTestCase {
         (new LogMiddleware())->process($request, $request_handler);
         
         $log_content = FileServiceResolver::resolve()->getFileContents('log-file.json');
-        $log_as_array = json_decode($log_content);
-        
-        $this->assertBaseInfoWasLogged($log_as_array);
+        $log_content = json_decode($log_content)[0];
+
+        $this->assertBaseInfoWasLogged($log_content);
     }
 
-    public function testMiddleware_ShouldLogProcessLogContext(): void {
+    public function testMiddleware_ShouldAppendProcessLogContext(): void {
         $request = $this->createFakeRequest();
         $request_handler = $this->createFakeRequestHandler();
 
@@ -37,10 +37,10 @@ class LogMiddlewareTest extends CustomTestCase {
         (new LogMiddleware())->process($request, $request_handler);
         
         $log_content = FileServiceResolver::resolve()->getFileContents('log-file.json');
-        $log_as_array = json_decode($log_content);
+        $log_content = json_decode($log_content)[0];
         
-        $this->assertBaseInfoWasLogged($log_as_array);
-        $this->assertSame('value', $log_as_array[0]->key);
+        $this->assertBaseInfoWasLogged($log_content);
+        $this->assertSame('value', $log_content->key);
     }
 
     private function createFakeRequestHandler(): RequestHandlerInterface {
@@ -53,13 +53,19 @@ class LogMiddlewareTest extends CustomTestCase {
     }
 
     private function createFakeRequest(): ServerRequest {
-        return new ServerRequest('GET', 'uri.com');
+        return new ServerRequest('GET', 'http://uri.com/path');
     }
 
-    private function assertBaseInfoWasLogged(array $log_as_array): void {
-        $this->assertSame('info', $log_as_array[0]->level);
-        $this->assertSame('app_request', $log_as_array[0]->message);
-        $this->assertNotNull($log_as_array[0]->timestamp);
+    private function assertBaseInfoWasLogged(\stdClass $log_content): void {
+        $this->assertSame('http', $log_content->process_type);
+        $this->assertSame('/path', $log_content->http_request_path);
+        $this->assertSame('GET', $log_content->http_request_method);
+        $this->assertSame('[]', $log_content->http_request_query_params);
+        $this->assertSame('null', $log_content->http_request_parsed_params);
+        $this->assertNotNull($log_content->process_id);
+
+        $this->assertSame('200', $log_content->http_response_status);
+        $this->assertSame('Process Finished', $log_content->message);
     }
 
 }
