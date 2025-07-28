@@ -16,9 +16,15 @@ class RequestSimulator {
     private string $body = '';
     private array $query_params = [];
     private array $post_params = [];
+    private ?\Closure $routing_behavior = null;
 
     public function dispatch(): ResponseInterface {
         $app = require __DIR__ . '/../../../app/app.php';
+        
+        if ($this->routing_behavior) {
+            $app->getCallableResolver()->resolve($this->routing_behavior);
+        }
+
         return $app->handle($this->buildIncomingRequest());
     }
 
@@ -46,6 +52,11 @@ class RequestSimulator {
     public function withPostParams(array $params): self {
         $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
         $this->post_params = $params;
+        return $this;
+    }
+
+    public function withRoutingBehavior(callable $behavior): self {
+        $this->routing_behavior = $behavior;
         return $this;
     }
 
