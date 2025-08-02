@@ -6,4 +6,7 @@
 # Storage files
 /storage/Files/*.json
 
+# MacOS files
+.DS_Store
+
 /vendor/
