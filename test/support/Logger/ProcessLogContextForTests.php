@@ -12,4 +12,8 @@ class ProcessLogContextForTests extends ProcessLogContext {
         self::$context = [];
     }
 
+    public static function getField(string $field_name): mixed {
+        return self::$context[$field_name];
+    }
+
 }

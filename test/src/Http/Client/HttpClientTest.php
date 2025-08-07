@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Test\CustomTestCase;
 use Test\Support\Http\Client\HttpClientForTests;
+use Test\Support\Logger\ProcessLogContextForTests;
 
 class HttpClientTest extends CustomTestCase {
 
@@ -39,6 +40,12 @@ class HttpClientTest extends CustomTestCase {
         $this->assertSame('value', $mock_handler->getLastRequest()->getHeaderLine('X-Test-Header'));
         $this->assertSame($request_body, (string) $mock_handler->getLastRequest()->getBody());
         $this->assertSame(10.0, $mock_handler->getLastOptions()['timeout']);
+
+        // Assertions that logs were performed
+        $this->assertSame($request_method, ProcessLogContextForTests::getField('external_request.method'));
+        $this->assertSame($request_uri, ProcessLogContextForTests::getField('external_request.target_url'));
+        $this->assertNotNull(ProcessLogContextForTests::getField('external_request.elapsed_time_in_msec'));
+        $this->assertSame('200', ProcessLogContextForTests::getField('external_request.response.status_code'));
     }
 
     public function testHttpClient_UponRequestFailure(): void {
@@ -54,9 +61,16 @@ class HttpClientTest extends CustomTestCase {
 
         $client = new HttpClient();
 
-        $this->expectException(HttpClientException::class);
-        $this->expectExceptionMessage('External HTTP request failed: Test failure');
-        $client->send($request);
+        try {
+            $client->send($request);
+            $this->fail('An exception should have been thrown');
+        } catch (HttpClientException $e) {
+            $this->assertSame('External HTTP request failed: Test failure', $e->getMessage());
+            $this->assertSame($request_method, ProcessLogContextForTests::getField('external_request.method'));
+            $this->assertSame($request_uri, ProcessLogContextForTests::getField('external_request.target_url'));
+            $this->assertNotNull(ProcessLogContextForTests::getField('external_request.elapsed_time_in_msec'));
+            $this->assertSame('Test failure', ProcessLogContextForTests::getField('external_request.error'));
+        }
     }
 
 }
