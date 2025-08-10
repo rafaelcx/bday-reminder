@@ -20,7 +20,7 @@ use Test\Support\Http\Client\HttpClientForTests;
 
 class TelegramNotifierTest extends CustomTestCase {
 
-    public function testNotifier(): void {
+    public function testNotifier_Notify(): void {
         $user = $this->createAndGetUser('user1');
         $bdays = $this->createAndGetBirthday($user, 'bday1');
 
@@ -39,7 +39,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $this->assertNotNull($last_sent_request);
     }
 
-    public function testNotifier_ShouldThrowOnRequestBuildingError(): void {
+    public function testNotifier_Notify_ShouldThrowOnRequestBuildingError(): void {
         $user = $this->createAndGetUser('user1');
         $bdays = $this->createAndGetBirthday($user, 'bday1');
 
@@ -50,7 +50,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $notifier->notify($user, ...$bdays);
     }
 
-    public function testNotifier_ShouldThrowOnRequestDispatchError(): void {
+    public function testNotifier_Notify_ShouldThrowOnRequestDispatchError(): void {
         $user = $this->createAndGetUser('user1');
         $bdays = $this->createAndGetBirthday($user, 'bday1');
 
@@ -69,7 +69,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $notifier->notify($user, ...$bdays);
     }
 
-    public function testNotifier_ShouldThrowOnParsingError(): void {
+    public function testNotifier_Notify_ShouldThrowOnParsingError(): void {
         $user = $this->createAndGetUser('user1');
         $bdays = $this->createAndGetBirthday($user, 'bday1');
 
@@ -86,6 +86,41 @@ class TelegramNotifierTest extends CustomTestCase {
 
         $notifier = new TelegramNotifier();
         $notifier->notify($user, ...$bdays);
+    }
+
+    public function testNotifier_GetUpdates(): void {
+        $this->mockValidCredentials();
+
+        // Mocking valid response
+        $mock_handler = new MockHandler();
+        $mock_handler->append(new Response(200, [], '{"result": []}'));
+        HttpClientForTests::overrideHandler($mock_handler);
+
+        $notifier = new TelegramNotifier();
+        $notifier->getUpdates();
+
+        $last_sent_request = $mock_handler->getLastRequest();
+        $this->assertNotNull($last_sent_request);
+    }
+
+    public function testNotifier_DeleteMessages(): void {
+        $this->mockValidCredentials();
+
+        // Mocking valid response
+        $mock_handler = new MockHandler();
+        $mock_handler->append(new Response(200, [], '{"ok": true}'));
+        HttpClientForTests::overrideHandler($mock_handler);
+
+        $update = new \stdClass;
+        $update->text = 'text';
+        $update->chat_id = '123';
+        $update->id = '123';
+
+        $notifier = new TelegramNotifier();
+        $notifier->deleteMessages([$update]);
+
+        $last_sent_request = $mock_handler->getLastRequest();
+        $this->assertNotNull($last_sent_request);
     }
 
     private function createAndGetUser(string $user_name): User {
