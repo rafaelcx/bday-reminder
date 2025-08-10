@@ -31,12 +31,12 @@ class TelegramNotifier implements Notifier {
     }
 
     public function deleteMessages(array $updates): void {
-        $unique_chat_ids = [];
+        $unique_chats = [];
         foreach ($updates as $update) {
-            $unique_chat_ids[$update->chat_id][] = $update;
+            $unique_chats[$update->chat_id][] = $update;
         }
 
-        foreach ($unique_chat_ids as $chat_id => $messages) {
+        foreach ($unique_chats as $chat_id => $messages) {
             $request = TelegramDeleteMessagesRequestBuilder::build((string) $chat_id, $messages);
             $this->dispatchRequest($request);
         }
