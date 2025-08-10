@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Test\Src\Services\Notification\Integration\Telegram;
+namespace Test\Src\Services\Notification\Integration\Telegram\Notify;
 
-use App\Services\Notification\Integration\Telegram\TelegramNotifyResponseValidator;
+use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyResponseValidator;
 use App\Services\Notification\NotificationException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

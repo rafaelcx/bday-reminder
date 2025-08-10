@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Notification\Integration\Telegram;
+namespace App\Services\Notification\Integration\Telegram\Notify;
 
 use App\Repository\Birthday\Birthday;
 use App\Repository\User\User;
 use App\Repository\UserConfig\UserConfigException;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
+use App\Services\Notification\Integration\Telegram\TelegramCredentials;
 use App\Services\Notification\NotificationException;
 use App\Utils\Clock;
 use GuzzleHttp\Psr7\Request;

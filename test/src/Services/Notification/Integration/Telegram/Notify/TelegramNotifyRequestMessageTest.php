@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Test\Src\Services\Notification\Integration;
+namespace Test\Src\Services\Notification\Integration\Telegram\Notify;
 
 use App\Repository\Birthday\Birthday;
 use App\Repository\User\User;
-use App\Services\Notification\Integration\Telegram\TelegramNotifyRequestMessage;
+use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestMessage;
 use App\Utils\Clock;
 use Test\CustomTestCase;
 
