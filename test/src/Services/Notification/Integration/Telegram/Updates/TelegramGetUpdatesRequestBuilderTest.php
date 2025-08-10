@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Src\Services\Notification\Integration\Updates;
+namespace Test\Src\Services\Notification\Integration\Telegram\Updates;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesRequestBuilder;

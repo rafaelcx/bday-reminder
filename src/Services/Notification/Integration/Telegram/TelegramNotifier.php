@@ -10,6 +10,8 @@ use App\Repository\Birthday\Birthday;
 use App\Repository\User\User;
 use App\Services\Notification\Integration\Notifier;
 use App\Services\Notification\Integration\Telegram\Delete\TelegramDeleteMessagesRequestBuilder;
+use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestBuilder;
+use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyResponseValidator;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesRequestBuilder;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesResponseParser;
 use App\Services\Notification\NotificationException;

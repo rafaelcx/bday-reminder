@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Notification\Integration\Telegram;
+namespace App\Services\Notification\Integration\Telegram\Notify;
 
 use App\Services\Notification\NotificationException;
 use Psr\Http\Message\ResponseInterface;
