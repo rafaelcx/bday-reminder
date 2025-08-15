@@ -10,5 +10,7 @@ use App\Repository\User\User;
 interface Notifier {
 
     public function notify(User $user, Birthday ...$birthday_list): void;
+    public function getUpdates(): array;
+    public function deleteMessages(array $updates): void;
 
 }

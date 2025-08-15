@@ -18,6 +18,15 @@ class NotificationService {
         }
     }
 
+    public static function add(): void {
+        $notifier = NotifierResolver::resolve();
+        $updates = $notifier->getUpdates();
+
+        // TODO: Create birthday records from updates
+
+        $notifier->deleteMessages($updates);
+    }
+
     private static function notifyUser(User $user): void {
         $user_birthday_list = BirthdayRepositoryResolver::resolve()->findByUserUid($user->uid);
         NotifierResolver::resolve()->notify($user, ...$user_birthday_list);

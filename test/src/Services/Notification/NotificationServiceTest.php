@@ -15,7 +15,7 @@ use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
 
 class NotificationServiceTest extends CustomTestCase {
 
-    public function testService_ShouldNotifyAllBirthdaysFromAllUsers(): void {
+    public function testService_Notify_ShouldNotifyAllBirthdaysFromAllUsers(): void {
         $user_1 = $this->createAndGetUser('user1');
         $user_2 = $this->createAndGetUser('user2');
 
@@ -44,6 +44,28 @@ class NotificationServiceTest extends CustomTestCase {
         $this->assertStringContainsString('bday2', $execution_proof);
         $this->assertStringContainsString('bday3', $execution_proof);
         $this->assertStringContainsString('bday4', $execution_proof);
+    }
+
+    public function testService_Add_ShouldAddBirthdaysFromAllUsers(): void {
+        $mock_notifier = new NotifierForTests();
+
+        // Simulating retrieved udpates
+        $fake_updates = ['update1', 'update2'];
+        $mock_notifier->setGetUpdatesBehavior(fn() => $fake_updates);
+
+        // Simulating updates deletion by concatenating updates
+        $deletion_execution_proof = '';
+        $delete_messages_behavior = function(array $updates) use (&$execution_proof) {
+            $execution_proof = implode('', $updates);
+        };
+        $mock_notifier->setDeleteMessagesBehavior($delete_messages_behavior);
+        
+        NotifierResolverForTests::override($mock_notifier);
+
+        NotificationService::add();
+
+        $this->assertStringContainsString('update1', $execution_proof);
+        $this->assertStringContainsString('update2', $execution_proof);
     }
 
     private function createAndGetUser(string $user_name): User {
