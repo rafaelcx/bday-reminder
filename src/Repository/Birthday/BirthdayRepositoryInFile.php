@@ -19,7 +19,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         $this->ensureFileStructure();
     }
 
-    public function create(string $user_uid, string $name, \DateTime $date): void {
+    public function create(string $user_uid, string $name, Clock $date): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         $file_contents_as_obj = json_decode($file_contents);
         
@@ -66,7 +66,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         return array_map($fn, $filtered_birthdays);
     }
 
-    public function update(string $birthday_uid, string $name, \DateTime $date): void {
+    public function update(string $birthday_uid, string $name, Clock $date): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
 
         $file_contents_as_obj = json_decode($file_contents);

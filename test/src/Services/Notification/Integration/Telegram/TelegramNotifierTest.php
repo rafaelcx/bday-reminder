@@ -11,6 +11,7 @@ use App\Repository\User\UserRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\TelegramNotifier;
 use App\Services\Notification\NotificationException;
+use App\Utils\Clock;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
@@ -134,7 +135,7 @@ class TelegramNotifierTest extends CustomTestCase {
 
     private function createAndGetBirthday(User $user, string $birthday_name): array {
         $birthday_repo = BirthdayRepositoryResolver::resolve();
-        $birthday_repo->create($user->uid, $birthday_name, new \DateTime());
+        $birthday_repo->create($user->uid, $birthday_name, Clock::now());
         return $birthday_repo->findByUserUid($user->uid);
     }
 
