@@ -6,9 +6,17 @@ namespace Test\Src\Repository\Credential;
 
 use App\Repository\Credential\CredentialException;
 use App\Repository\Credential\CredentialRepositoryInFile;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class CredentialRepositoryInFileTest extends CustomTestCase {
+
+    /**
+     * @before
+     */
+    public function freezeClockForTests(): void {
+        Clock::freeze('2025-01-01 12:00:00');
+    }
 
     public function testRepository(): void {
         $repository = new CredentialRepositoryInFile();
@@ -21,11 +29,11 @@ class CredentialRepositoryInFileTest extends CustomTestCase {
 
         $this->assertSame('id_1', $credential_1->id);
         $this->assertSame('data_1', $credential_1->data);
-        $this->assertNotNull($credential_1->created_at);
+        $this->assertSame('2025-01-01 12:00:00', $credential_1->created_at->asDateTimeString());
 
         $this->assertSame('id_2', $credential_2->id);
         $this->assertSame('data_2', $credential_2->data);
-        $this->assertNotNull($credential_2->created_at);
+        $this->assertNotNull('2025-01-01 12:00:00', $credential_2->created_at->asDateTimeString());
     }
 
     public function testRepository_FindById_WhenCredentialsDoesNotExist(): void {

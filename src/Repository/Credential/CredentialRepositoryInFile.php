@@ -6,6 +6,7 @@ namespace App\Repository\Credential;
 
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
+use App\Utils\Clock;
 
 class CredentialRepositoryInFile implements CredentialRepository {
 
@@ -27,7 +28,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         $new_credential = [
             'id' => $id,
             'data' => $data,
-            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'created_at' => Clock::now()->format('Y-m-d H:i:s'),
         ];
         $credential_list[] = $new_credential;
 
@@ -54,7 +55,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         return new Credential(
             id: $credential_from_storage->id,
             data: $credential_from_storage->data,
-            created_at: new \DateTime($credential_from_storage->created_at)
+            created_at: Clock::at($credential_from_storage->created_at)
         );
     }
 

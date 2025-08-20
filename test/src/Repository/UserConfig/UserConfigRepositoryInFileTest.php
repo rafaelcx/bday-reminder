@@ -6,9 +6,17 @@ namespace Test\Src\Repository\UserConfig;
 
 use App\Repository\UserConfig\UserConfigException;
 use App\Repository\UserConfig\UserConfigRepositoryInFile;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class UserConfigRepositoryInFileTest extends CustomTestCase {
+
+    /**
+     * @before
+     */
+    public function freezeClockForTests(): void {
+        Clock::freeze('2025-01-01 12:00:00');
+    }
 
     public function testRepository_Create(): void {
         $repository = new UserConfigRepositoryInFile();
@@ -19,8 +27,8 @@ class UserConfigRepositoryInFileTest extends CustomTestCase {
         $this->assertSame('user_uid', $found_user_config->user_uid);
         $this->assertSame('test_name', $found_user_config->name);
         $this->assertSame('test_value', $found_user_config->value);
-        $this->assertNotNull($found_user_config->created_at);
-        $this->assertNotNull($found_user_config->updated_at);
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->created_at->asDateTimeString());
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->updated_at->asDateTimeString());
     }
 
     public function testRepository_FindByUserUidAndName_WhenConfigDoesNotExistForUser(): void {

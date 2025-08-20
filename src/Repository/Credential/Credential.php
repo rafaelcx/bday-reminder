@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repository\Credential;
 
-class Credential {
+use App\Utils\Clock;
 
-    // TODO: Change DateTime types to clock
+class Credential {
 
     public function __construct(
         public readonly string $id,
         public readonly string $data,
-        public readonly \DateTime $created_at,
+        public readonly Clock $created_at,
     ) {}
 
 }

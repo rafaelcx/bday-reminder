@@ -6,6 +6,7 @@ namespace App\Repository\UserConfig;
 
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
+use App\Utils\Clock;
 
 class UserConfigRepositoryInFile implements UserConfigRepository {
 
@@ -29,8 +30,8 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
             'user_uid' => $user_uid,
             'name' => $name,
             'value' => $value,
-            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-            'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'created_at' => Clock::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Clock::now()->format('Y-m-d H:i:s'),
         ];
         $config_list[] = $new_config;
 
@@ -59,8 +60,8 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
             user_uid: $config->user_uid,
             name: $config->name,
             value: $config->value,
-            created_at: new \DateTime($config->created_at),
-            updated_at: new \DateTime($config->updated_at),
+            created_at: Clock::at($config->created_at),
+            updated_at: Clock::at($config->updated_at),
         );
     }
 
