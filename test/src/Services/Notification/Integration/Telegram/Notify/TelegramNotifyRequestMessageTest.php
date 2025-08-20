@@ -24,7 +24,7 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
         $this->test_user = new User(
             uid: 'user-123',
             name: 'Alice',
-            created_at: new \DateTime('2022-01-01')
+            created_at: Clock::now()
         );
     }
 

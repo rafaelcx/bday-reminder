@@ -125,7 +125,7 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         return new User(
             uid: 'uid',
             name: 'John Doe',
-            created_at: new \DateTime(),
+            created_at: Clock::now(),
         );
     }
 

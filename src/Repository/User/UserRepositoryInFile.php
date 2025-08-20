@@ -6,6 +6,7 @@ namespace App\Repository\User;
 
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
+use App\Utils\Clock;
 
 class UserRepositoryInFile implements UserRepository {
 
@@ -42,7 +43,7 @@ class UserRepositoryInFile implements UserRepository {
         $persisted_users = $file_contents_as_obj->users;
 
         $fn = function(\stdClass $user) {
-            return new User($user->uid, $user->name, new \DateTime($user->created_at));
+            return new User($user->uid, $user->name, Clock::at($user->created_at));
         };
         return array_map($fn, $persisted_users);
     }
