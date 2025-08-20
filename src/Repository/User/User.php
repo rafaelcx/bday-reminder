@@ -6,6 +6,8 @@ namespace App\Repository\User;
 
 class User {
 
+    // TODO: Change DateTime types to clock
+
     public function __construct(
         public readonly string $uid,
         public readonly string $name,

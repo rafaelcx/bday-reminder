@@ -6,6 +6,7 @@ namespace App\Repository\Birthday;
 
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
+use App\Utils\Clock;
 
 class BirthdayRepositoryInFile implements BirthdayRepository {
 
@@ -29,7 +30,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
             'user_uid' => $user_uid,
             'name' => $name,
             'date' => $date->format('Y-m-d H:i:s'),
-            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'created_at' => Clock::now()->format('Y-m-d H:i:s'),
         ];
         $birthday_list[] = $new_birthday;
 
@@ -57,9 +58,9 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
             return new Birthday(
                 $birthday->uid, 
                 $birthday->user_uid, 
-                $birthday->name, 
-                new \DateTime($birthday->date), 
-                new \DateTime($birthday->created_at)
+                $birthday->name,
+                Clock::at($birthday->date),
+                Clock::at($birthday->created_at)
             );
         };
         return array_map($fn, $filtered_birthdays);
