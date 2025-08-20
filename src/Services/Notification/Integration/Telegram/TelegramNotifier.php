@@ -29,10 +29,13 @@ class TelegramNotifier implements Notifier {
     public function getUpdates(): array {
         $request = TelegramGetUpdatesRequestBuilder::build();
         $response = $this->dispatchRequest($request);
-        return TelegramGetUpdatesResponseParser::parse($response);
+        $updates = TelegramGetUpdatesResponseParser::parse($response);
+
+        $this->deleteMessages($updates);
+        return $updates;
     }
 
-    public function deleteMessages(array $updates): void {
+    private function deleteMessages(array $updates): void {
         $unique_chats = [];
         foreach ($updates as $update) {
             $unique_chats[$update->chat_id][] = $update;

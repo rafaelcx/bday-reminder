@@ -50,23 +50,19 @@ class NotificationServiceTest extends CustomTestCase {
     public function testService_Add_ShouldAddBirthdaysFromAllUsers(): void {
         $mock_notifier = new NotifierForTests();
 
-        // Simulating retrieved udpates
-        $fake_updates = ['update1', 'update2'];
-        $mock_notifier->setGetUpdatesBehavior(fn() => $fake_updates);
-
-        // Simulating updates deletion by concatenating updates
-        $deletion_execution_proof = '';
-        $delete_messages_behavior = function(array $updates) use (&$execution_proof) {
-            $execution_proof = implode('', $updates);
-        };
-        $mock_notifier->setDeleteMessagesBehavior($delete_messages_behavior);
+        // Simulating each fetched update
+        $execution_proof = '';
+        $get_updates_behavior = function() use (&$execution_proof) {
+             $execution_proof = 'Updates Fetched';
+             return [];
+        }; 
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         
         NotifierResolverForTests::override($mock_notifier);
 
         NotificationService::add();
 
-        $this->assertStringContainsString('update1', $execution_proof);
-        $this->assertStringContainsString('update2', $execution_proof);
+        $this->assertSame('Updates Fetched', $execution_proof);
     }
 
     private function createAndGetUser(string $user_name): User {
