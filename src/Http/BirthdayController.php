@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Utils\Clock;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -18,8 +19,8 @@ class BirthdayController {
         $bday_user_uid = $parsed_body['user_uid'];
 
         BirthdayRepositoryResolver::resolve()
-            ->create($bday_user_uid, $bday_name, new \DateTime($bday_date));
-    
+            ->create($bday_user_uid, $bday_name, Clock::at($bday_date));
+
         return $this->buildRedirectResponse($response, $bday_user_uid);
     }
 
@@ -32,7 +33,7 @@ class BirthdayController {
         $bday_user_uid = $parsed_body['user_uid'];
 
         BirthdayRepositoryResolver::resolve()
-            ->update($bday_uid, $bday_name, new \DateTime($bday_date));
+            ->update($bday_uid, $bday_name, Clock::at($bday_date));
 
         return $this->buildRedirectResponse($response, $bday_user_uid);
     }

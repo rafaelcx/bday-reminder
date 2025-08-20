@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Repository\Birthday;
 
 use App\Repository\Birthday\BirthdayRepositoryInFile;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class BirthdayRepositoryInFileTest extends CustomTestCase {
@@ -17,10 +18,10 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
     }
 
     public function testRepository_Create_OnFreshFile(): void {
-        $this->birthday_repository->create('user_uid_1', 'name_1', new \DateTime('1995-11-30'));
-        $this->birthday_repository->create('user_uid_1', 'name_2', new \DateTime('1996-11-30'));
-        $this->birthday_repository->create('user_uid_2', 'name_3', new \DateTime('1995-11-30'));
-        $this->birthday_repository->create('user_uid_2', 'name_4', new \DateTime('1996-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_1', Clock::at('1995-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_2', Clock::at('1996-11-30'));
+        $this->birthday_repository->create('user_uid_2', 'name_3', Clock::at('1995-11-30'));
+        $this->birthday_repository->create('user_uid_2', 'name_4', Clock::at('1996-11-30'));
 
         $persisted_bdays = $this->birthday_repository->findByUserUid('user_uid_1');
         $persisted_bday_2 = array_pop($persisted_bdays);
@@ -43,15 +44,15 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
     }
 
     public function testRepository_Update(): void {
-        $this->birthday_repository->create('user_uid_1', 'name_1', new \DateTime('1995-11-30'));
-        $this->birthday_repository->create('user_uid_1', 'name_2', new \DateTime('2000-12-01'));
-        $this->birthday_repository->create('user_uid_2', 'name_3', new \DateTime('1970-10-15'));
+        $this->birthday_repository->create('user_uid_1', 'name_1', Clock::at('1995-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_2', Clock::at('2000-12-01'));
+        $this->birthday_repository->create('user_uid_2', 'name_3', Clock::at('1970-10-15'));
 
         $all_bdays_from_user_one = $this->birthday_repository->findByUserUid('user_uid_1');
         $all_bdays_from_user_two = $this->birthday_repository->findByUserUid('user_uid_2');
         
         $first_bday = $all_bdays_from_user_one[0];
-        $this->birthday_repository->update($first_bday->uid, 'new_name', new \DateTime('2500-01-01'));
+        $this->birthday_repository->update($first_bday->uid, 'new_name', Clock::at('2500-01-01'));
 
         $all_bdays_from_user_one = $this->birthday_repository->findByUserUid('user_uid_1');
         $all_bdays_from_user_two = $this->birthday_repository->findByUserUid('user_uid_2');
@@ -64,8 +65,8 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
     }
 
     public function testRepository_Delete(): void {
-        $this->birthday_repository->create('user_uid_1', 'name_1', new \DateTime('1995-11-30'));
-        $this->birthday_repository->create('user_uid_1', 'name_2', new \DateTime('2000-12-01'));
+        $this->birthday_repository->create('user_uid_1', 'name_1', Clock::at('1995-11-30'));
+        $this->birthday_repository->create('user_uid_1', 'name_2', Clock::at('2000-12-01'));
 
         $all_bdays = $this->birthday_repository->findByUserUid('user_uid_1');
         $first_bday = $all_bdays[0];

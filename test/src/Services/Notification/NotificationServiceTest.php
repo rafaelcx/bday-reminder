@@ -9,6 +9,7 @@ use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Notification\NotificationService;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 use Test\Support\Services\Notification\Integration\NotifierForTests;
 use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
@@ -78,7 +79,7 @@ class NotificationServiceTest extends CustomTestCase {
     }
 
     private function createBirthdayForUser(User $user, string $bday_name): void {
-        BirthdayRepositoryResolver::resolve()->create($user->uid, $bday_name, new \DateTime());
+        BirthdayRepositoryResolver::resolve()->create($user->uid, $bday_name, Clock::now());
     }
 
 }

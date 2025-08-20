@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Test\Src\Http;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class UserControllerTest extends CustomTestCase {
 
     public function testController_WhenSuccessful(): void {
         $birthday_repository = BirthdayRepositoryResolver::resolve();
-        $birthday_repository->create('1', 'Name One', new \DateTime());
-        $birthday_repository->create('1', 'Name Two', new \DateTime());
-        $birthday_repository->create('2', 'Name Three', new \DateTime());
+        $birthday_repository->create('1', 'Name One', Clock::now());
+        $birthday_repository->create('1', 'Name Two', Clock::now());
+        $birthday_repository->create('2', 'Name Three', Clock::now());
        
         $result = $this->request_simulator
             ->withMethod('GET')

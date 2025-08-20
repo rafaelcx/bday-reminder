@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class BirthdayControllerTest extends CustomTestCase {
@@ -33,7 +34,7 @@ class BirthdayControllerTest extends CustomTestCase {
 
     public function testController_Update_WhenSuccessful(): void {
         $birthday_repository = BirthdayRepositoryResolver::resolve();
-        $birthday_repository->create('1', 'Jhon', new \DateTime('1900-01-01'));
+        $birthday_repository->create('1', 'Jhon', Clock::at('1900-01-01'));
 
         $target_bday_uid = $birthday_repository->findByUserUid('1')[0]->uid;
 
@@ -61,7 +62,7 @@ class BirthdayControllerTest extends CustomTestCase {
 
     public function testController_Delete_WhenSuccessful(): void {
         $birthday_repository = BirthdayRepositoryResolver::resolve();
-        $birthday_repository->create('1', 'Jhon', new \DateTime('1900-01-01'));
+        $birthday_repository->create('1', 'Jhon', Clock::at('1900-01-01'));
 
         $target_bday_uid = $birthday_repository->findByUserUid('1')[0]->uid;
 
