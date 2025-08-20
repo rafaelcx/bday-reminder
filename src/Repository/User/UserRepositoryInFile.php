@@ -28,7 +28,7 @@ class UserRepositoryInFile implements UserRepository {
         $new_user = [
             'uid' => uniqid(),
             'name' => $name,
-            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'created_at' => Clock::now()->format('Y-m-d H:i:s'),
         ];
         $user_list[] = $new_user;
 

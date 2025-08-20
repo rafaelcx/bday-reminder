@@ -16,7 +16,7 @@ class UserRepositoryInFileTest extends CustomTestCase {
         $this->user_repository = new UserRepositoryInFile();
     }
 
-    public function testRepository_Create_OnFreshFile(): void {
+    public function testRepository_CreateAndFindAll_OnFreshFile(): void {
         $this->user_repository->create('name_1');
         $this->user_repository->create('name_2');
 

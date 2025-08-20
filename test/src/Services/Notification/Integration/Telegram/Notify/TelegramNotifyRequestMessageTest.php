@@ -42,7 +42,7 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
 
     public function testBuilder_ShouldFormatBirthdayForToday(): void {
         $today = Clock::at('2000-07-20 12:00:00');
-        // $today = new \DateTimeImmutable('today - 25 years');
+        // $today = today - 25 years';
         $birthday = new Birthday(
             uid: 'b1',
             user_uid: $this->test_user->uid,
