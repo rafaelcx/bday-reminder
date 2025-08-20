@@ -38,7 +38,7 @@
                     {% for birthday in birthdays %}
                         <tr>
                             <td>{{ birthday.name|e }}</td>
-                            <td>{{ birthday.date|date('F j, Y') }}</td>
+                            <td>{{ birthday.date.format('F j, Y') }}</td>
                             <td>
                                 <button class="edit-btn" birthday-uid="{{ birthday.uid }}">Edit</button>
 

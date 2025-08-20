@@ -59,8 +59,7 @@ class TelegramNotifyRequestBuilder {
     }
 
     private static function formatBirthdayMessage(User $user, Birthday ...$birthdays): string {
-        // TODO:
-        // Add a method at BirthdayRepository to fetch users with a date filter.
+        // TODO: Add a method at BirthdayRepository to fetch users with a date filter.
         // TelegramNotifier should receive already filtered birthdays from NotificationService
 
         $relevant_birthdays = array_filter($birthdays, self::filterForBirthdaysInTheNext30Days(...));

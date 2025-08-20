@@ -47,8 +47,8 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
             uid: 'b1',
             user_uid: $this->test_user->uid,
             name: 'John Doe',
-            date: new \DateTime($today->format('Y-m-d')),
-            created_at: new \DateTime('2021-01-01')
+            date: Clock::at($today->format('Y-m-d')),
+            created_at: Clock::at('2021-01-01')
         );
 
         $message = TelegramNotifyRequestMessage::build($this->test_user, $birthday);
@@ -71,8 +71,8 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
             uid: 'b2',
             user_uid: $this->test_user->uid,
             name: 'Maria Lopez',
-            date: new \DateTime($dob->format('Y-m-d')),
-            created_at: new \DateTime('2021-01-01')
+            date: Clock::at($dob->format('Y-m-d')),
+            created_at: Clock::at('2021-01-01')
         );
 
         $message = TelegramNotifyRequestMessage::build($this->test_user, $birthday);
@@ -95,8 +95,8 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
             uid: 'b3',
             user_uid: $this->test_user->uid,
             name: 'Carlos',
-            date: new \DateTime($dob->format('Y-m-d')),
-            created_at: new \DateTime('2021-01-01')
+            date: Clock::at($dob->format('Y-m-d')),
+            created_at: Clock::at('2021-01-01')
         );
 
         $message = TelegramNotifyRequestMessage::build($this->test_user, $birthday);
@@ -118,9 +118,9 @@ class TelegramNotifyRequestMessageTest extends CustomTestCase {
         $tomorrow = Clock::now()->plusDays(1)->minusYears(30);
         $in5days = Clock::now()->plusDays(5)->minusYears(35);
 
-        $b1 = new Birthday('1', $this->test_user->uid, 'Ana', new \DateTime($today->format('Y-m-d')), new \DateTime());
-        $b2 = new Birthday('2', $this->test_user->uid, 'Bob', new \DateTime($tomorrow->format('Y-m-d')), new \DateTime());
-        $b3 = new Birthday('3', $this->test_user->uid, 'Clara', new \DateTime($in5days->format('Y-m-d')), new \DateTime());
+        $b1 = new Birthday('1', $this->test_user->uid, 'Ana', Clock::at($today->format('Y-m-d')), Clock::now());
+        $b2 = new Birthday('2', $this->test_user->uid, 'Bob', Clock::at($tomorrow->format('Y-m-d')), Clock::now());
+        $b3 = new Birthday('3', $this->test_user->uid, 'Clara', Clock::at($in5days->format('Y-m-d')), Clock::now());
 
         $message = TelegramNotifyRequestMessage::build($this->test_user, $b1, $b2, $b3);
         $expected_message = <<<TXT
