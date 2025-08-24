@@ -14,6 +14,7 @@ use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestB
 use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyResponseValidator;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesRequestBuilder;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesResponseParser;
+use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
 use App\Services\Notification\NotificationException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -31,18 +32,19 @@ class TelegramNotifier implements Notifier {
         $response = $this->dispatchRequest($request);
         $updates = TelegramGetUpdatesResponseParser::parse($response);
 
-        $this->deleteMessages($updates);
+        $this->deleteMessages(...$updates);
         return $updates;
     }
 
-    private function deleteMessages(array $updates): void {
+    
+    private function deleteMessages(TelegramUpdate ...$updates): void {
         $unique_chats = [];
         foreach ($updates as $update) {
-            $unique_chats[$update->chat_id][] = $update;
+            $unique_chats[$update->user_uid][] = $update;
         }
 
-        foreach ($unique_chats as $chat_id => $messages) {
-            $request = TelegramDeleteMessagesRequestBuilder::build((string) $chat_id, $messages);
+        foreach ($unique_chats as $user_uid => $messages) {
+            $request = TelegramDeleteMessagesRequestBuilder::build($user_uid, $messages);
             $this->dispatchRequest($request);
         }
     }

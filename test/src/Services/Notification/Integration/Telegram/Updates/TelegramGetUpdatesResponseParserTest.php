@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Src\Services\Notification\Integration\Telegram\Updates;
 
+use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesResponseParser;
 use GuzzleHttp\Psr7\Response;
 use Test\CustomTestCase;
@@ -16,7 +17,7 @@ class TelegramGetUpdatesResponseParserTest extends CustomTestCase {
             "result": [
                 {
                     "message": {
-                        "text": "some_text_1",
+                        "text": "name1.01-01-1995",
                         "chat": {
                             "id": "42"
                         },
@@ -25,7 +26,7 @@ class TelegramGetUpdatesResponseParserTest extends CustomTestCase {
                 },
                 {
                     "message": {
-                        "text": "some_text_2",
+                        "text": "name2.30-12-1990",
                         "chat": {
                             "id": "84"
                         },
@@ -36,18 +37,21 @@ class TelegramGetUpdatesResponseParserTest extends CustomTestCase {
         }
         JSON;
 
+        UserConfigRepositoryResolver::resolve()->create('user1Uid', 'telegram-chat-id', '42');
+        UserConfigRepositoryResolver::resolve()->create('user2Uid', 'telegram-chat-id', '84');
+
         $response = new Response(200, [], $response_body);
         $results = TelegramGetUpdatesResponseParser::parse($response);
 
         $this->assertCount(2, $results);
 
-        $this->assertSame('some_text_1', $results[0]->text);
-        $this->assertSame('42', $results[0]->chat_id);
-        $this->assertSame('4242', $results[0]->id);
+        $this->assertSame('name1', $results[0]->birhday_name);
+        $this->assertSame('1995-01-01', $results[0]->birthday_date->asDateString());
+        $this->assertSame('user1Uid', $results[0]->user_uid);
 
-        $this->assertSame('some_text_2', $results[1]->text);
-        $this->assertSame('84', $results[1]->chat_id);
-        $this->assertSame('8484', $results[1]->id);
+        $this->assertSame('name2', $results[1]->birhday_name);
+        $this->assertSame('1990-12-30', $results[1]->birthday_date->asDateString());
+        $this->assertSame('user2Uid', $results[1]->user_uid);
     }
 
     public function testParser_WhenResponseHasNoResults(): void {

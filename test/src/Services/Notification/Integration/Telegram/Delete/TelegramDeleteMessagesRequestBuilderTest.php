@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Services\Notification\Integration\Telegram\Delete;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
+use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Delete\TelegramDeleteMessagesRequestBuilder;
 use Test\CustomTestCase;
 
@@ -22,7 +23,11 @@ class TelegramDeleteMessagesRequestBuilderTest extends CustomTestCase {
             $this->buildMessageObject('2'),
         ];
 
-        $request = TelegramDeleteMessagesRequestBuilder::build($chat_id, $messages);
+        // Mocking valid UserConfig
+        $user_uid = 'user_uid';
+        UserConfigRepositoryResolver::resolve()->create($user_uid, 'telegram-chat-id', '123');
+
+        $request = TelegramDeleteMessagesRequestBuilder::build($user_uid, $messages);
 
         $this->assertSame('GET', $request->getMethod());
 
