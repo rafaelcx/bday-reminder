@@ -54,6 +54,20 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
         throw new UserConfigException($error_msg);
     }
 
+    public function findByNameAndValue(string $name, string $value): UserConfig {
+        $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
+        $file_contents_as_obj = json_decode($file_contents);
+        $persisted_configs = $file_contents_as_obj->user_configs;
+
+        foreach ($persisted_configs as $config) {
+            if ($config->name === $name && $config->value === $value) {
+                return $this->buildConfig($config);
+            }
+        }
+        $error_msg = "Config not found for user with name `{$name}` and value `{$value}`";
+        throw new UserConfigException($error_msg);
+    }
+
     private function buildConfig(\stdClass $config): UserConfig {
         return new UserConfig(
             uid: $config->uid,
