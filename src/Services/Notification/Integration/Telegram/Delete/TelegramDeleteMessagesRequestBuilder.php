@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Services\Notification\Integration\Telegram\Delete;
 
+use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\TelegramCredentials;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
 class TelegramDeleteMessagesRequestBuilder {
 
-    public static function build(string $chat_id, array $messages): RequestInterface {
+    public static function build(string $user_uid, array $messages): RequestInterface {
         $bot_token = TelegramCredentials::getBotToken();
         $message_ids = self::groupMessageIds($messages);
-        $query = self::buildHttpQuery($chat_id, $message_ids);
+        
+        $user_cfg = UserConfigRepositoryResolver::resolve()
+            ->findByUserUidAndName($user_uid, 'telegram-chat-id');
+
+        $query = self::buildHttpQuery($user_cfg->value, $message_ids);
 
         $uri = "https://api.telegram.org/bot{$bot_token}/deleteMessages?{$query}";
 

@@ -10,6 +10,8 @@ use App\Repository\User\User;
 interface Notifier {
 
     public function notify(User $user, Birthday ...$birthday_list): void;
+    
+    /** @return TelegramUpdate[] */
     public function getUpdates(): array;
 
 }
