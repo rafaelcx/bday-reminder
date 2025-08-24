@@ -8,6 +8,8 @@ use App\Repository\Birthday\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
+use App\Repository\UserConfig\UserConfigRepositoryResolver;
+use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
 use App\Services\Notification\NotificationService;
 use App\Utils\Clock;
 use Test\CustomTestCase;
@@ -48,21 +50,48 @@ class NotificationServiceTest extends CustomTestCase {
     }
 
     public function testService_Add_ShouldAddBirthdaysFromAllUsers(): void {
-        $mock_notifier = new NotifierForTests();
+        $user_1 = $this->createAndGetUser('user1');
+        $user_2 = $this->createAndGetUser('user2');
+
+        UserConfigRepositoryResolver::resolve()->create($user_1->uid, 'telegram-chat-id', '1');
+        UserConfigRepositoryResolver::resolve()->create($user_2->uid, 'telegram-chat-id', '2');
+        
+        $update_1 = new TelegramUpdate(
+            id: '1',
+            user_uid: $user_1->uid,
+            birhday_name: 'Name One',
+            birthday_date: Clock::at('1995-11-30')
+        );
+
+        $update_2 = new TelegramUpdate(
+            id: '2',
+            user_uid: $user_2->uid,
+            birhday_name: 'Name Two',
+            birthday_date: Clock::at('2000-01-01')
+        );
 
         // Simulating each fetched update
-        $execution_proof = '';
-        $get_updates_behavior = function() use (&$execution_proof) {
-             $execution_proof = 'Updates Fetched';
-             return [];
-        }; 
+        $get_updates_behavior = fn() => [$update_1, $update_2];
+
+        $mock_notifier = new NotifierForTests();
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
-        
         NotifierResolverForTests::override($mock_notifier);
 
         NotificationService::add();
 
-        $this->assertSame('Updates Fetched', $execution_proof);
+        $user_1_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_1->uid);
+        $user_2_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_2->uid);
+
+        $this->assertCount(1, $user_1_birthdays);
+        $this->assertCount(1, $user_2_birthdays);
+
+        $user_1_birthday = array_pop($user_1_birthdays);
+        $user_2_birthday = array_pop($user_2_birthdays);
+        
+        $this->assertSame('Name One', $user_1_birthday->name);
+        $this->assertSame('Name Two', $user_2_birthday->name);
+        $this->assertSame('1995-11-30', $user_1_birthday->date->asDateString());
+        $this->assertSame('2000-01-01', $user_2_birthday->date->asDateString());
     }
 
     private function createAndGetUser(string $user_name): User {

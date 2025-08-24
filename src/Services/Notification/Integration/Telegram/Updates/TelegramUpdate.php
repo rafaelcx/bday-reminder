@@ -9,6 +9,7 @@ use App\Utils\Clock;
 class TelegramUpdate {
 
     public function __construct(
+        public readonly string $id,
         public readonly string $user_uid,
         public readonly string $birhday_name,
         public readonly Clock $birthday_date,

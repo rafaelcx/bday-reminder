@@ -44,7 +44,7 @@ class TelegramNotifier implements Notifier {
         }
 
         foreach ($unique_chats as $user_uid => $messages) {
-            $request = TelegramDeleteMessagesRequestBuilder::build($user_uid, $messages);
+            $request = TelegramDeleteMessagesRequestBuilder::build((string) $user_uid, $messages);
             $this->dispatchRequest($request);
         }
     }
