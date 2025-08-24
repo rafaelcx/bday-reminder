@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\Notification;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
-use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Notification\Integration\NotifierResolver;
 
@@ -26,7 +25,10 @@ class NotificationService {
     public static function add(): void {
         $updates = NotifierResolver::resolve()->getUpdates();
 
-        // TODO: Create birthday records from updates
+        foreach ($updates as $update) {
+            BirthdayRepositoryResolver::resolve()
+                ->create($update->user_uid, $update->birhday_name, $update->birthday_date);
+        }
     }
 
 }

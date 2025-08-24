@@ -32,11 +32,16 @@ class TelegramGetUpdatesResponseParser {
     private static function buildUpdate(stdClass $result): TelegramUpdate {
         $user_cfg_name = 'telegram-chat-id';
         $user_cfg = UserConfigRepositoryResolver::resolve()
-            ->findByNameAndValue($user_cfg_name, $result->message->chat->id);
+            ->findByNameAndValue($user_cfg_name, (string) $result->message->chat->id);
 
         [$bday_name, $bday_date] = explode('.', $result->message->text);
 
-        return new TelegramUpdate($user_cfg->user_uid, $bday_name, Clock::at($bday_date));
+        return new TelegramUpdate(
+            (string) $result->message->message_id,
+            $user_cfg->user_uid,
+            $bday_name,
+            Clock::at($bday_date)
+        );
     }
 
 }
