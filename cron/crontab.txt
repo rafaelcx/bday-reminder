@@ -1,2 +1,5 @@
 # Run notify script every day at 10:00 UTC
 0 10 * * * /usr/local/bin/php /app/bin/notify_users.php >> /var/log/cron.log 2>&1
+
+# Run add script every 10 minutes
+*/10 * * * * /usr/local/bin/php /app/bin/update_birthdays.php >> /var/log/cron.log 2>&1

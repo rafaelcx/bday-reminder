@@ -11,10 +11,10 @@ use App\Services\Notification\NotificationService;
 
 ProcessLogContext::append('process_type', 'cron');
 ProcessLogContext::append('process_id', uniqid());
-ProcessLogContext::append('cron_job', 'notify_users');
+ProcessLogContext::append('cron_job', 'update_birthdays');
 
 // TODO: Put logging inside a shutdown handler
-NotificationService::notify();
+NotificationService::add();
 
 $message = 'Process Finished';
 $process_context = ProcessLogContext::getAll();
