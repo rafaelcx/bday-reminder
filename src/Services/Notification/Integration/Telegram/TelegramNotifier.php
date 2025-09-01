@@ -32,6 +32,21 @@ class TelegramNotifier implements Notifier {
         $response = $this->dispatchRequest($request);
         $updates = TelegramGetUpdatesResponseParser::parse($response);
 
+        /*
+         * Fetching the higher update_id among all updates and performing another getUpdate call
+         * passing it as an offset. This will mark the perviously fetched udpates as `checked`, so
+         * they are not returning in a next query attempt.
+         */
+        if (!empty($updates)) {
+            $higher_offset = max(array_map(fn($update) => $update->id, $updates)) + 1;
+            $request = TelegramGetUpdatesRequestBuilder::build((string) $higher_offset);
+            $this->dispatchRequest($request);
+        }
+
+        /*
+         * Deleting messages on the chat to avoid clutter, that way we end up with only the
+         * birthday notifications.
+         */
         $this->deleteMessages(...$updates);
         return $updates;
     }

@@ -89,11 +89,58 @@ class TelegramNotifierTest extends CustomTestCase {
         $notifier->notify($user, ...$bdays);
     }
 
-    public function testNotifier_GetUpdates(): void {
+    public function testNotifier_GetUpdates_WhenThereIsNoUpdates(): void {
         $this->mockValidCredentials();
 
         $mock_handler = new MockHandler();
         $mock_handler->append(new Response(200, [], '{"result": []}')); // Mock valid get update response
+        $mock_handler->append(new Response(200, [], '{"ok": true}')); // Mock valid delete message response
+        HttpClientForTests::overrideHandler($mock_handler);
+
+        $notifier = new TelegramNotifier();
+        $notifier->getUpdates();
+
+        $last_sent_request = $mock_handler->getLastRequest();
+        $this->assertNotNull($last_sent_request);
+    }
+
+    public function testNotifier_GetUpdates_WhenThereAreUpdates(): void {
+        $user = $this->createAndGetUser('user1');
+
+        $this->mockValidCredentials();
+        $this->mockValidUserConfigs($user);
+
+        $mock_handler = new MockHandler();
+
+        $get_update_response_body = <<<JSON
+        {
+            "result": [
+                {
+                    "update_id": 42,
+                    "message": {
+                        "text": "name1.01-01-1995",
+                        "chat": {
+                            "id": 42
+                        },
+                        "message_id": 42
+                    }
+                },
+                {
+                    "update_id": 84,
+                    "message": {
+                        "text": "name2.30-12-1990",
+                        "chat": {
+                            "id": 42
+                        },
+                        "message_id": 84
+                    }
+                }
+            ]
+        }
+        JSON;
+
+        $mock_handler->append(new Response(200, [], $get_update_response_body)); // Mock first valid get update response
+        $mock_handler->append(new Response(200, [], '{"result": []}')); // Mock second valid get update response
         $mock_handler->append(new Response(200, [], '{"ok": true}')); // Mock valid delete message response
         HttpClientForTests::overrideHandler($mock_handler);
 
@@ -127,7 +174,7 @@ class TelegramNotifierTest extends CustomTestCase {
 
     private function mockValidUserConfigs(User $user): void {
         $user_config_name = 'telegram-chat-id';
-        $user_config_value = 'value';
+        $user_config_value = '42';
         UserConfigRepositoryResolver::resolve()->create($user->uid, $user_config_name, $user_config_value);
     }
 

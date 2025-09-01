@@ -58,6 +58,7 @@ class NotificationServiceTest extends CustomTestCase {
         
         $update_1 = new TelegramUpdate(
             id: '1',
+            message_id: '10',
             user_uid: $user_1->uid,
             birhday_name: 'Name One',
             birthday_date: Clock::at('1995-11-30')
@@ -65,6 +66,7 @@ class NotificationServiceTest extends CustomTestCase {
 
         $update_2 = new TelegramUpdate(
             id: '2',
+            message_id: '20',
             user_uid: $user_2->uid,
             birhday_name: 'Name Two',
             birthday_date: Clock::at('2000-01-01')

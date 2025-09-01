@@ -23,7 +23,8 @@ class NotificationService {
     }
 
     public static function add(): void {
-        $updates = NotifierResolver::resolve()->getUpdates();
+        $updates = NotifierResolver::resolve()
+            ->getUpdates();
 
         foreach ($updates as $update) {
             BirthdayRepositoryResolver::resolve()
