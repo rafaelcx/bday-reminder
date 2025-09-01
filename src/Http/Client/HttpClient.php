@@ -50,7 +50,9 @@ class HttpClient {
 
     private function performHttpLogs(RequestInterface $rq, ?ResponseInterface $rs, StopWatch $sw): void {
         $sw->stop();
-        
+
+        // TODO: When multiple external requests happen on the same process, log all of them
+
         ProcessLogContext::append('external_request.method', $rq->getMethod());
         ProcessLogContext::append('external_request.target_url', (string) $rq->getUri());
         ProcessLogContext::append('external_request.elapsed_time_in_msec', (string) $sw->getTime());

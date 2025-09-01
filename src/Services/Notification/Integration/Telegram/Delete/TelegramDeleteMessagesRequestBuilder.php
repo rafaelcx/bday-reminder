@@ -28,7 +28,7 @@ class TelegramDeleteMessagesRequestBuilder {
     private static function groupMessageIds(array $messages): array {
         $message_ids = [];
         foreach ($messages as $message) {
-            $message_ids[] = $message->id;
+            $message_ids[] = $message->message_id;
         }
         return $message_ids;
     }

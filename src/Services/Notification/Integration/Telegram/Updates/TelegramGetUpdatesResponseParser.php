@@ -37,6 +37,7 @@ class TelegramGetUpdatesResponseParser {
         [$bday_name, $bday_date] = explode('.', $result->message->text);
 
         return new TelegramUpdate(
+            (string) $result->update_id,
             (string) $result->message->message_id,
             $user_cfg->user_uid,
             $bday_name,

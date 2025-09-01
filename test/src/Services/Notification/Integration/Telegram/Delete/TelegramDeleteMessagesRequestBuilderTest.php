@@ -43,7 +43,7 @@ class TelegramDeleteMessagesRequestBuilderTest extends CustomTestCase {
 
     private function buildMessageObject(string $id): \stdClass {
         $msg = new \stdClass();
-        $msg->id = $id;
+        $msg->message_id = $id;
         return $msg;
     }
 
