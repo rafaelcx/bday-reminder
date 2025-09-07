@@ -29,10 +29,10 @@ RUN chmod 0644 /etc/cron.d/birthday-cron && crontab /etc/cron.d/birthday-cron
 RUN touch /var/log/cron.log
 
 # Ensure startup script is executable
-RUN chmod +x bin/start.sh
+RUN chmod +x bin/docker-entrypoint.sh
 
 # Expose HTTP port
 EXPOSE 8000
 
 # Start both PHP server and cron
-CMD [ "sh", "bin/start.sh" ]
+CMD [ "sh", "bin/docker-entrypoint.sh" ]
