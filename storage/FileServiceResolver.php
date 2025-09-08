@@ -13,8 +13,8 @@ class FileServiceResolver {
     }
 
     private static function createInstance(): FileService {
-        $file_location = __DIR__ . '/Files/'; 
-        return new FileServiceDefault($file_location);
+        $files_location = __DIR__ . '/Files/';
+        return new FileServiceDefault($files_location);
     }
 
 }

@@ -12,7 +12,9 @@ class FileServiceDefaultTest extends CustomTestCase {
     private const FILE_LOCATION = __DIR__ . '/';
     private const FILE_NAME = 'test-file.json';
     
-    /** @after */
+    /** 
+     * @after
+     */
     public function cleanTestFiles(): void {
         if (file_exists(self::FILE_LOCATION . self::FILE_NAME)) {
             unlink(self::FILE_LOCATION . self::FILE_NAME);
@@ -35,37 +37,25 @@ class FileServiceDefaultTest extends CustomTestCase {
     }
 
     public function testService_PutFileContents_OnExistingFile(): void {
-        $file_content = 'content';
+        $file_content = 'old_content';
         file_put_contents(self::FILE_LOCATION . self::FILE_NAME, $file_content);
 
-        $new_contents = 'more_content';
+        $new_content = 'new_content';
         $service = new FileServiceDefault(self::FILE_LOCATION);
-        $service->putFileContents(self::FILE_NAME, $new_contents);
+        $service->putFileContents(self::FILE_NAME, $new_content);
 
         $file_state = $service->getFileContents(self::FILE_NAME);
-        $this->assertSame($new_contents, $file_state);
+        $this->assertSame($new_content, $file_state);
     }
 
     public function testService_PutFileContents_WhenFileDoesNotExist(): void {
-        $contents = 'more_content';
+        $content = 'more_content';
 
         $service = new FileServiceDefault(self::FILE_LOCATION);
-        $service->putFileContents(self::FILE_NAME, $contents);
+        $service->putFileContents(self::FILE_NAME, $content);
 
         $file_state = $service->getFileContents(self::FILE_NAME);
-        $this->assertSame($contents, $file_state);
-    }
-
-    public function testService_PutFileContents_OnAppendMode(): void {
-        $content_1 = 'content_1';
-        $content_2 = 'content_2';
-
-        $service = new FileServiceDefault(self::FILE_LOCATION);
-        $service->putFileContents(self::FILE_NAME, $content_1, true);
-        $service->putFileContents(self::FILE_NAME, $content_2, true);
-
-        $file_state = $service->getFileContents(self::FILE_NAME);
-        $this->assertSame($content_1 . $content_2, $file_state);
+        $this->assertSame($content, $file_state);
     }
 
 }

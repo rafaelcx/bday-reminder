@@ -16,7 +16,7 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
 
     public function __construct() {
         $this->file_service = FileServiceResolver::resolve();
-        $this->ensureFileStructure();
+        $this->ensureFileSchema();
     }
 
     public function create(string $user_uid, string $name, string $value): void {
@@ -36,7 +36,7 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
         $config_list[] = $new_config;
 
         $file_contents_as_obj->user_configs = $config_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -79,7 +79,7 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
         );
     }
 
-    private function ensureFileStructure(): void {
+    private function ensureFileSchema(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {
             return;
