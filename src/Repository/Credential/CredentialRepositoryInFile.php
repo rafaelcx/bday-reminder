@@ -16,7 +16,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
 
     public function __construct() {
         $this->file_service = FileServiceResolver::resolve();
-        $this->ensureFileStructure();
+        $this->ensureFileSchema();
     }
 
     public function create(string $id, string $data): void {
@@ -33,7 +33,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         $credential_list[] = $new_credential;
 
         $file_contents_as_obj->credentials = $credential_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -42,7 +42,6 @@ class CredentialRepositoryInFile implements CredentialRepository {
         $file_contents_as_obj = json_decode($file_contents);
         $persisted_credentials = $file_contents_as_obj->credentials;
 
-        
         foreach ($persisted_credentials as $credential) {
             if ($credential->id === $id) {
                 return $this->buildCredential($credential);
@@ -59,7 +58,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         );
     }
 
-    private function ensureFileStructure(): void {
+    private function ensureFileSchema(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {
             return;

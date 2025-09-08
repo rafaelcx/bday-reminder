@@ -16,7 +16,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
 
     public function __construct() {
         $this->file_service = FileServiceResolver::resolve();
-        $this->ensureFileStructure();
+        $this->ensureFileSchema();
     }
 
     public function create(string $user_uid, string $name, Clock $date): void {
@@ -35,35 +35,29 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         $birthday_list[] = $new_birthday;
 
         $file_contents_as_obj->birthdays = $birthday_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
     public function findByUserUid(string $user_uid): array {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
-
-        if (empty($file_contents)) {
-            return [];
-        }
-
         $file_contents_as_obj = json_decode($file_contents);
-        $all_persisted_birthdays = $file_contents_as_obj->birthdays;
 
-        $fn = function (\stdClass $birthday) use ($user_uid) {
-            return $birthday->user_uid === $user_uid;
-        };
-        $filtered_birthdays = array_filter($all_persisted_birthdays, $fn);
+        $birthday_list = $file_contents_as_obj->birthdays;
 
-        $fn = function(\stdClass $birthday) {
-            return new Birthday(
-                $birthday->uid, 
-                $birthday->user_uid, 
+        $fn = fn(\stdClass $birthday) => $birthday->user_uid === $user_uid;
+        $filtered_birthdays = array_filter($birthday_list, $fn);
+
+        $birthday_list = [];
+        foreach ($filtered_birthdays as $birthday) {
+            $birthday_list[] = new Birthday($birthday->uid,
+                $birthday->user_uid,
                 $birthday->name,
                 Clock::at($birthday->date),
                 Clock::at($birthday->created_at)
             );
-        };
-        return array_map($fn, $filtered_birthdays);
+        }
+        return $birthday_list;
     }
 
     public function update(string $birthday_uid, string $name, Clock $date): void {
@@ -80,7 +74,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         }
 
         $file_contents_as_obj->birthdays = $all_persisted_birthdays;
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -96,14 +90,14 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
             }
         }
 
-        // Reindex the array to avoid numeric keys in the updated JSON
+        // Reindex the array to avoid strange numeric keys in the updated JSON
         $file_contents_as_obj->birthdays = array_values($all_persisted_birthdays);
         
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
-    private function ensureFileStructure(): void {
+    private function ensureFileSchema(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {
             return;

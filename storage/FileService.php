@@ -20,10 +20,9 @@ interface FileService {
      * 
      * @param string $file_name The name of the file, with extentions.
      * @param string $file_contents The content to write to the file.
-     * @param bool $append_mode Change the behavior to append content to the file instead of overwriting
      *
      * @return void
      */
-    public function putFileContents(string $file_name, string $file_contents, bool $append_mode = false): void;
+    public function putFileContents(string $file_name, string $file_contents): void;
 
 }

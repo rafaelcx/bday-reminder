@@ -16,7 +16,7 @@ class UserRepositoryInFile implements UserRepository {
 
     public function __construct() {
         $this->file_service = FileServiceResolver::resolve();
-        $this->ensureFileStructure();
+        $this->ensureFileSchema();
     }
 
     public function create(string $name): void {
@@ -33,7 +33,7 @@ class UserRepositoryInFile implements UserRepository {
         $user_list[] = $new_user;
 
         $file_contents_as_obj->users = $user_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj);
+        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -42,13 +42,11 @@ class UserRepositoryInFile implements UserRepository {
         $file_contents_as_obj = json_decode($file_contents);
         $persisted_users = $file_contents_as_obj->users;
 
-        $fn = function(\stdClass $user) {
-            return new User($user->uid, $user->name, Clock::at($user->created_at));
-        };
+        $fn = fn(\stdClass $user) => new User($user->uid, $user->name, Clock::at($user->created_at));
         return array_map($fn, $persisted_users);
     }
 
-    private function ensureFileStructure(): void {
+    private function ensureFileSchema(): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
         if (!empty($file_contents)) {
             return;
