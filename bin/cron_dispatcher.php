@@ -1,5 +1,4 @@
 #!/usr/bin/env php
-
 <?php
 
 declare(strict_types=1);
@@ -14,7 +13,7 @@ $task_name = $argv[1];
 
 ProcessLogContext::append('process_type', 'cron');
 ProcessLogContext::append('process_id', uniqid());
-ProcessLogContext::append('cron_job', $ask_name);
+ProcessLogContext::append('cron_job', $task_name);
 
 match ($task_name) {
     'notify'           => NotificationService::notify(),
