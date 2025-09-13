@@ -1,5 +1,5 @@
 # Run notify script every day at 10:00 UTC
-0 10 * * * /usr/local/bin/php /app/bin/cron_dispatcher.php notify >> /var/log/cron.log 2>&1
+0 10 * * * /usr/local/bin/php /app/cron/cron_dispatcher.php notify >> /var/log/cron.log 2>&1
 
-# Run add script every 10 minutes
-*/5 * * * * /usr/local/bin/php /app/bin/cron_dispatcher.php update_birthdays >> /var/log/cron.log 2>&1
+# Run add script every 5 minutes
+*/5 * * * * /usr/local/bin/php /app/cron/cron_dispatcher.php update_birthdays >> /var/log/cron.log 2>&1
