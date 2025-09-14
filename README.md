@@ -17,14 +17,17 @@ This will build the container, install all necessary dependencies, and start a P
 
 [http://localhost:8000/](http://localhost:8000/)
 
-It will not start the cron service tough. To enable cron for testing purposes you can set the proper env var at the `.env` file.
+It will not start the cron service tough. To enable cron for testing purposes or your productive environment you can set the proper env var at the `.env` file.
 
 ## Storage
 
-This project uses json files as persistent storage. Files are stored at `storage/Files`. For local testing you will probably have to set then up. There are versioned sample files under the `/storage/Files/Templates` namespace, so you can simply run:
+This project uses json files as persistent storage. Files are stored at `storage/Files`. For local testing you will need to set then up. 
+
+There are versioned sample files under the `/storage/Files/Templates` namespace, to copy then to
+a working directory and seed them with arbitrary values you can run:
 
 ```
-for f in storage/Files/Templates/*; do cp "$f" storage/Files/; done
+docker exec -it bday-reminder-bday-reminder-1 php /app/bin/storage-seed.php
 ```
 
 ## Tests
