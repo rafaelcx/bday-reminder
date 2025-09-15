@@ -32,7 +32,7 @@ class LogMiddlewareTest extends CustomTestCase {
         $request = $this->createFakeRequest();
         $request_handler = $this->createFakeRequestHandler();
 
-        ProcessLogContext::append('key', 'value');
+        ProcessLogContext::set('key', 'value');
 
         (new LogMiddleware())->process($request, $request_handler);
         
