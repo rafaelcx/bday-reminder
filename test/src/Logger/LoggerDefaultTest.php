@@ -6,6 +6,7 @@ namespace Test\Src\Logger;
 
 use App\Logger\LoggerDefault;
 use App\Storage\FileServiceResolver;
+use App\Utils\Clock;
 use Psr\Log\LogLevel;
 use Test\CustomTestCase;
 
@@ -41,8 +42,8 @@ class LoggerDefaultTest extends CustomTestCase {
     }
 
     public function testLogger_ShouldAppend(): void {
-        (new LoggerDefault(self::FILE_NAME))->log(LogLevel::ALERT, 'message1', []);
-        (new LoggerDefault(self::FILE_NAME))->log(LogLevel::ALERT, 'message2', []);
+        new LoggerDefault(self::FILE_NAME)->log(LogLevel::ALERT, 'message1', []);
+        new LoggerDefault(self::FILE_NAME)->log(LogLevel::ALERT, 'message2', []);
 
         $logged_content = FileServiceResolver::resolve()->getFileContents(self::FILE_NAME);
         $logged_content = json_decode($logged_content);
@@ -54,6 +55,33 @@ class LoggerDefaultTest extends CustomTestCase {
 
         $this->assertBaseLogData('message1', LogLevel::ALERT, $log_1);
         $this->assertBaseLogData('message2', LogLevel::ALERT, $log_2);
+    }
+
+    public function testLogger_CleanLogFile(): void {
+        Clock::freeze('2025-09-13 12:00:00');
+
+        $logs = json_encode([
+            [
+                'timestamp' => '2025-08-01 10:00:00', // 43 days old → should be deleted
+                'level' => 'info',
+                'message' => 'Old log entry',
+            ],
+            [
+                'timestamp' => '2025-09-10 15:00:00', // 3 days old → should remain
+                'level' => 'info',
+                'message' => 'Recent log entry',
+            ],
+        ]);
+
+        FileServiceResolver::resolve()->putFileContents(self::FILE_NAME, $logs);
+
+        new LoggerDefault(self::FILE_NAME)->cleanLogFile();
+
+        $updated_contents = FileServiceResolver::resolve()->getFileContents(self::FILE_NAME);
+        $updated_logs = json_decode($updated_contents, true);
+
+        $this->assertCount(1, $updated_logs);
+        $this->assertSame('Recent log entry', $updated_logs[0]['message']);
     }
 
     private function assertBaseLogData(string $message, string $log_level, \stdClass $logged_content): void {
