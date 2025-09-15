@@ -44,7 +44,7 @@ class HttpClient {
     }
 
     private function handleHttpError(\Throwable $e): never {
-        ProcessLogContext::append('external_request.error', $e->getMessage());
+        ProcessLogContext::set('external_request.error', $e->getMessage());
         throw new HttpClientException("External HTTP request failed: {$e->getMessage()}");
     }
 
@@ -53,12 +53,12 @@ class HttpClient {
 
         // TODO: When multiple external requests happen on the same process, log all of them
 
-        ProcessLogContext::append('external_request.method', $rq->getMethod());
-        ProcessLogContext::append('external_request.target_url', (string) $rq->getUri());
-        ProcessLogContext::append('external_request.elapsed_time_in_msec', (string) $sw->getTime());
+        ProcessLogContext::set('external_request.method', $rq->getMethod());
+        ProcessLogContext::set('external_request.target_url', (string) $rq->getUri());
+        ProcessLogContext::set('external_request.elapsed_time_in_msec', (string) $sw->getTime());
 
         if (!is_null($rs)) {
-            ProcessLogContext::append('external_request.response.status_code', (string) $rs->getStatusCode());
+            ProcessLogContext::set('external_request.response.status_code', (string) $rs->getStatusCode());
         }
     }
 

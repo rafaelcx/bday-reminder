@@ -27,11 +27,11 @@ class ErrorHandler implements ErrorHandlerInterface {
     }
 
     private function performShutdownLogs(ResponseInterface $response, \Throwable $t): void {
-        ProcessLogContext::append('http_response_status', (string) $response->getStatusCode());
-        ProcessLogContext::append('exception_message', $t->getMessage());
-        ProcessLogContext::append('exception_file', $t->getFile());
-        ProcessLogContext::append('exception_line', (string) $t->getLine());
-        ProcessLogContext::append('exception_trace', $t->getTraceAsString());
+        ProcessLogContext::set('http_response_status', (string) $response->getStatusCode());
+        ProcessLogContext::set('exception_message', $t->getMessage());
+        ProcessLogContext::set('exception_file', $t->getFile());
+        ProcessLogContext::set('exception_line', (string) $t->getLine());
+        ProcessLogContext::set('exception_trace', $t->getTraceAsString());
     }
 
     private function flushLogs(): void {
