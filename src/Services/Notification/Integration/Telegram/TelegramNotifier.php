@@ -38,7 +38,7 @@ class TelegramNotifier implements Notifier {
          * they are not returning in a next query attempt.
          */
         if (!empty($updates)) {
-            $higher_offset = max(array_map(fn($update) => $update->id, $updates)) + 1;
+            $higher_offset = (int) max(array_map(fn($update) => $update->id, $updates)) + 1;
             $request = TelegramGetUpdatesRequestBuilder::build((string) $higher_offset);
             $this->dispatchRequest($request);
         }

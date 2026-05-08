@@ -33,7 +33,7 @@ class CredentialRepositoryInFileTest extends CustomTestCase {
 
         $this->assertSame('id_2', $credential_2->id);
         $this->assertSame('data_2', $credential_2->data);
-        $this->assertNotNull('2025-01-01 12:00:00', $credential_2->created_at->asDateTimeString());
+        $this->assertSame('2025-01-01 12:00:00', $credential_2->created_at->asDateTimeString());
     }
 
     public function testRepository_FindById_WhenCredentialsDoesNotExist(): void {

@@ -15,7 +15,7 @@ class TelegramNotifyResponseValidatorTest extends CustomTestCase {
     public function testValidator_WhenSuccess(): void {
         $test_response = $this->buildHttpResponse('{"ok": true}');
         TelegramNotifyResponseValidator::validate($test_response);
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
     }
 
     public function testValidator_WhenMalformedResponse(): void {
