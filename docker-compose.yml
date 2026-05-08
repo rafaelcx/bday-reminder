@@ -1,6 +1,7 @@
 services:
 
   bday-reminder:
+    container_name: bday-reminder
     build:
       context: .
       dockerfile: Dockerfile

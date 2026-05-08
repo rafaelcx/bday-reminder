@@ -27,7 +27,7 @@ There are versioned sample files under the `/storage/Files/Templates` namespace,
 a working directory and seed them with arbitrary values you can run:
 
 ```
-docker exec -it bday-reminder-bday-reminder-1 php /app/bin/storage-seed.php
+docker compose exec bday-reminder php /app/bin/storage-seed.php
 ```
 
 ## Tests
@@ -35,5 +35,5 @@ docker exec -it bday-reminder-bday-reminder-1 php /app/bin/storage-seed.php
 To run the PHPUnit tests for the app, run the following command:
 
 ```
-docker compose exec bday-reminder ./vendor/bin/phpunit
+docker compose exec bday-reminder vendor/bin/phpunit
 ```

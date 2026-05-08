@@ -5,7 +5,7 @@
 
 set -e
 
-CONTAINER="bday-reminder-bday-reminder-1"
+CONTAINER="bday-reminder"
 
 echo "Running PHPUnit..."
 docker exec -i "$CONTAINER" vendor/bin/phpunit test
