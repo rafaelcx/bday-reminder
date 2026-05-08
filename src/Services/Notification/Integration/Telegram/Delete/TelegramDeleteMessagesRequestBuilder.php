@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace App\Services\Notification\Integration\Telegram\Delete;
 
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
+use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
 use App\Services\Notification\Integration\Telegram\TelegramCredentials;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
 class TelegramDeleteMessagesRequestBuilder {
 
+    /**
+     * @param TelegramUpdate[] $messages
+     */
     public static function build(string $user_uid, array $messages): RequestInterface {
         $bot_token = TelegramCredentials::getBotToken();
         $message_ids = self::groupMessageIds($messages);
@@ -25,6 +29,10 @@ class TelegramDeleteMessagesRequestBuilder {
         return new Request('GET', $uri);
     }
 
+    /**
+     * @param TelegramUpdate[] $messages
+     * @return string[]
+     */
     private static function groupMessageIds(array $messages): array {
         $message_ids = [];
         foreach ($messages as $message) {
@@ -33,6 +41,9 @@ class TelegramDeleteMessagesRequestBuilder {
         return $message_ids;
     }
 
+    /**
+     * @param string[] $message_ids
+     */
     private static function buildHttpQuery(string $chat_id, array $message_ids): string {
          return http_build_query([
             'chat_id'     => $chat_id,

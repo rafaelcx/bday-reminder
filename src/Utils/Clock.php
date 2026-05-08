@@ -8,7 +8,7 @@ use DateInterval;
 
 class Clock {
 
-    private const DEFAULT_TIME_ZONE = 'UTC';
+    private const string DEFAULT_TIME_ZONE = 'UTC';
 
     private static ?\DateTimeImmutable $freeze = null;
     

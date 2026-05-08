@@ -6,7 +6,7 @@ namespace App\Logger;
 
 class ProcessLogContext {
 
-    protected static $context = [];
+    protected static mixed $context = [];
 
     public static function set(string $key, string $value): void {
         if (!isset(self::$context[$key])) {
@@ -23,6 +23,9 @@ class ProcessLogContext {
         self::$context[$key . '.' . $i] = $value;
     }
 
+    /**
+     * @return mixed[]
+     */
     public static function getAll(): array {
         return self::$context;
     }

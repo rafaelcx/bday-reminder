@@ -13,8 +13,11 @@ use Test\CustomTestCase;
 
 class LoggerDefaultTest extends CustomTestCase {
 
-    private const FILE_NAME = 'test-log-file.json';
+    private const string FILE_NAME = 'test-log-file.json';
 
+    /**
+     * @return iterable<array{\Closure, string}>
+     */
     public static function provideLogExecutionFunction(): iterable {
         yield [fn($message, $context) => (new LoggerDefault(self::FILE_NAME))->alert($message, $context), LogLevel::ALERT];
         yield [fn($message, $context) => (new LoggerDefault(self::FILE_NAME))->critical($message, $context), LogLevel::CRITICAL];

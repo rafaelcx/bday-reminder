@@ -10,7 +10,7 @@ use App\Utils\Clock;
 
 class CredentialRepositoryInFile implements CredentialRepository {
 
-    private const FILE_NAME = 'credential-file.json';
+    private const string FILE_NAME = 'credential-file.json';
 
     private FileService $file_service;
 

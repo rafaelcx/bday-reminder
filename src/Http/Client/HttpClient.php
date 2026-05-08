@@ -36,6 +36,9 @@ class HttpClient {
         }
     }
 
+    /**
+     * @return mixed[]
+     */
     private function buildConfigs(): array {
         return [
             'timeout' => 10.0,

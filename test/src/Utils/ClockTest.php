@@ -26,6 +26,9 @@ class ClockTest extends CustomTestCase {
         $this->assertSame('2025-01-01 12:00:00', $clock->asDateTimeString());
     }   
 
+    /**
+     * @return iterable<array{string, string}>
+     */
     public static function provideClockFormatsForTests(): iterable {
         yield ['m/d', '01/01'];
         yield ['Y', '2025'];
