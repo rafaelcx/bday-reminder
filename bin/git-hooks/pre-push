@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# To enable this git pre-push hook you can run the following command on your terminal:
+# To enable this git pre-push hook you can run:
 # git config core.hooksPath bin/git-hooks
 
 set -e
@@ -13,14 +13,22 @@ echo
 
 echo "Finding modified PHP files..."
 
-PHP_FILES=$(git diff --name-only --diff-filter=AM @{upstream}...HEAD | grep '\.php$' || true)
+if git rev-parse --abbrev-ref @{upstream} >/dev/null 2>&1; then
+    DIFF_TARGET="@{upstream}"
+else
+    DIFF_TARGET="origin/master"
+fi
+
+PHP_FILES=$(git diff --name-only --diff-filter=AM "$DIFF_TARGET"...HEAD | grep '\.php$' || true)
 
 if [ -n "$PHP_FILES" ]; then
     echo "Running PHPStan on modified PHP files..."
     echo
-    
+
     docker exec -i "$CONTAINER" \
         vendor/bin/phpstan analyse --ansi --level max $PHP_FILES
+
+    echo
 else
     echo "No modified PHP files to analyse."
     echo
