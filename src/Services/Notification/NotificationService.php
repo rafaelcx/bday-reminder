@@ -15,7 +15,7 @@ class NotificationService {
         
         foreach ($user_list as $user) {
             $user_birthday_list = BirthdayRepositoryResolver::resolve()
-                ->findByUserUid($user->uid);
+                ->findByUserUidInTheNextDays($user->uid, 30);
 
             NotifierResolver::resolve()
                 ->notify($user, ...$user_birthday_list);
