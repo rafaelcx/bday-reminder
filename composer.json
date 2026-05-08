@@ -1,6 +1,6 @@
 {
     "name": "rafaelcx/bday-reminder",
-    "description": "This is a simple tool designed to help remember birthdays by automatically adding them as recurring events in Google Calendar.",
+    "description": "This is a simple tool designed to help remember birthdays by automatically adding them as recurring events somewhere else.",
     "authors": [
         {
             "name": "Rafael Garcia",
@@ -15,7 +15,7 @@
         "slim/twig-view": "^3.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^12",
+        "phpunit/phpunit": "^13",
         "phpstan/phpstan": "^2.1"
     },
     "autoload": {
