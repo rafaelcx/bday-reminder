@@ -7,6 +7,7 @@ namespace Test\Src\Logger;
 use App\Logger\LoggerDefault;
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Test\CustomTestCase;
 
@@ -25,9 +26,7 @@ class LoggerDefaultTest extends CustomTestCase {
         yield [fn($message, $context) => (new LoggerDefault(self::FILE_NAME))->warning($message, $context), LogLevel::WARNING];
     }
 
-    /** 
-     * @dataProvider provideLogExecutionFunction 
-     */
+    #[DataProvider('provideLogExecutionFunction')]
     public function testLogger(callable $log_function, string $expected_level): void {
         $message = 'message';
         $context = ['context_key' => 'context_value'];
