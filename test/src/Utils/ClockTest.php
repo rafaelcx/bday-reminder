@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Utils;
 
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Test\CustomTestCase;
 
 class ClockTest extends CustomTestCase {
@@ -31,7 +32,7 @@ class ClockTest extends CustomTestCase {
         yield ['d', '01'];
     }
     
-    /** @dataProvider provideClockFormatsForTests */
+    #[DataProvider('provideClockFormatsForTests')]
     public function testClock_Format(string $format, string $expected_str): void {
         $this->assertSame($expected_str, Clock::now()->format($format));
     }
