@@ -21,7 +21,7 @@ class TelegramNotifyRequestBuilder {
         $chat_id = self::resolveChatIdFromUserUid($user->uid);
         $message = self::formatBirthdayMessage($user, ...$birthdays);
 
-        if ($chat_id === null) {
+        if (empty($chat_id)) {
             throw new NotificationException('No Telegram chat ID found for user ' . $user->uid);
         }
 
@@ -84,16 +84,15 @@ class TelegramNotifyRequestBuilder {
             ? Clock::at($b->date->format('m/d'))->plusYears(1)
             : Clock::at($b->date->format('m/d'));
 
-        return true
-            && $next_birthday_as_ydm->isAfter($today_as_ymd) 
+        return $next_birthday_as_ydm->isAfter($today_as_ymd) 
             && $next_birthday_as_ydm->isBefore($today_as_ymd->plusDays(31));
     }
 
     private static function sortBirthdays(Birthday $b1, Birthday $b2): int {
         $today = Clock::at(Clock::now()->format('Y-m-d'));
 
-        $next_b1 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b1->date->format('m'), $b1->date->format('d')), 'Y-m-d');
-        $next_b2 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b2->date->format('m'), $b2->date->format('d')), 'Y-m-d');
+        $next_b1 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b1->date->format('m'), $b1->date->format('d')));
+        $next_b2 = Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b2->date->format('m'), $b2->date->format('d')));
 
         if ($next_b1->getTimestamp() < $today->getTimestamp()) {
             $next_b1 = $next_b1->plusYears(1);
