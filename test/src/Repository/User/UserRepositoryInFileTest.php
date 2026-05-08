@@ -6,18 +6,19 @@ namespace Test\Src\Repository\User;
 
 use App\Repository\User\UserRepositoryInFile;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 
 class UserRepositoryInFileTest extends CustomTestCase {
 
     private UserRepositoryInFile $user_repository;
 
-    /** @before */
+    #[Before]
     public function prepareUserRepositoryForTests(): void {
         $this->user_repository = new UserRepositoryInFile();
     }
 
-    /** @before */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-01-01 12:00:00');
     }

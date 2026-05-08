@@ -8,18 +8,19 @@ use App\Repository\Birthday\Birthday;
 use App\Repository\User\User;
 use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestMessage;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 
 class TelegramNotifyRequestMessageTest extends CustomTestCase {
     
     private User $test_user;
 
-    /** @before */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-07-20 12:00:00');
     }
 
-    /** @before */
+    #[Before]
     protected function setUpUserForTests(): void {
         $this->test_user = new User(
             uid: 'user-123',

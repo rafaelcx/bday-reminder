@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Storage;
 
 use App\Storage\FileServiceDefault;
+use PHPUnit\Framework\Attributes\After;
 use Test\CustomTestCase;
 
 class FileServiceDefaultTest extends CustomTestCase {
@@ -12,9 +13,7 @@ class FileServiceDefaultTest extends CustomTestCase {
     private const FILE_LOCATION = __DIR__ . '/';
     private const FILE_NAME = 'test-file.json';
     
-    /** 
-     * @after
-     */
+    #[After]
     public function cleanTestFiles(): void {
         if (file_exists(self::FILE_LOCATION . self::FILE_NAME)) {
             unlink(self::FILE_LOCATION . self::FILE_NAME);
