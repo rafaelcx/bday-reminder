@@ -7,13 +7,12 @@ namespace Test\Src\Repository\Credential;
 use App\Repository\Credential\CredentialException;
 use App\Repository\Credential\CredentialRepositoryInFile;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 
 class CredentialRepositoryInFileTest extends CustomTestCase {
 
-    /**
-     * @before
-     */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-01-01 12:00:00');
     }

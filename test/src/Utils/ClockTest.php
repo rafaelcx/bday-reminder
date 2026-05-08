@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Test\Src\Utils;
 
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Test\CustomTestCase;
 
 class ClockTest extends CustomTestCase {
 
-    /** @before */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-01-01 00:00:00');
     }

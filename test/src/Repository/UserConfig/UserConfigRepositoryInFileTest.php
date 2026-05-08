@@ -7,13 +7,12 @@ namespace Test\Src\Repository\UserConfig;
 use App\Repository\UserConfig\UserConfigException;
 use App\Repository\UserConfig\UserConfigRepositoryInFile;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 
 class UserConfigRepositoryInFileTest extends CustomTestCase {
 
-    /**
-     * @before
-     */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-01-01 12:00:00');
     }

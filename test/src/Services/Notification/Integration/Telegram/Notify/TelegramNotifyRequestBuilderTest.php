@@ -11,11 +11,12 @@ use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestBuilder;
 use App\Services\Notification\NotificationException;
 use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 
 class TelegramNotifyRequestBuilderTest extends CustomTestCase {
 
-    /** @before */
+    #[Before]
     public function freezeClockForTests(): void {
         Clock::freeze('2025-12-20 12:00:00');
     }

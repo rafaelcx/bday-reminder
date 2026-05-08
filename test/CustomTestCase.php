@@ -6,6 +6,8 @@ namespace Test;
 
 use App\Utils\Clock;
 use App\Utils\StaticScope;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 use Test\Support\FileServiceResolverForTests;
 use Test\Support\Http\Client\HttpClientForTests;
@@ -16,18 +18,18 @@ class CustomTestCase extends TestCase {
 
     public RequestSimulator $request_simulator;
 
-    /** @before */
+    #[Before]
     public function setUpFakers(): void {
         $this->request_simulator = new RequestSimulator();
     }
 
-    /** @before */
+    #[Before]
     public function setUpOverrides(): void {
         FileServiceResolverForTests::override();
         HttpClientForTests::override();
     }
 
-    /** @after */
+    #[After]
     public function resetOverrides(): void {
         StaticScope::clear();
         FileServiceResolverForTests::reset();
