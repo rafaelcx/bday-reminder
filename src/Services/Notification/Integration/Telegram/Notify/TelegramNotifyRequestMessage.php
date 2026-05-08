@@ -29,23 +29,28 @@ class TelegramNotifyRequestMessage {
         $message_lines[] = "Here are the birthdays coming up in the next 30 days:";
         $message_lines[] = '';
 
-        $today_as_md = Clock::at(Clock::now()->format('m/d'));
-        $today_as_ymd = Clock::at(Clock::now()->format('Y-m-d'));
+        $today = Clock::at(Clock::now()->format('Y-m-d'));
 
         foreach ($birthdays as $b) {
-            $birthday_as_md = Clock::at($b->date->format('m/d'));
+            $birthday_this_year = Clock::at(sprintf(
+                '%s-%s-%s',
+                $today->format('Y'),
+                $b->date->format('m'),
+                $b->date->format('d')
+            ));
 
-            $has_already_celebrated_birthday_this_year = $birthday_as_md->isBefore($today_as_md);
+            $has_already_celebrated_birthday_this_year = $birthday_this_year->isBefore($today);
 
             $next_birthday_as_ydm = $has_already_celebrated_birthday_this_year
-                ? Clock::at($b->date->format('m/d'))->plusYears(1)
-                : Clock::at($b->date->format('m/d'));
+                ? Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b->date->format('m'), $b->date->format('d')))->plusYears(1)
+                : Clock::at(sprintf('%s-%s-%s', $today->format('Y'), $b->date->format('m'), $b->date->format('d')));
 
-            $days_until = (int) $today_as_ymd->diff($next_birthday_as_ydm)->d;
+            $days_until = (int) $today->diff($next_birthday_as_ydm)->d;
 
             $name = $b->name;
 
             $birthday_as_ymd = Clock::at($b->date->format('Y-m-d'));
+            $birthday_as_md = Clock::at($b->date->format('Y-m-d'));
             $turning_age = $birthday_as_ymd->diff($next_birthday_as_ydm)->y;
 
             if ($days_until === 0) {
