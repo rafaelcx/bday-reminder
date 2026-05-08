@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+CONTAINER="bday-reminder-bday-reminder-1"
+
+echo "Running PHPUnit..."
+docker exec -i "$CONTAINER" vendor/bin/phpunit test
+
+echo "Running PHPStan..."
+docker exec -i "$CONTAINER" vendor/bin/phpstan analyse src test --level 6
+
+echo "All checks passed!"
