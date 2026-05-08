@@ -49,7 +49,7 @@ class LoggerDefault implements LoggerInterface {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
-    public function log($level, \Stringable|string $message, array $context = []): void {
+    public function log(mixed $level, \Stringable|string $message, array $context = []): void {
         $log_as_array = $this->buildLogDocument($level, $message, $context);
         $previous_logs = $this->getPreviousLogs();
 
@@ -81,7 +81,11 @@ class LoggerDefault implements LoggerInterface {
         FileServiceResolver::resolve()->putFileContents($this->log_file, $updated_logs);
     }
 
-    private function buildLogDocument($level, string $message, array $context): array {
+    /**
+     * @param mixed[] $context
+     * @return mixed[]
+     */
+    private function buildLogDocument(mixed $level, string $message, array $context): array {
         $log_common_fields = [
             'timestamp' => date('Y-m-d H:i:s'),
             'level' => $level,
@@ -90,6 +94,9 @@ class LoggerDefault implements LoggerInterface {
         return array_merge($log_common_fields, $context);
     }
 
+    /**
+     * @return mixed[]
+     */
     private function getPreviousLogs(): array {
         $file_service = FileServiceResolver::resolve();
         $previous_logs = $file_service->getFileContents($this->log_file);

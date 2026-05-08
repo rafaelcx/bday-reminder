@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Src\Services\Notification\Integration\Telegram;
 
+use App\Repository\Birthday\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Repository\User\User;
@@ -160,6 +161,9 @@ class TelegramNotifierTest extends CustomTestCase {
         return array_pop($created_user);
     }
 
+    /**
+     * @return Birthday[]
+     */
     private function createAndGetBirthday(User $user, string $birthday_name): array {
         $birthday_repo = BirthdayRepositoryResolver::resolve();
         $birthday_repo->create($user->uid, $birthday_name, Clock::now());

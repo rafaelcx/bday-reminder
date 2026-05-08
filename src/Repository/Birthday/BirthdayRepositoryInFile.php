@@ -10,7 +10,7 @@ use App\Utils\Clock;
 
 class BirthdayRepositoryInFile implements BirthdayRepository {
 
-    private const FILE_NAME = 'birthday-file.json';
+    private const string FILE_NAME = 'birthday-file.json';
     
     private FileService $file_service;
 

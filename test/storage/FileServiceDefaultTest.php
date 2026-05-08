@@ -10,9 +10,9 @@ use Test\CustomTestCase;
 
 class FileServiceDefaultTest extends CustomTestCase {
 
-    private const FILE_LOCATION = __DIR__ . '/';
-    private const FILE_NAME = 'test-file.json';
-    
+    private const string FILE_LOCATION = __DIR__ . '/';
+    private const string FILE_NAME = 'test-file.json';
+
     #[After]
     public function cleanTestFiles(): void {
         if (file_exists(self::FILE_LOCATION . self::FILE_NAME)) {

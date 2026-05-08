@@ -7,6 +7,8 @@ namespace Test\Src\Services\Notification\Integration\Telegram\Delete;
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Delete\TelegramDeleteMessagesRequestBuilder;
+use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
+use App\Utils\Clock;
 use Test\CustomTestCase;
 
 class TelegramDeleteMessagesRequestBuilderTest extends CustomTestCase {
@@ -41,10 +43,8 @@ class TelegramDeleteMessagesRequestBuilderTest extends CustomTestCase {
         $this->assertSame('["1","2"]', $parsed_query['message_ids']);
     }
 
-    private function buildMessageObject(string $id): \stdClass {
-        $msg = new \stdClass();
-        $msg->message_id = $id;
-        return $msg;
+    private function buildMessageObject(string $msg_id): TelegramUpdate {
+        return new TelegramUpdate('1', $msg_id, 'user_id', 'name', Clock::now());
     }
 
 }

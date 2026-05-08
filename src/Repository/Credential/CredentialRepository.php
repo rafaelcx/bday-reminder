@@ -6,7 +6,7 @@ namespace App\Repository\Credential;
 
 interface CredentialRepository {
 
-    public function create(string $id, string $data);
+    public function create(string $id, string $data): void;
     public function findById(string $id): Credential;
 
 }

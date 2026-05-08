@@ -10,7 +10,7 @@ use App\Utils\Clock;
 
 class UserConfigRepositoryInFile implements UserConfigRepository {
 
-    private const FILE_NAME = 'user-config-file.json';
+    private const string FILE_NAME = 'user-config-file.json';
 
     private FileService $file_service;
 

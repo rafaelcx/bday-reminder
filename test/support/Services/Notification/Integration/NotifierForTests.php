@@ -6,6 +6,7 @@ namespace Test\Support\Services\Notification\Integration;
 
 use App\Repository\Birthday\Birthday;
 use App\Repository\User\User;
+use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
 use App\Services\Notification\Integration\Notifier;
 
 class NotifierForTests implements Notifier {
@@ -24,10 +25,16 @@ class NotifierForTests implements Notifier {
         call_user_func($this->notify_behavior, $user, $birthday_list);
     }
 
+    /** 
+     * @return TelegramUpdate[] 
+     */
     public function getUpdates(): array {
         return call_user_func($this->get_updates_behavior);
     }
 
+    /** 
+     * @param TelegramUpdate[] $updates
+     */
     public function deleteMessages(array $updates): void {
         call_user_func($this->delete_messages_behavior, $updates);
     }

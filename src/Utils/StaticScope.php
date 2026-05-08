@@ -34,6 +34,8 @@ class StaticScope {
     /**
      * Internal storage for all scoped values.
      * Keys are fully qualified (e.g., `namespace.key`).
+     * 
+     * @var mixed[]
      */
     private static array $scope = [];
 

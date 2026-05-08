@@ -12,9 +12,16 @@ class RequestSimulator {
 
     private string $method;
     private string $path;
+
+    /** @var string[] */
     private array $headers = [];
+
     private string $body = '';
+
+    /** @var string[] */
     private array $query_params = [];
+
+    /** @var string[] */
     private array $post_params = [];
     private ?\Closure $routing_behavior = null;
 
@@ -38,6 +45,9 @@ class RequestSimulator {
         return $this;
     }
 
+    /**
+     * @param mixed[] $body
+     */
     public function withBody(array $body): self {
         $body_as_json = empty($body) ? '' : json_encode($body);
         $this->body = $body_as_json;
@@ -49,6 +59,9 @@ class RequestSimulator {
         return $this;
     }
 
+    /**
+     * @param string[] $params
+     */
     public function withPostParams(array $params): self {
         $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
         $this->post_params = $params;
