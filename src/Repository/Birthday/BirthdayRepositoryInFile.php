@@ -60,6 +60,42 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         return $birthday_list;
     }
 
+    public function findByUserUidInTheNextDays(string $user_uid, int $days): array {
+        $all_birthdays = $this->findByUserUid($user_uid);
+        
+        $relevant_birthdays = array_filter($all_birthdays, function(Birthday $b) use ($days) {
+            $today_date_string = Clock::now()->format('Y-m-d');
+            $today = Clock::at($today_date_string);
+            
+            // Calculate the birthday for this year
+            $birthday_this_year_date_string = $today->format('Y') . '-' . $b->date->format('m-d');
+            $birthday_this_year = Clock::at($birthday_this_year_date_string);
+
+            // If today is the birthday, include it
+            if ($today_date_string === $birthday_this_year_date_string) {
+                return true;
+            }
+
+            // If the birthday has already passed this year, calculate next year's occurrence
+            if ($birthday_this_year->isBefore($today)) {
+                $next_year = (int) $today->format('Y') + 1;
+                $next_birthday_date_string = $next_year . '-' . $b->date->format('m-d');
+                $next_birthday = Clock::at($next_birthday_date_string);
+            } else {
+                $next_birthday = $birthday_this_year;
+            }
+
+            // Check if next birthday is in the next N days (date-only comparison)
+            $next_birthday_date_string = $next_birthday->format('Y-m-d');
+            $cutoff_date_string = $today->plusDays($days)->format('Y-m-d');
+            
+            return $next_birthday_date_string > $today_date_string 
+                && $next_birthday_date_string <= $cutoff_date_string;
+        });
+
+        return array_values($relevant_birthdays);
+    }
+
     public function update(string $birthday_uid, string $name, Clock $date): void {
         $file_contents = $this->file_service->getFileContents(self::FILE_NAME);
 

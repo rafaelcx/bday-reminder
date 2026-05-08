@@ -103,4 +103,54 @@ class BirthdayRepositoryInFileTest extends CustomTestCase {
         $this->assertSame('2025-01-01 12:00:00', $persisted_bdays[0]->created_at->asDateTimeString());
     }
 
+    public function testRepository_FindByUserUidInTheNextDays_ShouldFilterBirthdaysInTheNextDays(): void {
+        $this->birthday_repository->create('user_uid_1', 'today_birthday', Clock::at('1990-01-01'));
+        $this->birthday_repository->create('user_uid_1', 'bday_in_5_days', Clock::at('1995-01-06'));
+        $this->birthday_repository->create('user_uid_1', 'bday_in_30_days', Clock::at('1990-01-31'));
+        $this->birthday_repository->create('user_uid_1', 'bday_in_31_days', Clock::at('1990-02-01'));
+        $this->birthday_repository->create('user_uid_1', 'past_bday', Clock::at('1990-12-25'));
+
+        $relevant_bdays = $this->birthday_repository->findByUserUidInTheNextDays('user_uid_1', 30);
+
+        // Should include today, bday in 5 days, and bday in 30 days
+        // Should NOT include bday in 31 days or past birthdays
+        $this->assertCount(3, $relevant_bdays);
+        
+        $birthday_names = array_map(fn($b) => $b->name, $relevant_bdays);
+        $this->assertContains('today_birthday', $birthday_names);
+        $this->assertContains('bday_in_5_days', $birthday_names);
+        $this->assertContains('bday_in_30_days', $birthday_names);
+        $this->assertNotContains('bday_in_31_days', $birthday_names);
+        $this->assertNotContains('past_bday', $birthday_names);
+    }
+
+    public function testRepository_FindByUserUidInTheNextDays_ShouldNotIncludePastBirthdaysEvenIfTheyHappenedEarlierThisYear(): void {
+        Clock::freeze('2025-01-15 12:00:00');
+        
+        $this->birthday_repository->create('user_uid_1', 'past_bday_this_year', Clock::at('1990-01-10'));
+        $this->birthday_repository->create('user_uid_1', 'upcoming_bday_this_year', Clock::at('1990-02-01'));
+
+        $relevant_bdays = $this->birthday_repository->findByUserUidInTheNextDays('user_uid_1', 30);
+
+        // Only the upcoming birthday should be included
+        $this->assertCount(1, $relevant_bdays);
+        $this->assertSame('upcoming_bday_this_year', $relevant_bdays[0]->name);
+    }
+
+    public function testRepository_FindByUserUidInTheNextDays_ShouldIncludeBirthdaysFromNextYear(): void {
+        Clock::freeze('2025-12-15 12:00:00');
+        
+        $this->birthday_repository->create('user_uid_1', 'upcoming_this_year', Clock::at('1990-12-20'));
+        $this->birthday_repository->create('user_uid_1', 'next_year_upcoming', Clock::at('1990-01-10'));
+
+        $relevant_bdays = $this->birthday_repository->findByUserUidInTheNextDays('user_uid_1', 30);
+
+        // Should include both upcoming this year and next year
+        $this->assertCount(2, $relevant_bdays);
+        
+        $birthday_names = array_map(fn($b) => $b->name, $relevant_bdays);
+        $this->assertContains('upcoming_this_year', $birthday_names);
+        $this->assertContains('next_year_upcoming', $birthday_names);
+    }
+
 }

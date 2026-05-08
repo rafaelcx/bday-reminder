@@ -50,14 +50,12 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         $this->assertStringContainsString("Don't forget to send your love!", $parsed_body['text']);
     }
 
-    public function testBuilder_BirthdaysOnPayloadShouldBeFilteredAndOrdered(): void {
+    public function testBuilder_BirthdaysShouldBeSorted(): void {
         $user = $this->createFakeUser();
-        $birthday_1 = $this->createFakeBirthday($user, 'Rafael', '1995-12-19');
-        $birthday_2 = $this->createFakeBirthday($user, 'Aline', '1995-12-20');
-        $birthday_3 = $this->createFakeBirthday($user, 'Marcelo', '1995-12-25');
-        $birthday_4 = $this->createFakeBirthday($user, 'Silvia', '1995-01-01');
-        $birthday_5 = $this->createFakeBirthday($user, 'Matheus', '1995-01-19');
-        $birthday_6 = $this->createFakeBirthday($user, 'Emily', '1995-01-20');
+        $birthday_1 = $this->createFakeBirthday($user, 'Aline', '1995-12-20');
+        $birthday_2 = $this->createFakeBirthday($user, 'Marcelo', '1995-12-25');
+        $birthday_3 = $this->createFakeBirthday($user, 'Silvia', '1995-01-01');
+        $birthday_4 = $this->createFakeBirthday($user, 'Matheus', '1995-01-19');
 
         // Mocking valid credentials
         $credential_id = 'telegram-credential';
@@ -69,18 +67,17 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         $user_config_value = 'value';
         UserConfigRepositoryResolver::resolve()->create($user->uid, $user_config_name, $user_config_value);
         
+        // Pass birthdays in random order
         $request = TelegramNotifyRequestBuilder::build($user, ...[
-            $birthday_1,
-            $birthday_4,
-            $birthday_3, 
-            $birthday_5,
+            $birthday_3,
             $birthday_2,
-            $birthday_6,
+            $birthday_4,
+            $birthday_1,
         ]);
 
         parse_str((string) $request->getBody(), $parsed_body);
 
-        $expected_filtered_and_ordered_str = <<<TXT
+        $expected_sorted_str = <<<TXT
         🎉 It's Aline's birthday today!
         🥳 Turns 30
 
@@ -94,7 +91,7 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         🎂 Turns 31 in 30 days (📅 01/19)
         TXT;
 
-        $this->assertStringContainsString($expected_filtered_and_ordered_str, $parsed_body['text']);
+        $this->assertStringContainsString($expected_sorted_str, $parsed_body['text']);
     }
 
     public function testBuider_WhenMissingCredentials_ShouldThrow(): void {
