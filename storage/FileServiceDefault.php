@@ -18,7 +18,12 @@ class FileServiceDefault implements FileService {
         if (!file_exists($file_path)) {
             return '';
         }
-        return file_get_contents($file_path);
+
+        $contents = file_get_contents($file_path);
+        if ($contents === false) {
+            throw new \RuntimeException("Unable to read file contents from {$file_path}.");
+        }
+        return $contents;
     }
 
     public function putFileContents(string $file_name, string $contents): void {

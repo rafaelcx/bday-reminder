@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Logger\LoggerResolver;
 use App\Logger\ProcessLogContext;
+use App\Utils\JsonEncoder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
@@ -26,8 +27,8 @@ class LogMiddleware implements MiddlewareInterface {
         ProcessLogContext::set('process_id', uniqid());
         ProcessLogContext::set('http_request_path', $request->getUri()->getPath());
         ProcessLogContext::set('http_request_method', $request->getMethod());
-        ProcessLogContext::set('http_request_query_params', json_encode($request->getQueryParams()));
-        ProcessLogContext::set('http_request_parsed_params', json_encode($request->getParsedBody()));
+        ProcessLogContext::set('http_request_query_params', JsonEncoder::safeEncode($request->getQueryParams()));
+        ProcessLogContext::set('http_request_parsed_params', JsonEncoder::safeEncode($request->getParsedBody()));
     }
 
     private function flushProcessLogs(Response $response): void {

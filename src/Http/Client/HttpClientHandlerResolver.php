@@ -8,7 +8,7 @@ use App\Utils\StaticScope;
 
 class HttpClientHandlerResolver {
 
-    public static function resolve(): ?\Countable {
+    public static function resolve(): ?callable {
         return StaticScope::get(self::class, 'instance');
     }
 

@@ -7,6 +7,7 @@ namespace App\Repository\Birthday;
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 
 class BirthdayRepositoryInFile implements BirthdayRepository {
 
@@ -35,7 +36,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         $birthday_list[] = $new_birthday;
 
         $file_contents_as_obj->birthdays = $birthday_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -110,7 +111,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         }
 
         $file_contents_as_obj->birthdays = $all_persisted_birthdays;
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -129,7 +130,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         // Reindex the array to avoid strange numeric keys in the updated JSON
         $file_contents_as_obj->birthdays = array_values($all_persisted_birthdays);
         
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -138,7 +139,7 @@ class BirthdayRepositoryInFile implements BirthdayRepository {
         if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = json_encode(['birthdays' => []]);
+        $initial_file_state = JsonEncoder::safeEncode(['birthdays' => []]);
         $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 

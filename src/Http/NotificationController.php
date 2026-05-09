@@ -12,6 +12,9 @@ class NotificationController {
 
     public function handle(Request $request, Response $response): Response {
         $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
 
         $user_uid = $parsed_body['user_uid'];
 

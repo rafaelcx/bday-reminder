@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Support\Http;
 
+use App\Utils\JsonEncoder;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,7 +50,7 @@ class RequestSimulator {
      * @param mixed[] $body
      */
     public function withBody(array $body): self {
-        $body_as_json = empty($body) ? '' : json_encode($body);
+        $body_as_json = empty($body) ? '' : JsonEncoder::safeEncode($body);
         $this->body = $body_as_json;
         return $this;
     }
@@ -69,7 +70,9 @@ class RequestSimulator {
     }
 
     public function withRoutingBehavior(callable $behavior): self {
-        $this->routing_behavior = $behavior;
+        $this->routing_behavior = $behavior instanceof \Closure
+            ? $behavior
+            : \Closure::fromCallable($behavior);
         return $this;
     }
 

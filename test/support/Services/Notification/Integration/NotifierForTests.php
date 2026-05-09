@@ -40,15 +40,21 @@ class NotifierForTests implements Notifier {
     }
 
     public function setNotifyBehavior(callable $behavior): void {
-        $this->notify_behavior = $behavior;
+        $this->notify_behavior = $behavior instanceof \Closure
+            ? $behavior
+            : \Closure::fromCallable($behavior);
     }
 
     public function setGetUpdatesBehavior(callable $behavior): void {
-        $this->get_updates_behavior = $behavior;
+        $this->get_updates_behavior = $behavior instanceof \Closure
+            ? $behavior
+            : \Closure::fromCallable($behavior);
     }
 
     public function setDeleteMessagesBehavior(callable $behavior): void {
-        $this->delete_messages_behavior = $behavior;
+        $this->delete_messages_behavior = $behavior instanceof \Closure
+            ? $behavior
+            : \Closure::fromCallable($behavior);
     }
 
 }

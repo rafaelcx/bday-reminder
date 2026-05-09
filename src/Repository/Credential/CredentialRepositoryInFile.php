@@ -7,6 +7,7 @@ namespace App\Repository\Credential;
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 
 class CredentialRepositoryInFile implements CredentialRepository {
 
@@ -33,7 +34,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         $credential_list[] = $new_credential;
 
         $file_contents_as_obj->credentials = $credential_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -63,7 +64,7 @@ class CredentialRepositoryInFile implements CredentialRepository {
         if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = json_encode(['credentials' => []]);
+        $initial_file_state = JsonEncoder::safeEncode(['credentials' => []]);
         $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 
