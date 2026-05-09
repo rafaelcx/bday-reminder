@@ -9,7 +9,7 @@ use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyRequestBuilder;
-use App\Services\Notification\NotificationException;
+use App\Services\Birthday\BirthdayServiceException;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
@@ -107,7 +107,7 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         $user = $this->createFakeUser();
         $birthday = $this->createFakeBirthday($user);
 
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Notification request build error: ');
         TelegramNotifyRequestBuilder::build($user, ...[$birthday]);
     }
@@ -122,7 +122,7 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         $credential_data = '{"bot_token": "some_token"}';
         CredentialRepositoryResolver::resolve()->create($credential_id, $credential_data);
         
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Notification request build error: ');
         TelegramNotifyRequestBuilder::build($user, ...[$birthday_1, $birthday_2]);
     }

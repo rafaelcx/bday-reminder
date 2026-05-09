@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Src\Services\Notification;
+namespace Test\Src\Services\Birthday;
 
 use App\Repository\Birthday\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
@@ -10,14 +10,14 @@ use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
-use App\Services\Notification\NotificationService;
+use App\Services\Birthday\BirthdayService;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
 use Test\Support\Services\Notification\Integration\NotifierForTests;
 use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
 
-class NotificationServiceTest extends CustomTestCase {
+class BirthdayServiceTest extends CustomTestCase {
 
     #[Before]
     public function freezeClockForTests(): void {
@@ -45,7 +45,7 @@ class NotificationServiceTest extends CustomTestCase {
         $mock_notifier->setNotifyBehavior($mock_notifier_behavior);
         NotifierResolverForTests::override($mock_notifier);
 
-        NotificationService::notify();
+        BirthdayService::notify();
 
         $this->assertStringContainsString('user1', $execution_proof);
         $this->assertStringContainsString('user2', $execution_proof);
@@ -85,7 +85,7 @@ class NotificationServiceTest extends CustomTestCase {
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         NotifierResolverForTests::override($mock_notifier);
 
-        NotificationService::add();
+        BirthdayService::add();
 
         $user_1_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_1->uid);
         $user_2_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_2->uid);
@@ -125,7 +125,7 @@ class NotificationServiceTest extends CustomTestCase {
         $mock_notifier->setNotifyBehavior($mock_notifier_behavior);
         NotifierResolverForTests::override($mock_notifier);
 
-        NotificationService::notify();
+        BirthdayService::notify();
 
         // Verify only birthdays in the next 30 days are included
         $this->assertContains('today_bday', $received_birthdays);

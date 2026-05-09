@@ -15,7 +15,7 @@ use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyResponse
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesRequestBuilder;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramGetUpdatesResponseParser;
 use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
-use App\Services\Notification\NotificationException;
+use App\Services\Birthday\BirthdayServiceException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -68,7 +68,8 @@ class TelegramNotifier implements Notifier {
         try {
             return (new HttpClient())->send($request);
         } catch (HttpClientException $e) {
-            throw new NotificationException('Notification error: ' . $e->getMessage());
+            // TODO: Throw a generic exception from a communication service instead
+            throw new BirthdayServiceException('Notification error: ' . $e->getMessage());
         }
     }
 

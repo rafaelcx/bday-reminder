@@ -11,7 +11,7 @@ use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\TelegramNotifier;
-use App\Services\Notification\NotificationException;
+use App\Services\Birthday\BirthdayServiceException;
 use App\Utils\Clock;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -45,7 +45,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $user = $this->createAndGetUser('user1');
         $bdays = $this->createAndGetBirthday($user, 'bday1');
 
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Notification request build error: Credential not find for id: telegram-credential');
 
         $notifier = new TelegramNotifier();
@@ -64,7 +64,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $mock_handler->append(new RequestException('Request error', new Request('GET', 'test')));
         HttpClientForTests::overrideHandler($mock_handler);
 
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Notification error: External HTTP request failed: Request error');
 
         $notifier = new TelegramNotifier();
@@ -83,7 +83,7 @@ class TelegramNotifierTest extends CustomTestCase {
         $mock_handler->append(new Response(200, [], 'Hello, World'));
         HttpClientForTests::overrideHandler($mock_handler);
 
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Notification response parsing error: could not parse');
 
         $notifier = new TelegramNotifier();

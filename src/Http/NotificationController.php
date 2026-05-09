@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use App\Services\Notification\NotificationService;
+use App\Services\Birthday\BirthdayService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -18,7 +18,7 @@ class NotificationController {
 
         $user_uid = $parsed_body['user_uid'];
 
-        NotificationService::notify();
+        BirthdayService::notify();
 
         return $response
             ->withStatus(302)
