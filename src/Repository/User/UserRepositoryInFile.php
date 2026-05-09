@@ -7,6 +7,7 @@ namespace App\Repository\User;
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 
 class UserRepositoryInFile implements UserRepository {
 
@@ -33,7 +34,7 @@ class UserRepositoryInFile implements UserRepository {
         $user_list[] = $new_user;
 
         $file_contents_as_obj->users = $user_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -51,7 +52,7 @@ class UserRepositoryInFile implements UserRepository {
         if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = json_encode(['users' => []]);
+        $initial_file_state = JsonEncoder::safeEncode(['users' => []]);
         $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 

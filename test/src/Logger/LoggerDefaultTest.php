@@ -75,6 +75,10 @@ class LoggerDefaultTest extends CustomTestCase {
             ],
         ]);
 
+        if ($logs === false) {
+            $this->fail('Unable to encode test logs.');
+        }
+
         FileServiceResolver::resolve()->putFileContents(self::FILE_NAME, $logs);
 
         new LoggerDefault(self::FILE_NAME)->cleanLogFile();

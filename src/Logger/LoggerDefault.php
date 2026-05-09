@@ -6,6 +6,7 @@ namespace App\Logger;
 
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -54,7 +55,7 @@ class LoggerDefault implements LoggerInterface {
         $previous_logs = $this->getPreviousLogs();
 
         $previous_logs[] = $log_as_array;
-        $updated_logs = json_encode($previous_logs, JSON_PRETTY_PRINT);
+        $updated_logs = JsonEncoder::safeEncode($previous_logs, JSON_PRETTY_PRINT);
         FileServiceResolver::resolve()->putFileContents($this->log_file, $updated_logs);
     }
 
@@ -77,7 +78,7 @@ class LoggerDefault implements LoggerInterface {
         // Reindex to keep JSON as an array, not an object
         $logs = array_values($logs);
 
-        $updated_logs = json_encode($logs, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $updated_logs = JsonEncoder::safeEncode($logs, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         FileServiceResolver::resolve()->putFileContents($this->log_file, $updated_logs);
     }
 
@@ -85,11 +86,11 @@ class LoggerDefault implements LoggerInterface {
      * @param mixed[] $context
      * @return mixed[]
      */
-    private function buildLogDocument(mixed $level, string $message, array $context): array {
+    private function buildLogDocument(mixed $level, \Stringable|string $message, array $context): array {
         $log_common_fields = [
             'timestamp' => date('Y-m-d H:i:s'),
             'level' => $level,
-            'message' => $message,
+            'message' => (string) $message,
         ];
         return array_merge($log_common_fields, $context);
     }

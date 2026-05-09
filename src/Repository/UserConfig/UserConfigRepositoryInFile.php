@@ -7,6 +7,7 @@ namespace App\Repository\UserConfig;
 use App\Storage\FileService;
 use App\Storage\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 
 class UserConfigRepositoryInFile implements UserConfigRepository {
 
@@ -36,7 +37,7 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
         $config_list[] = $new_config;
 
         $file_contents_as_obj->user_configs = $config_list;
-        $updated_file_as_json = json_encode($file_contents_as_obj, JSON_PRETTY_PRINT);
+        $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
     }
 
@@ -84,7 +85,7 @@ class UserConfigRepositoryInFile implements UserConfigRepository {
         if (!empty($file_contents)) {
             return;
         }
-        $initial_file_state = json_encode(['user_configs' => []]);
+        $initial_file_state = JsonEncoder::safeEncode(['user_configs' => []]);
         $this->file_service->putFileContents(self::FILE_NAME, $initial_file_state);
     }
 

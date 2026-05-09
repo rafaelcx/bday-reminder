@@ -13,6 +13,9 @@ class BirthdayController {
 
     public function create(Request $request, Response $response): Response {
         $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
 
         $bday_name = $parsed_body['name'];
         $bday_date = $parsed_body['date'];
@@ -26,6 +29,9 @@ class BirthdayController {
 
     public function update(Request $request, Response $response): Response {
         $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
 
         $bday_name = $parsed_body['name'];
         $bday_date = $parsed_body['date'];
@@ -40,6 +46,9 @@ class BirthdayController {
 
     public function delete(Request $request, Response $response): Response {
         $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
 
         $bday_uid = $parsed_body['birthday_uid'];
         $bday_user_uid = $parsed_body['user_uid'];

@@ -46,8 +46,13 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
 
         $this->assertSame('value', $parsed_body['chat_id']);
         $this->assertSame('Markdown', $parsed_body['parse_mode']);
-        $this->assertStringContainsString('Hello John Doe,', $parsed_body['text']);
-        $this->assertStringContainsString("Don't forget to send your love!", $parsed_body['text']);
+
+        $this->assertArrayHasKey('text', $parsed_body);
+        $this->assertIsString($parsed_body['text']);
+        $body_text = $parsed_body['text'];
+
+        $this->assertStringContainsString('Hello John Doe,', $body_text);
+        $this->assertStringContainsString("Don't forget to send your love!", $body_text);
     }
 
     public function testBuilder_BirthdaysShouldBeSorted(): void {
@@ -91,7 +96,11 @@ class TelegramNotifyRequestBuilderTest extends CustomTestCase {
         🎂 Turns 31 in 30 days (📅 01/19)
         TXT;
 
-        $this->assertStringContainsString($expected_sorted_str, $parsed_body['text']);
+        $this->assertArrayHasKey('text', $parsed_body);
+        $this->assertIsString($parsed_body['text']);
+        $body_text = $parsed_body['text'];
+
+        $this->assertStringContainsString($expected_sorted_str, $body_text);
     }
 
     public function testBuider_WhenMissingCredentials_ShouldThrow(): void {

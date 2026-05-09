@@ -17,6 +17,9 @@ class FileServiceResolverForTests extends FileServiceResolver {
 
     public static function reset(): void {
         $files = glob(__DIR__ . '/*.json');
+        if ($files === false) {
+            return;
+        }
 
         foreach ($files as $file) {
             if (is_file($file)) {
