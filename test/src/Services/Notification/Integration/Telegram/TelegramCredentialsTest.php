@@ -6,7 +6,7 @@ namespace Test\Src\Services\Notification\Integration\Telegram;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Services\Notification\Integration\Telegram\TelegramCredentials;
-use App\Services\Notification\NotificationException;
+use App\Services\Birthday\BirthdayServiceException;
 use Test\CustomTestCase;
 
 class TelegramCredentialsTest extends CustomTestCase {
@@ -23,7 +23,7 @@ class TelegramCredentialsTest extends CustomTestCase {
         $credential_data = '{"not_bot_token": "some_token"}';
         CredentialRepositoryResolver::resolve()->create('telegram-credential', $credential_data);
 
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         $this->expectExceptionMessage('Telegram credentials not found');
         TelegramCredentials::getBotToken();
     }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Notification;
+namespace App\Services\Birthday;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Notification\Integration\NotifierResolver;
 
-class NotificationService {
+class BirthdayService {
 
     public static function notify(): void {
         $user_list = UserRepositoryResolver::resolve()->findAll();

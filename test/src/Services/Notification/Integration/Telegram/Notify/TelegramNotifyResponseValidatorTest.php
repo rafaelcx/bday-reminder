@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Services\Notification\Integration\Telegram\Notify;
 
 use App\Services\Notification\Integration\Telegram\Notify\TelegramNotifyResponseValidator;
-use App\Services\Notification\NotificationException;
+use App\Services\Birthday\BirthdayServiceException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Test\CustomTestCase;
@@ -21,14 +21,14 @@ class TelegramNotifyResponseValidatorTest extends CustomTestCase {
     public function testValidator_WhenMalformedResponse(): void {
         $test_response = $this->buildHttpResponse('{malformed_json');
         $this->expectExceptionMessage('Notification response parsing error');
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         TelegramNotifyResponseValidator::validate($test_response);
     }
 
     public function testValidator_WhenResponseNotOk(): void {
         $test_response = $this->buildHttpResponse('{"ok": false, "description": "description"}');
         $this->expectExceptionMessage('Notification response parsing error');
-        $this->expectException(NotificationException::class);
+        $this->expectException(BirthdayServiceException::class);
         TelegramNotifyResponseValidator::validate($test_response);
     }
 
