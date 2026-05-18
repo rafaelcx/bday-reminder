@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Src\Services\Birthday;
 
-use App\Repository\Birthday\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
@@ -14,6 +13,8 @@ use App\Services\Birthday\BirthdayService;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
+use Test\Support\Services\Messenger\MessengerForTests;
+use Test\Support\Services\Messenger\MessengerResolverForTests;
 use Test\Support\Services\Notification\Integration\NotifierForTests;
 use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
 
@@ -35,15 +36,15 @@ class BirthdayServiceTest extends CustomTestCase {
 
         // Notifier behavior will be to concatenate all found user and birthday names into one string
         $execution_proof = '';
-        $mock_notifier_behavior = function(User $user, array $birthdays) use (&$execution_proof) {
+        $mock_notifier_behavior = function(User $user, string $message) use (&$execution_proof) {
             $execution_proof .= $user->name;
-            $execution_proof .= implode(array_map(fn(Birthday $b) => $b->name, $birthdays));
+            $execution_proof .= $message;
         };
 
-        // Registering the simulated Notifier
-        $mock_notifier = new NotifierForTests();
-        $mock_notifier->setNotifyBehavior($mock_notifier_behavior);
-        NotifierResolverForTests::override($mock_notifier);
+        // Registering the simulated Messenger
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setPostBehavior($mock_notifier_behavior);
+        MessengerResolverForTests::override($mock_notifier);
 
         BirthdayService::notify();
 
@@ -113,26 +114,24 @@ class BirthdayServiceTest extends CustomTestCase {
         $this->createBirthdayForUser($user, 'past_bday', Clock::at('1990-12-25'));
 
         // Track which birthdays were received in the notify call
-        $received_birthdays = [];
-        $mock_notifier_behavior = function(User $u, array $birthdays) use (&$received_birthdays) {
-            foreach ($birthdays as $birthday) {
-                $received_birthdays[] = $birthday->name;
-            }
+        $received_birthdays = '';
+        $mock_notifier_behavior = function(User $_, string $message) use (&$received_birthdays) {
+            $received_birthdays = $message;
         };
 
-        // Register the mock notifier
-        $mock_notifier = new NotifierForTests();
-        $mock_notifier->setNotifyBehavior($mock_notifier_behavior);
-        NotifierResolverForTests::override($mock_notifier);
+        // Registering the simulated Messenger
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setPostBehavior($mock_notifier_behavior);
+        MessengerResolverForTests::override($mock_notifier);
 
         BirthdayService::notify();
 
         // Verify only birthdays in the next 30 days are included
-        $this->assertContains('today_bday', $received_birthdays);
-        $this->assertContains('bday_in_10_days', $received_birthdays);
-        $this->assertContains('bday_in_30_days', $received_birthdays);
-        $this->assertNotContains('bday_in_32_days', $received_birthdays);
-        $this->assertNotContains('past_bday', $received_birthdays);
+        $this->assertStringContainsString('today_bday', $received_birthdays);
+        $this->assertStringContainsString('bday_in_10_days', $received_birthdays);
+        $this->assertStringContainsString('bday_in_30_days', $received_birthdays);
+        $this->assertStringNotContainsString('bday_in_32_days', $received_birthdays);
+        $this->assertStringNotContainsString('past_bday', $received_birthdays);
     }
 
     private function createAndGetUser(string $user_name): User {
