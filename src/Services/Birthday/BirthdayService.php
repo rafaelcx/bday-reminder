@@ -6,6 +6,7 @@ namespace App\Services\Birthday;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\UserRepositoryResolver;
+use App\Services\Messenger\MessengerResolver;
 use App\Services\Notification\Integration\NotifierResolver;
 
 class BirthdayService {
@@ -17,8 +18,8 @@ class BirthdayService {
             $user_birthday_list = BirthdayRepositoryResolver::resolve()
                 ->findByUserUidInTheNextDays($user->uid, 30);
 
-            NotifierResolver::resolve()
-                ->notify($user, ...$user_birthday_list);
+            $message = BirthdayServiceMessage::build($user, ...$user_birthday_list);
+            MessengerResolver::resolve()->post($user, $message);
         }
     }
 

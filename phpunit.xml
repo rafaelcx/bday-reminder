@@ -5,6 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     displayDetailsOnTestsThatTriggerDeprecations="true"
     displayDetailsOnPhpunitDeprecations="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
     failOnDeprecation="true"
 >
     <testsuites>
