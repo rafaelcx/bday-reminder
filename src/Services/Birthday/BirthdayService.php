@@ -7,7 +7,7 @@ namespace App\Services\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Messenger\MessengerResolver;
-use App\Services\Notification\Integration\NotifierResolver;
+use App\Utils\Clock;
 
 class BirthdayService {
 
@@ -24,12 +24,19 @@ class BirthdayService {
     }
 
     public static function add(): void {
-        $updates = NotifierResolver::resolve()
-            ->getUpdates();
+        $updates = MessengerResolver::resolve()->getUpdates();
 
         foreach ($updates as $update) {
+            $update_portions = explode('.', $update->text);
+            $bday_name = $update_portions[0];
+            $bday_date = $update_portions[1] ?? '';
+
+            if (empty($bday_name) || empty($bday_date)) {
+                throw new \Exception('Birthday service `add` got unexpected update message');
+            }
+
             BirthdayRepositoryResolver::resolve()
-                ->create($update->user_uid, $update->birhday_name, $update->birthday_date);
+                ->create($update->user_uid, $bday_name, Clock::at($bday_date));
         }
     }
 

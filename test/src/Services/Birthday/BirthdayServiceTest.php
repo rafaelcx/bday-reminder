@@ -8,15 +8,14 @@ use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
-use App\Services\Notification\Integration\Telegram\Updates\TelegramUpdate;
 use App\Services\Birthday\BirthdayService;
+use App\Services\Messenger\Message;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Test\CustomTestCase;
 use Test\Support\Services\Messenger\MessengerForTests;
 use Test\Support\Services\Messenger\MessengerResolverForTests;
-use Test\Support\Services\Notification\Integration\NotifierForTests;
-use Test\Support\Services\Notification\Integration\NotifierResolverForTests;
 
 class BirthdayServiceTest extends CustomTestCase {
 
@@ -62,29 +61,27 @@ class BirthdayServiceTest extends CustomTestCase {
 
         UserConfigRepositoryResolver::resolve()->create($user_1->uid, 'telegram-chat-id', '1');
         UserConfigRepositoryResolver::resolve()->create($user_2->uid, 'telegram-chat-id', '2');
-        
-        $update_1 = new TelegramUpdate(
+
+        $update_1 = new Message(
             id: '1',
             message_id: '10',
             user_uid: $user_1->uid,
-            birhday_name: 'Name One',
-            birthday_date: Clock::at('1995-11-30')
+            text: 'Name One.1995-11-30',
         );
 
-        $update_2 = new TelegramUpdate(
+        $update_2 = new Message(
             id: '2',
             message_id: '20',
             user_uid: $user_2->uid,
-            birhday_name: 'Name Two',
-            birthday_date: Clock::at('2000-01-01')
+            text: 'Name Two.2000-01-01',
         );
 
         // Simulating each fetched update
         $get_updates_behavior = fn() => [$update_1, $update_2];
 
-        $mock_notifier = new NotifierForTests();
+        $mock_notifier = new MessengerForTests();
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
-        NotifierResolverForTests::override($mock_notifier);
+        MessengerResolverForTests::override($mock_notifier);
 
         BirthdayService::add();
 
@@ -101,6 +98,41 @@ class BirthdayServiceTest extends CustomTestCase {
         $this->assertSame('Name Two', $user_2_birthday->name);
         $this->assertSame('1995-11-30', $user_1_birthday->date->asDateString());
         $this->assertSame('2000-01-01', $user_2_birthday->date->asDateString());
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public static function provideMalformedUpdateText(): iterable {
+        yield ['Malformed'];
+        yield ['Name without date'];
+        yield ['Name With Nothing After Dot.'];
+        yield ['.Date Without Name Before Dot'];
+    }
+
+    #[DataProvider('provideMalformedUpdateText')]
+    public function testService_Add_OnMalformedUpdateText_ShouldThrow(string $update_text): void {
+        $user_1 = $this->createAndGetUser('user1');
+
+        UserConfigRepositoryResolver::resolve()->create($user_1->uid, 'telegram-chat-id', '1');
+
+        $update_1 = new Message(
+            id: '1',
+            message_id: '10',
+            user_uid: $user_1->uid,
+            text: $update_text,
+        );
+
+        $get_updates_behavior = fn() => [$update_1];
+
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Birthday service `add` got unexpected update message');
+        
+        BirthdayService::add();
     }
 
     public function testService_Notify_ShouldOnlyNotifyBirthdaysInTheNext30Days(): void {
