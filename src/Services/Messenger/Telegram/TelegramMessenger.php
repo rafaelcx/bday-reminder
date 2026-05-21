@@ -9,7 +9,6 @@ use App\Repository\UserConfig\UserConfigException;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Message;
 use App\Services\Messenger\Messenger;
-use App\Services\Notification\Integration\Telegram\TelegramCredentials;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

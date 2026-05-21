@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Notification\Integration\Telegram;
+namespace App\Services\Messenger\Telegram;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Services\Birthday\BirthdayServiceException;
