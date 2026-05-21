@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Test\Src\Services\Notification\Integration\Telegram;
+namespace Test\Src\Services\Messenger\Telegram;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
-use App\Services\Notification\Integration\Telegram\TelegramCredentials;
 use App\Services\Birthday\BirthdayServiceException;
+use App\Services\Messenger\Telegram\TelegramCredentials;
 use Test\CustomTestCase;
 
 class TelegramCredentialsTest extends CustomTestCase {
