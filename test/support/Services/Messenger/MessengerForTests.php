@@ -25,8 +25,8 @@ class MessengerForTests implements Messenger {
     /**
      * @return Message[]
      */
-    public function getUpdates(User $user): array {
-        return call_user_func($this->get_updates_behavior, $user);
+    public function getUpdates(): array {
+        return call_user_func($this->get_updates_behavior);
     }
 
     public function setPostBehavior(callable $behavior): void {
