@@ -27,7 +27,7 @@ class TelegramMessenger implements Messenger {
     /**
      * @return Message[]
      */
-    public function getUpdates(User $user): array {
+    public function getUpdates(): array {
         $request = $this->buildGetUpdatesRequest();
         $response = $this->dispatchRequest($request);
         $updates = $this->parseGetUpdateResponse($response);

@@ -13,6 +13,6 @@ interface Messenger {
     /**
      * @return Message[]
      */
-    public function getUpdates(User $user): array;
+    public function getUpdates(): array;
 
 }
