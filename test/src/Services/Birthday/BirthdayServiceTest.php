@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Src\Services\Birthday;
 
+use App\Repository\Birthday\Birthday;
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
@@ -125,6 +126,9 @@ class BirthdayServiceTest extends CustomTestCase {
         $user_1_birthday = array_pop($user_1_birthdays);
         $user_2_birthday = array_pop($user_2_birthdays);
         
+        $this->assertInstanceOf(Birthday::class, $user_1_birthday);
+        $this->assertInstanceOf(Birthday::class, $user_2_birthday);
+
         $this->assertSame('Name One', $user_1_birthday->name);
         $this->assertSame('Name Two', $user_2_birthday->name);
         $this->assertSame('1995-11-30', $user_1_birthday->date->asDateString());
@@ -214,10 +218,13 @@ class BirthdayServiceTest extends CustomTestCase {
     private function createAndGetUser(string $user_name): User {
         $user_repo = UserRepositoryResolver::resolve();
         $user_repo->create($user_name);
-        
-        $all_users = $user_repo->findAll();
-        $created_user = array_filter($all_users, fn(User $u) => $u->name === $user_name);
-        return array_pop($created_user);
+
+        foreach ($user_repo->findAll() as $user) {
+            if ($user->name === $user_name) {
+                return $user;
+            }
+        }
+        throw new \RuntimeException("User '$user_name' was not created.");
     }
 
     private function createBirthdayForUser(User $user, string $bday_name, ?Clock $date = null): void {

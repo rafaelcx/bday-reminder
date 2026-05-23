@@ -9,6 +9,7 @@ use App\Http\Client\HttpClientException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 use Test\CustomTestCase;
 use Test\Support\Http\Client\HttpClientForTests;
 use Test\Support\Logger\ProcessLogContextForTests;
@@ -35,10 +36,13 @@ class HttpClientTest extends CustomTestCase {
         $this->assertSame('body', (string)$response->getBody());
 
         // Assertions against the dispatched request
-        $this->assertSame($request_method, $mock_handler->getLastRequest()->getMethod());
-        $this->assertSame($request_uri, (string) $mock_handler->getLastRequest()->getUri());
-        $this->assertSame('value', $mock_handler->getLastRequest()->getHeaderLine('X-Test-Header'));
-        $this->assertSame($request_body, (string) $mock_handler->getLastRequest()->getBody());
+        $last_request_sent = $mock_handler->getLastRequest();
+        $this->assertInstanceOf(RequestInterface::class, $last_request_sent);
+
+        $this->assertSame($request_method, $last_request_sent->getMethod());
+        $this->assertSame($request_uri, (string) $last_request_sent->getUri());
+        $this->assertSame('value', $last_request_sent->getHeaderLine('X-Test-Header'));
+        $this->assertSame($request_body, (string) $last_request_sent->getBody());
         $this->assertSame(10.0, $mock_handler->getLastOptions()['timeout']);
 
         // Assertions that logs were performed
