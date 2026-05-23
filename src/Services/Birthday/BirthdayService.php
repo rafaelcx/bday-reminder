@@ -27,16 +27,24 @@ class BirthdayService {
         $updates = MessengerResolver::resolve()->getUpdates();
 
         foreach ($updates as $update) {
-            $update_portions = explode('.', $update->text);
-            $bday_name = $update_portions[0];
-            $bday_date = $update_portions[1] ?? '';
+            $parts = str_getcsv($update->text, ' ', '"', '\\');
+            
+            $service = $parts[0] ?? '';
+            $command = $parts[1] ?? '';
 
-            if (empty($bday_name) || empty($bday_date)) {
-                throw new \Exception('Birthday service `add` got unexpected update message');
+            if ($service !== 'bday' || $command !== 'add') {
+                continue;
+            }
+
+            $name = $parts[2] ?? '';
+            $bday = $parts[3] ?? '';
+
+            if (empty($name) || empty($bday)) {
+                throw new \Exception('Birthday service `add` got unexpected params');
             }
 
             BirthdayRepositoryResolver::resolve()
-                ->create($update->user_uid, $bday_name, Clock::at($bday_date));
+                ->create($update->user_uid, $name, Clock::at($bday));
         }
     }
 
