@@ -131,7 +131,7 @@ class TelegramMessengerTest extends CustomTestCase {
         HttpClientForTests::overrideHandler($mock_handler);
 
         $messenger = new TelegramMessenger();
-        $updates = $messenger->getUpdates($user);
+        $updates = $messenger->getUpdates();
 
         $this->assertCount(2, $updates);
 
@@ -148,16 +148,20 @@ class TelegramMessengerTest extends CustomTestCase {
         HttpClientForTests::overrideHandler($mock_handler);
 
         $messenger = new TelegramMessenger();
-        $updates = $messenger->getUpdates($user);
+        $updates = $messenger->getUpdates();
         $this->assertCount(0, $updates);
     }
 
     private function createAndGetUser(string $user_name): User {
         $user_repo = UserRepositoryResolver::resolve();
         $user_repo->create($user_name);
-        $all_users = $user_repo->findAll();
-        $created_user = array_filter($all_users, fn(User $u) => $u->name === $user_name);
-        return array_pop($created_user);
+
+        foreach ($user_repo->findAll() as $user) {
+            if ($user->name === $user_name) {
+                return $user;
+            }
+        }
+        throw new \RuntimeException("User '$user_name' was not created.");
     }
 
     private function mockValidCredentials(): void {
