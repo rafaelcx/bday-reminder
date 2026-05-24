@@ -1,0 +1,8 @@
+parameters:
+    level: 8
+
+services:
+    -
+        class: Test\Support\PhpStan\Rules\RequireStrictTypesRule
+        tags:
+            - phpstan.rules.rule

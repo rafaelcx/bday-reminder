@@ -26,7 +26,7 @@ if [ -n "$PHP_FILES" ]; then
     echo
 
     docker exec -i "$CONTAINER" \
-        vendor/bin/phpstan analyse --ansi --level 8 $PHP_FILES
+        vendor/bin/phpstan analyse --ansi -c phpstan.neon $PHP_FILES
 
     echo
 else
