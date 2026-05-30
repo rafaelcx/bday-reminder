@@ -9,13 +9,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 
-class HomeController {
+class LoginController {
 
     public function handle(Request $request, Response $response): Response {
         $user_repository = UserRepositoryResolver::resolve();
 
         $view = Twig::fromRequest($request);
-        return $view->render($response, 'home.html.twig', [
+        return $view->render($response, 'login.html.twig', [
             'users' => $user_repository->findAll(),
         ]);
     }

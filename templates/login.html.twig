@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Reminder</title>
-    <link rel="stylesheet" href="/assets/home.css">
+    <link rel="stylesheet" href="/assets/login.css">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
         <p>Stay on top of your loved ones' birthdays!</p>
         <p>Birthday Reminder automatically adds recurring events and makes it easy to share them through your messaging apps</p>
 
-        <form action="/user" method="get" class="form-container">
+        <form action="/birthday" method="get" class="form-container">
             <select name="uid" required>
                 <option value="" disabled selected>Select your profile</option>
                 {% for user in users %}

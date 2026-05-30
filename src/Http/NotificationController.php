@@ -22,7 +22,7 @@ class NotificationController {
 
         return $response
             ->withStatus(302)
-            ->withHeader('Location', '/user?uid=' . urlencode($user_uid));
+            ->withHeader('Location', '/birthday?uid=' . urlencode($user_uid));
     }
 
 }

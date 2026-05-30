@@ -16,7 +16,7 @@ class NotificationControllerTest extends CustomTestCase {
             ->dispatch();
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/user?uid=nonexistent123', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?uid=nonexistent123', $result->getHeaderLine('Location'));
     }
 
 }

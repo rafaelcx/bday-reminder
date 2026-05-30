@@ -10,13 +10,48 @@ use Test\CustomTestCase;
 
 class BirthdayControllerTest extends CustomTestCase {
 
+    public function testController_Show_WhenSuccessful(): void {
+        $birthday_repository = BirthdayRepositoryResolver::resolve();
+        $birthday_repository->create('1', 'Name One', Clock::now());
+        $birthday_repository->create('1', 'Name Two', Clock::now());
+        $birthday_repository->create('2', 'Name Three', Clock::now());
+       
+        $result = $this->request_simulator
+            ->withMethod('GET')
+            ->withPath('/birthday')
+            ->withQueryParam('uid', '1')
+            ->dispatch();
+
+        $this->assertSame(200, $result->getStatusCode());
+
+        $result_body = (string) $result->getBody();
+        $this->assertStringContainsString('Your Birthday List', $result_body);
+        $this->assertStringContainsString('Name One', $result_body);
+        $this->assertStringContainsString('Name Two', $result_body);
+        $this->assertStringNotContainsString('Name Three', $result_body);
+    }
+
+    public function testController_Show_WhenSuccessful_AndUserHasNoBirthdays(): void {
+        $result = $this->request_simulator
+            ->withMethod('GET')
+            ->withPath('/birthday')
+            ->withQueryParam('uid', '1')
+            ->dispatch();
+
+        $this->assertSame(200, $result->getStatusCode());
+
+        $result_body = (string) $result->getBody();
+        $this->assertStringContainsString('Your Birthday List', $result_body);
+        $this->assertStringContainsString('You haven\'t added any birthdays yet', $result_body);
+    }
+
     public function testController_Create_WhenSuccessful(): void {
         $request_post_params = [
             'name' => 'Jhon',
             'date' => '2000-01-01',
             'user_uid' => '123',
         ];
-        
+
         $result = $this->request_simulator
             ->withMethod('POST')
             ->withPath('/birthday')
@@ -27,7 +62,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('123');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/user?uid=123', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?uid=123', $result->getHeaderLine('Location'));
         $this->assertCount(1, $birthday_list);
         $this->assertSame('Jhon', $birthday_list[0]->name);
     }
@@ -54,7 +89,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('1');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/user?uid=1', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?uid=1', $result->getHeaderLine('Location'));
         $this->assertCount(1, $birthday_list);
         $this->assertSame('New Name', $birthday_list[0]->name);
         $this->assertSame('2000-01-01', $birthday_list[0]->date->format('Y-m-d'));
@@ -70,7 +105,7 @@ class BirthdayControllerTest extends CustomTestCase {
             'birthday_uid' => $target_bday_uid,
             'user_uid' => '1',
         ];
-        
+
         $result = $this->request_simulator
             ->withMethod('POST')
             ->withPath('/birthday/delete')
@@ -80,7 +115,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('1');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/user?uid=1', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?uid=1', $result->getHeaderLine('Location'));
         $this->assertCount(0, $birthday_list);
     }
 
