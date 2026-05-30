@@ -8,8 +8,22 @@ use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Utils\Clock;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Views\Twig;
 
 class BirthdayController {
+
+    public function show(Request $request, Response $response): Response {
+        $user_uid = $request->getQueryParams()['uid'];
+
+        $birthday_list = BirthdayRepositoryResolver::resolve()
+            ->findByUserUid($user_uid);
+
+        $view = Twig::fromRequest($request);
+        return $view->render($response, 'birthday.html.twig', [
+            'birthdays' => $birthday_list,
+            'user_uid' => $user_uid,
+        ]);
+    }
 
     public function create(Request $request, Response $response): Response {
         $parsed_body = $request->getParsedBody();
@@ -62,7 +76,7 @@ class BirthdayController {
     private function buildRedirectResponse(Response $response, string $user_uid): Response {
         return $response
             ->withStatus(302)
-            ->withHeader('Location', '/user?uid=' . urlencode($user_uid));
+            ->withHeader('Location', '/birthday?uid=' . urlencode($user_uid));
     }
 
 }

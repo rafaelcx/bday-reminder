@@ -7,7 +7,7 @@ namespace Test\Src\Http;
 use App\Repository\User\UserRepositoryResolver;
 use Test\CustomTestCase;
 
-class HomeControllerTest extends CustomTestCase {
+class LoginControllerTest extends CustomTestCase {
 
     public function testController_WhenSuccessful(): void {
         $user_respository = UserRepositoryResolver::resolve();
