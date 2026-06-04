@@ -12,14 +12,14 @@ class ServiceControllerTest extends CustomTestCase {
         $result = $this->request_simulator
             ->withMethod('GET')
             ->withPath('/services')
-            ->withQueryParam('uid', '123')
+            ->withQueryParam('user_uid', '123')
             ->dispatch();
 
         $this->assertSame(200, $result->getStatusCode());
 
         $result_body = (string) $result->getBody();
         $this->assertStringContainsString('Services', $result_body);
-        $this->assertStringContainsString('<input type="hidden" name="uid" value="123">', $result_body);
+        $this->assertStringContainsString('<input type="hidden" name="user_uid" value="123">', $result_body);
         $this->assertStringContainsString('Birthday', $result_body);
     }
 
@@ -27,7 +27,7 @@ class ServiceControllerTest extends CustomTestCase {
         $result = $this->request_simulator
             ->withMethod('GET')
             ->withPath('/services')
-            ->withQueryParam('uid', 'user"&<>')
+            ->withQueryParam('user_uid', 'user"&<>')
             ->dispatch();
 
         $this->assertSame(200, $result->getStatusCode());
