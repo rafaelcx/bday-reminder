@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Http;
 
 use App\Repository\Task\TaskRepositoryResolver;
+use App\Repository\Task\TaskStatus;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
@@ -65,7 +66,7 @@ class TaskControllerTest extends CustomTestCase {
 
         $this->assertSame(200, $response->getStatusCode());
         $body = (string) $response->getBody();
-        $this->assertStringContainsString('DONE', $body);
+        $this->assertStringContainsString(TaskStatus::DONE->value, $body);
         $this->assertStringContainsString('status-done', $body);
     }
 
@@ -88,7 +89,7 @@ class TaskControllerTest extends CustomTestCase {
         $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
         $this->assertCount(1, $task_list);
         $this->assertSame('Read a book', $task_list[0]->title);
-        $this->assertSame('DOING', $task_list[0]->status);
+        $this->assertSame(TaskStatus::DOING, $task_list[0]->status);
     }
 
     public function testController_CompletesTask_WhenSuccessful(): void {
@@ -114,7 +115,7 @@ class TaskControllerTest extends CustomTestCase {
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
         $this->assertCount(1, $updated_tasks);
-        $this->assertSame('DONE', $updated_tasks[0]->status);
+        $this->assertSame(TaskStatus::DONE, $updated_tasks[0]->status);
     }
 
     public function testController_DeletesTask_WhenSuccessful(): void {

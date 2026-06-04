@@ -12,9 +12,7 @@ use App\Utils\JsonEncoder;
 class TaskRepositoryInFile implements TaskRepository {
 
     private const string FILE_NAME = 'task-file.json';
-    private const string STATUS_DOING = 'DOING';
-    private const string STATUS_DONE = 'DONE';
-    
+
     private FileService $file_service;
 
     public function __construct() {
@@ -33,7 +31,7 @@ class TaskRepositoryInFile implements TaskRepository {
             'id' => $this->nextId($task_list),
             'user_uid' => $user_uid,
             'title' => $title,
-            'status' => self::STATUS_DOING,
+            'status' => TaskStatus::DOING->value,
             'created_at' => $now,
             'updated_at' => $now,
         ];
@@ -59,7 +57,7 @@ class TaskRepositoryInFile implements TaskRepository {
                 $task->id,
                 $task->user_uid,
                 $task->title,
-                $task->status,
+                TaskStatus::from($task->status),
                 Clock::at($task->created_at),
                 Clock::at($task->updated_at)
             );
@@ -86,7 +84,7 @@ class TaskRepositoryInFile implements TaskRepository {
 
         foreach ($all_persisted_tasks as $index => $persisted_task) {
             if ($persisted_task->id === $task_id) {
-                $all_persisted_tasks[$index]->status = self::STATUS_DONE;
+                $all_persisted_tasks[$index]->status = TaskStatus::DONE->value;
                 $all_persisted_tasks[$index]->updated_at = Clock::now()->format('Y-m-d');
             }
         }

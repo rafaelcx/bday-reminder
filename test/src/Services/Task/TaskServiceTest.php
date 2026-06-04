@@ -105,7 +105,7 @@ class TaskServiceTest extends CustomTestCase {
 
         // Verify task status is in the message
         $this->assertInstanceOf(Task::class, $task);
-        $this->assertStringContainsString($task->status, $received_message);
+        $this->assertStringContainsString($task->status->value, $received_message);
     }
 
     private function createAndGetUser(string $user_name): User {
