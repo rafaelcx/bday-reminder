@@ -38,19 +38,26 @@ foreach (scandir($dest_dir) as $file) {
     }
 
     $contents = file_get_contents($file_path);
+    if (!$contents) {
+        throw new \RuntimeException('Storage seed failed, could not find ' . $file_path);
+    }
+
     $data = json_decode($contents, true);
 
     if ($data === null) {
         $data = [];
     }
 
-    $data = seedFileData($file, $data);
+    $data = seedFileData($file);
 
     $updated_json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     file_put_contents($file_path, $updated_json);
 }
 
-function seedFileData(string $file, array $data): array {
+/**
+ * @return array<string, mixed>
+ */
+function seedFileData(string $file): array {
     switch ($file) {
         case 'birthday-file.json':
             return [
@@ -110,6 +117,28 @@ function seedFileData(string $file, array $data): array {
 
         case 'log-file.json':
             return [];
+
+        case 'task-file.json':
+            return [
+                'tasks' => [
+                    [
+                        'id' => '1',
+                        'user_uid' => '1',
+                        'title' => 'Buy groceries',
+                        'status' => 'DOING',
+                        'created_at' => '2026-06-01',
+                        'updated_at' => '2026-06-01',
+                    ],
+                    [
+                        'id' => '2',
+                        'user_uid' => '1',
+                        'title' => 'Call doctor',
+                        'status' => 'DONE',
+                        'created_at' => '2026-05-28',
+                        'updated_at' => '2026-06-02',
+                    ],
+                ],
+            ];
 
         default:
             throw new \Exception('There is no seed configured for ' . $file);

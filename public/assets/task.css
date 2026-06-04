@@ -1,0 +1,111 @@
+body {
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 2rem;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.action-bar form {
+    margin: 0;
+}
+
+.action-bar button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.action-bar button:hover {
+    background-color: #1565c0;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-table th,
+.task-table td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.task-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.task-table td form {
+    display: inline;
+}
+
+.status-badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.status-doing {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-done {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.task-table button {
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.complete-btn {
+    background-color: #4caf50;
+}
+
+.complete-btn:hover {
+    background-color: #388e3c;
+}
+
+.delete-btn {
+    background-color: #dd280d;
+}
+
+.delete-btn:hover {
+    background-color: #c41e04;
+}
