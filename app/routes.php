@@ -43,4 +43,16 @@ return function (App $app) {
     $app->get('/task', function (Request $request, Response $response) {
         return (new TaskController())->show($request, $response);
     });
+
+    $app->post('/task', function (Request $request, Response $response) {
+        return (new TaskController())->create($request, $response);
+    });
+
+    $app->post('/task/complete', function (Request $request, Response $response) {
+        return (new TaskController())->complete($request, $response);
+    });
+
+    $app->post('/task/delete', function (Request $request, Response $response) {
+        return (new TaskController())->delete($request, $response);
+    });
 };
