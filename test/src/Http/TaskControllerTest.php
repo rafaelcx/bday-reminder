@@ -69,4 +69,77 @@ class TaskControllerTest extends CustomTestCase {
         $this->assertStringContainsString('status-done', $body);
     }
 
+    public function testController_CreatesTask_WhenSuccessful(): void {
+        $request_post_params = [
+            'title' => 'Read a book',
+            'user_uid' => 'user_1',
+        ];
+
+        $response = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/task')
+            ->withPostParams($request_post_params)
+            ->dispatch();
+
+        $task_repository = TaskRepositoryResolver::resolve();
+        $task_list = $task_repository->findByUserUid('user_1');
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
+        $this->assertCount(1, $task_list);
+        $this->assertSame('Read a book', $task_list[0]->title);
+        $this->assertSame('DOING', $task_list[0]->status);
+    }
+
+    public function testController_CompletesTask_WhenSuccessful(): void {
+        $task_repository = TaskRepositoryResolver::resolve();
+        $task_repository->create('user_1', 'Task to complete');
+
+        $all_tasks = $task_repository->findByUserUid('user_1');
+        $task_id = $all_tasks[0]->id;
+
+        $request_post_params = [
+            'task_id' => $task_id,
+            'user_uid' => 'user_1',
+        ];
+
+        $response = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/task/complete')
+            ->withPostParams($request_post_params)
+            ->dispatch();
+
+        $updated_tasks = $task_repository->findByUserUid('user_1');
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
+        $this->assertCount(1, $updated_tasks);
+        $this->assertSame('DONE', $updated_tasks[0]->status);
+    }
+
+    public function testController_DeletesTask_WhenSuccessful(): void {
+        $task_repository = TaskRepositoryResolver::resolve();
+        $task_repository->create('user_1', 'Task to delete');
+
+        $all_tasks = $task_repository->findByUserUid('user_1');
+        $task_id = $all_tasks[0]->id;
+
+        $request_post_params = [
+            'task_id' => $task_id,
+            'user_uid' => 'user_1',
+        ];
+
+        $response = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/task/delete')
+            ->withPostParams($request_post_params)
+            ->dispatch();
+
+        $remaining_tasks = $task_repository->findByUserUid('user_1');
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
+        $this->assertCount(0, $remaining_tasks);
+    }
+
 }
