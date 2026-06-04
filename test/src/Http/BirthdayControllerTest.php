@@ -19,7 +19,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $result = $this->request_simulator
             ->withMethod('GET')
             ->withPath('/birthday')
-            ->withQueryParam('uid', '1')
+            ->withQueryParam('user_uid', '1')
             ->dispatch();
 
         $this->assertSame(200, $result->getStatusCode());
@@ -35,7 +35,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $result = $this->request_simulator
             ->withMethod('GET')
             ->withPath('/birthday')
-            ->withQueryParam('uid', '1')
+            ->withQueryParam('user_uid', '1')
             ->dispatch();
 
         $this->assertSame(200, $result->getStatusCode());
@@ -62,7 +62,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('123');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/birthday?uid=123', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?user_uid=123', $result->getHeaderLine('Location'));
         $this->assertCount(1, $birthday_list);
         $this->assertSame('Jhon', $birthday_list[0]->name);
     }
@@ -89,7 +89,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('1');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/birthday?uid=1', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?user_uid=1', $result->getHeaderLine('Location'));
         $this->assertCount(1, $birthday_list);
         $this->assertSame('New Name', $birthday_list[0]->name);
         $this->assertSame('2000-01-01', $birthday_list[0]->date->format('Y-m-d'));
@@ -115,7 +115,7 @@ class BirthdayControllerTest extends CustomTestCase {
         $birthday_list = $birthday_repository->findByUserUid('1');
 
         $this->assertSame(302, $result->getStatusCode());
-        $this->assertSame('/birthday?uid=1', $result->getHeaderLine('Location'));
+        $this->assertSame('/birthday?user_uid=1', $result->getHeaderLine('Location'));
         $this->assertCount(0, $birthday_list);
     }
 

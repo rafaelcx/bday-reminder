@@ -6,6 +6,7 @@ use App\Http\BirthdayController;
 use App\Http\LoginController;
 use App\Http\NotificationController;
 use App\Http\ServiceController;
+use App\Http\TaskController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -37,5 +38,9 @@ return function (App $app) {
 
     $app->post('/notify', function (Request $request, Response $response) {
         return (new NotificationController())->handle($request, $response);
+    });
+
+    $app->get('/task', function (Request $request, Response $response) {
+        return (new TaskController())->show($request, $response);
     });
 };

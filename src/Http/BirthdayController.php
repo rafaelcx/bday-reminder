@@ -13,7 +13,7 @@ use Slim\Views\Twig;
 class BirthdayController {
 
     public function show(Request $request, Response $response): Response {
-        $user_uid = $request->getQueryParams()['uid'];
+        $user_uid = $request->getQueryParams()['user_uid'];
 
         $birthday_list = BirthdayRepositoryResolver::resolve()
             ->findByUserUid($user_uid);
@@ -76,7 +76,7 @@ class BirthdayController {
     private function buildRedirectResponse(Response $response, string $user_uid): Response {
         return $response
             ->withStatus(302)
-            ->withHeader('Location', '/birthday?uid=' . urlencode($user_uid));
+            ->withHeader('Location', '/birthday?user_uid=' . urlencode($user_uid));
     }
 
 }

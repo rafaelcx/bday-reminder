@@ -61,3 +61,10 @@ body {
 .service-button:active {
     transform: translateY(0);
 }
+
+.action-bar {
+    width: 20%;
+    display: flex;
+    justify-content: left;
+    margin-bottom: 1.5rem;
+}

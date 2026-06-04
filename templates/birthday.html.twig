@@ -17,8 +17,9 @@
         </form>
 
         <div class="action-bar">
-            <form action="/" method="get">
-                <button type="submit">← Select Another User</button>
+            <form action="/services" method="get">
+                <input type="hidden" name="user_uid" value="{{ user_uid }}">
+                <button type="submit">← Back</button>
             </form>
             
             <button id="openModalBtn">+ Add New Birthday</button>

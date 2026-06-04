@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <link rel="stylesheet" href="/assets/services.css">
+</head>
+
+<body>
+    <div class="container services-page">
+        <h1>Services</h1>
+        <div class="service-list">
+
+            <form action="/birthday" method="get" class="service-button-form">
+                <input type="hidden" name="user_uid" value="{{ user_uid|e }}">
+                <button type="submit" class="service-button">Birthday</button>
+            </form>
+
+            <form action="/task" method="get" class="service-button-form">
+                <input type="hidden" name="user_uid" value="{{ user_uid|e }}">
+                <button type="submit" class="service-button">Tasks</button>
+            </form>
+
+        </div>
+
+        <div class="action-bar">
+            <form action="/" method="get" class="service-button-form">
+                <button type="submit" class="service-button">← Back</button>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
