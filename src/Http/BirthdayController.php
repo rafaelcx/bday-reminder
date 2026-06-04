@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
+use App\Services\Birthday\BirthdayService;
 use App\Utils\Clock;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -71,6 +72,21 @@ class BirthdayController {
             ->delete($bday_uid);
 
         return $this->buildRedirectResponse($response, $bday_user_uid);
+    }
+
+    public function notify(Request $request, Response $response): Response {
+        $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
+
+        $user_uid = $parsed_body['user_uid'];
+
+        BirthdayService::notify();
+
+        return $response
+            ->withStatus(302)
+            ->withHeader('Location', '/birthday?user_uid=' . urlencode($user_uid));
     }
 
     private function buildRedirectResponse(Response $response, string $user_uid): Response {
