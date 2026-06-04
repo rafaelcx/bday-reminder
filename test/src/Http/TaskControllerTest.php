@@ -142,4 +142,19 @@ class TaskControllerTest extends CustomTestCase {
         $this->assertCount(0, $remaining_tasks);
     }
 
+    public function testController_NotifiesUser_WhenSuccessful(): void {
+        $request_post_params = [
+            'user_uid' => 'user_1',
+        ];
+
+        $response = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/task/notify')
+            ->withPostParams($request_post_params)
+            ->dispatch();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/task?user_uid=user_1', $response->getHeaderLine('Location'));
+    }
+
 }

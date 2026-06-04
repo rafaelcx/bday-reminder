@@ -14,6 +14,21 @@ p {
     color: #555;
 }
 
+.notify-btn {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.notify-btn:hover {
+    background-color: #1565c0;
+}
+
 .container {
     max-width: 800px;
     margin: 0 auto;

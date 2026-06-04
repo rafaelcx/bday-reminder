@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Repository\Task\TaskRepositoryResolver;
+use App\Services\Task\TaskService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -67,6 +68,19 @@ class TaskController {
             ->delete($task_id);
 
         return $this->buildRedirectResponse($response, $task_user_uid);
+    }
+
+    public function notify(Request $request, Response $response): Response {
+        $parsed_body = $request->getParsedBody();
+        if (!is_array($parsed_body)) {
+            throw new \InvalidArgumentException('Invalid request body.');
+        }
+
+        $user_uid = $parsed_body['user_uid'];
+
+        TaskService::notify();
+
+        return $this->buildRedirectResponse($response, $user_uid);
     }
 
     private function buildRedirectResponse(Response $response, string $user_uid): Response {
