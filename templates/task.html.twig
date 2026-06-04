@@ -11,6 +11,11 @@
         <h1>Your Tasks</h1>
         <p>Manage your tasks and keep track of what needs to be done.</p>
 
+        <form action="/task/notify" method="post">
+            <input type="hidden" name="user_uid" value="{{ user_uid }}">
+            <button class="notify-btn" type="submit">Notify Me!</button>
+        </form>
+
         <div class="action-bar">
             <form action="/services" method="get">
                 <input type="hidden" name="user_uid" value="{{ user_uid }}">

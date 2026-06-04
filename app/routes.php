@@ -54,4 +54,8 @@ return function (App $app) {
     $app->post('/task/delete', function (Request $request, Response $response) {
         return (new TaskController())->delete($request, $response);
     });
+
+    $app->post('/task/notify', function (Request $request, Response $response) {
+        return (new TaskController())->notify($request, $response);
+    });
 };
