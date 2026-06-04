@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List</title>
+    <link rel="stylesheet" href="/assets/task.css">
+    <link rel="stylesheet" href="/assets/modal.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Your Tasks</h1>
+        <p>Manage your tasks and keep track of what needs to be done.</p>
+
+        <div class="action-bar">
+            <form action="/services" method="get">
+                <input type="hidden" name="user_uid" value="{{ user_uid }}">
+                <button type="submit">← Back</button>
+            </form>
+            
+            <button id="openModalBtn">+ Add New Task</button>
+        
+        </div>
+
+        {% if tasks is not empty %}
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.title|e }}</td>
+                            <td>
+                                <span class="status-badge status-{{ task.status|lower }}">
+                                    {{ task.status }}
+                                </span>
+                            </td>
+                            <td>{{ task.created_at.format('M d, Y') }}</td>
+                            <td>
+                                {% if task.status == 'DOING' %}
+                                    <form method="post" action="/task/complete" style="display: inline;">
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <input type="hidden" name="user_uid" value="{{ user_uid }}">
+                                        <button class="complete-btn" type="submit">✓ Complete</button>
+                                    </form>
+                                {% endif %}
+
+                                <form method="post" action="/task/delete" style="display: inline;">
+                                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                                    <input type="hidden" name="user_uid" value="{{ user_uid }}">
+                                    <button class="delete-btn" type="submit">X</button>
+                                </form>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You haven't added any tasks yet.</p>
+        {% endif %}
+
+        <!-- Create Task - Modal Markup -->
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" id="closeModalBtn">&times;</span>
+                <h2>Add New Task</h2>
+                <form method="post" action="/task">
+                    <label>
+                        Title:
+                        <input type="text" name="title" required>
+                    </label>
+
+                    <!-- Hidden -->
+                    <input type="hidden" name="user_uid" value="{{ user_uid }}">
+
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Create Modal JS -->
+    <script>
+        const openBtn = document.getElementById('openModalBtn');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>
