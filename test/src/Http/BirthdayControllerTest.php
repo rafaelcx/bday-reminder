@@ -119,4 +119,15 @@ class BirthdayControllerTest extends CustomTestCase {
         $this->assertCount(0, $birthday_list);
     }
 
+    public function testController_Notify_WhenSuccessful(): void {
+        $result = $this->request_simulator
+            ->withMethod('POST')
+            ->withPath('/birthday/notify')
+            ->withPostParams(['user_uid' => 'nonexistent123'])
+            ->dispatch();
+
+        $this->assertSame(302, $result->getStatusCode());
+        $this->assertSame('/birthday?user_uid=nonexistent123', $result->getHeaderLine('Location'));
+    }
+
 }

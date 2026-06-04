@@ -11,7 +11,7 @@
         <h1>Your Birthday List</h1>
         <p>These are the birthdays you've submitted. They will be periodically sent to you via your preferred messaging apps.</p>
 
-        <form action="/notify" method="post">
+        <form action="/birthday/notify" method="post">
             <input type="hidden" name="user_uid" value="{{ user_uid }}">
             <button class="notify-btn" type="submit">Notify Me!</button>
         </form>
