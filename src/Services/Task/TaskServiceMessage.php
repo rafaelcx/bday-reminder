@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Task;
 
 use App\Repository\Task\Task;
+use App\Repository\Task\TaskStatus;
 use App\Repository\User\User;
 
 class TaskServiceMessage {
@@ -32,9 +33,9 @@ class TaskServiceMessage {
         $message_lines[] = '';
 
         foreach ($sorted_tasks as $task) {
-            $status_icon = $task->status === 'completed' ? '✅' : '📋';
+            $status_icon = $task->status === TaskStatus::DONE ? '✅' : '📋';
             $message_lines[] = "{$status_icon} [{$task->id}] {$task->title}";
-            $message_lines[] = "   Status: {$task->status}";
+            $message_lines[] = "   Status: {$task->status->value}";
             $message_lines[] = '';
         }
 
@@ -44,11 +45,11 @@ class TaskServiceMessage {
     }
 
     private static function sortTasks(Task $t1, Task $t2): int {
-        // Completed tasks go to the end
-        if ($t1->status !== 'completed' && $t2->status === 'completed') {
+        // Completed tasks go to the start
+        if ($t1->status !== TaskStatus::DOING && $t2->status === TaskStatus::DOING) {
             return -1;
         }
-        if ($t1->status === 'completed' && $t2->status !== 'completed') {
+        if ($t1->status === TaskStatus::DOING && $t2->status !== TaskStatus::DOING) {
             return 1;
         }
         // Sort by updated_at descending

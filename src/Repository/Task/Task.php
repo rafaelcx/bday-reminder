@@ -12,7 +12,7 @@ class Task {
         public readonly string $id,
         public readonly string $user_uid,
         public readonly string $title,
-        public readonly string $status,
+        public readonly TaskStatus $status,
         public readonly Clock $created_at,
         public readonly Clock $updated_at,
     ) {}

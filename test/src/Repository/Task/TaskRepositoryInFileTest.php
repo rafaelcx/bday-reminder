@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Repository\Task;
 
 use App\Repository\Task\TaskRepositoryInFile;
+use App\Repository\Task\TaskStatus;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use Test\CustomTestCase;
@@ -34,14 +35,14 @@ class TaskRepositoryInFileTest extends CustomTestCase {
         $this->assertSame('1', $persisted_tasks[0]->id);
         $this->assertSame('user_uid_1', $persisted_tasks[0]->user_uid);
         $this->assertSame('Buy milk', $persisted_tasks[0]->title);
-        $this->assertSame('DOING', $persisted_tasks[0]->status);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[0]->status);
         $this->assertSame('2026-06-04', $persisted_tasks[0]->created_at->asDateString());
         $this->assertSame('2026-06-04', $persisted_tasks[0]->updated_at->asDateString());
 
         $this->assertSame('2', $persisted_tasks[1]->id);
         $this->assertSame('user_uid_1', $persisted_tasks[1]->user_uid);
         $this->assertSame('Call dentist', $persisted_tasks[1]->title);
-        $this->assertSame('DOING', $persisted_tasks[1]->status);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[1]->status);
         $this->assertSame('2026-06-04', $persisted_tasks[1]->created_at->asDateString());
         $this->assertSame('2026-06-04', $persisted_tasks[1]->updated_at->asDateString());
 
@@ -79,15 +80,15 @@ class TaskRepositoryInFileTest extends CustomTestCase {
         $all_tasks = $this->task_repository->findByUserUid('user_uid_1');
         $first_task = $all_tasks[0];
         
-        $this->assertSame('DOING', $first_task->status);
+        $this->assertSame(TaskStatus::DOING, $first_task->status);
 
         $this->task_repository->completeTask($first_task->id);
 
         $persisted_tasks = $this->task_repository->findByUserUid('user_uid_1');
         $this->assertCount(2, $persisted_tasks);
-        $this->assertSame('DONE', $persisted_tasks[0]->status);
+        $this->assertSame(TaskStatus::DONE, $persisted_tasks[0]->status);
         $this->assertSame('2026-06-04', $persisted_tasks[0]->updated_at->asDateString());
-        $this->assertSame('DOING', $persisted_tasks[1]->status);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[1]->status);
     }
 
     public function testRepository_Delete(): void {
@@ -104,7 +105,7 @@ class TaskRepositoryInFileTest extends CustomTestCase {
         $this->assertNotEmpty($persisted_tasks[0]->id);
         $this->assertSame('user_uid_1', $persisted_tasks[0]->user_uid);
         $this->assertSame('Call dentist', $persisted_tasks[0]->title);
-        $this->assertSame('DOING', $persisted_tasks[0]->status);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[0]->status);
     }
 
     public function testRepository_FindByUserUidAfterDate(): void {
@@ -178,7 +179,7 @@ class TaskRepositoryInFileTest extends CustomTestCase {
         $this->task_repository->completeTask($task_id);
 
         $persisted_tasks = $this->task_repository->findByUserUid('user_uid_1');
-        $this->assertSame('DONE', $persisted_tasks[0]->status);
+        $this->assertSame(TaskStatus::DONE, $persisted_tasks[0]->status);
         $this->assertSame('2026-06-04', $persisted_tasks[0]->created_at->asDateString());
         $this->assertSame('2026-06-10', $persisted_tasks[0]->updated_at->asDateString());
     }

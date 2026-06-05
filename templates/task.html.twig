@@ -41,13 +41,13 @@
                         <tr>
                             <td>{{ task.title|e }}</td>
                             <td>
-                                <span class="status-badge status-{{ task.status|lower }}">
-                                    {{ task.status }}
+                                <span class="status-badge status-{{ task.status.value|lower }}">
+                                    {{ task.status.value }}
                                 </span>
                             </td>
                             <td>{{ task.created_at.format('M d, Y') }}</td>
                             <td>
-                                {% if task.status == 'DOING' %}
+                                {% if task.status.value == 'DOING' %}
                                     <form method="post" action="/task/complete" style="display: inline;">
                                         <input type="hidden" name="task_id" value="{{ task.id }}">
                                         <input type="hidden" name="user_uid" value="{{ user_uid }}">

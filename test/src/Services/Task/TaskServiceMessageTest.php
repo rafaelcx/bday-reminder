@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Services\Task;
 
 use App\Repository\Task\Task;
+use App\Repository\Task\TaskStatus;
 use App\Repository\User\User;
 use App\Services\Task\TaskServiceMessage;
 use App\Utils\Clock;
@@ -46,7 +47,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-001',
             user_uid: $this->test_user->uid,
             title: 'Complete Project',
-            status: 'pending',
+            status: TaskStatus::DOING,
             created_at: Clock::now(),
             updated_at: Clock::now()
         );
@@ -58,7 +59,7 @@ class TaskServiceMessageTest extends CustomTestCase {
         Here are your tasks:
 
         📋 [task-001] Complete Project
-           Status: pending
+           Status: DOING
 
         💪 Keep up the great work!
         TXT;
@@ -70,7 +71,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-002',
             user_uid: $this->test_user->uid,
             title: 'Finished Task',
-            status: 'completed',
+            status: TaskStatus::DONE,
             created_at: Clock::now(),
             updated_at: Clock::now()
         );
@@ -82,7 +83,7 @@ class TaskServiceMessageTest extends CustomTestCase {
         Here are your tasks:
 
         ✅ [task-002] Finished Task
-           Status: completed
+           Status: DONE
 
         💪 Keep up the great work!
         TXT;
@@ -94,7 +95,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-001',
             user_uid: $this->test_user->uid,
             title: 'Pending Task',
-            status: 'pending',
+            status: TaskStatus::DOING,
             created_at: Clock::now()->minusDays(1),
             updated_at: Clock::now()->minusDays(1)
         );
@@ -103,7 +104,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-002',
             user_uid: $this->test_user->uid,
             title: 'Completed Task',
-            status: 'completed',
+            status: TaskStatus::DONE,
             created_at: Clock::now()->minusDays(2),
             updated_at: Clock::now()->minusDays(2)
         );
@@ -113,7 +114,7 @@ class TaskServiceMessageTest extends CustomTestCase {
         $pending_pos = strpos($message, 'Pending Task');
         $completed_pos = strpos($message, 'Completed Task');
 
-        $this->assertLessThan($completed_pos, $pending_pos, 'Pending tasks should appear before completed tasks');
+        $this->assertLessThan($pending_pos, $completed_pos, 'DONE tasks should appear before DOING tasks');
     }
 
     public function testBuilder_ShouldFormatMultipleTasks(): void {
@@ -121,7 +122,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-001',
             user_uid: $this->test_user->uid,
             title: 'First Task',
-            status: 'pending',
+            status: TaskStatus::DOING,
             created_at: Clock::now()->minusDays(2),
             updated_at: Clock::now()->minusDays(2)
         );
@@ -130,7 +131,7 @@ class TaskServiceMessageTest extends CustomTestCase {
             id: 'task-002',
             user_uid: $this->test_user->uid,
             title: 'Second Task',
-            status: 'in_progress',
+            status: TaskStatus::DOING,
             created_at: Clock::now()->minusDays(1),
             updated_at: Clock::now()->minusDays(1)
         );
@@ -139,10 +140,11 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $this->assertStringContainsString('task-001', $message);
         $this->assertStringContainsString('First Task', $message);
-        $this->assertStringContainsString('pending', $message);
+        $this->assertStringContainsString(TaskStatus::DOING->value, $message);
+
         $this->assertStringContainsString('task-002', $message);
         $this->assertStringContainsString('Second Task', $message);
-        $this->assertStringContainsString('in_progress', $message);
+        $this->assertStringContainsString(TaskStatus::DOING->value, $message);
     }
 
 }
