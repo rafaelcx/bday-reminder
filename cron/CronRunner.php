@@ -6,13 +6,15 @@ namespace App\Cron;
 
 use App\Logger\LoggerService;
 use App\Services\Birthday\BirthdayService;
+use App\Services\Task\TaskService;
 
 class CronRunner {
 
     public static function run(string $task_name): void {
         match ($task_name) {
-            'notify'           => BirthdayService::notify(),
+            'birthday_notify'  => BirthdayService::notify(),
             'update_birthdays' => BirthdayService::add(),
+            'task_notify'      => TaskService::notify(),
             'clean_logs'       => LoggerService::cleanLogs(),
 
             default => throw new \RuntimeException('Cron task name not configured'),
