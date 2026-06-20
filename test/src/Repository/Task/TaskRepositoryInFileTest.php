@@ -91,6 +91,64 @@ class TaskRepositoryInFileTest extends CustomTestCase {
         $this->assertSame(TaskStatus::DOING, $persisted_tasks[1]->status);
     }
 
+    public function testRepository_FindByUserUid_OrdersDoneBeforeDoingAndOlderTasksFirst(): void {
+        Clock::freeze('2026-05-01 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Older doing');
+
+        Clock::freeze('2026-05-02 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Older done');
+
+        Clock::freeze('2026-05-03 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Newer done');
+
+        Clock::freeze('2026-05-04 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Newer doing');
+
+        $this->task_repository->completeTask('2');
+        $this->task_repository->completeTask('3');
+
+        $persisted_tasks = $this->task_repository->findByUserUid('user_uid_1');
+
+        $this->assertCount(4, $persisted_tasks);
+        $this->assertSame('Older done', $persisted_tasks[0]->title);
+        $this->assertSame(TaskStatus::DONE, $persisted_tasks[0]->status);
+        $this->assertSame('Newer done', $persisted_tasks[1]->title);
+        $this->assertSame(TaskStatus::DONE, $persisted_tasks[1]->status);
+        $this->assertSame('Older doing', $persisted_tasks[2]->title);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[2]->status);
+        $this->assertSame('Newer doing', $persisted_tasks[3]->title);
+        $this->assertSame(TaskStatus::DOING, $persisted_tasks[3]->status);
+    }
+
+    public function testRepository_FindByUserUidAfterDate_OrdersDoneBeforeDoingAndOlderTasksFirst(): void {
+        Clock::freeze('2026-05-01 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Task one');
+
+        Clock::freeze('2026-05-02 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Task two');
+
+        Clock::freeze('2026-05-03 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Task three');
+
+        Clock::freeze('2026-05-04 12:00:00');
+        $this->task_repository->create('user_uid_1', 'Task four');
+
+        $this->task_repository->completeTask('2');
+
+        $tasks_after_may_01 = $this->task_repository->findByUserUidAfterDate(
+            'user_uid_1',
+            Clock::at('2026-05-01')
+        );
+
+        $this->assertCount(3, $tasks_after_may_01);
+        $this->assertSame('Task two', $tasks_after_may_01[0]->title);
+        $this->assertSame(TaskStatus::DONE, $tasks_after_may_01[0]->status);
+        $this->assertSame('Task three', $tasks_after_may_01[1]->title);
+        $this->assertSame(TaskStatus::DOING, $tasks_after_may_01[1]->status);
+        $this->assertSame('Task four', $tasks_after_may_01[2]->title);
+        $this->assertSame(TaskStatus::DOING, $tasks_after_may_01[2]->status);
+    }
+
     public function testRepository_Delete(): void {
         $this->task_repository->create('user_uid_1', 'Buy milk');
         $this->task_repository->create('user_uid_1', 'Call dentist');
