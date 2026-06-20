@@ -15,6 +15,7 @@ class CronRunner {
             'birthday_notify'  => BirthdayService::notify(),
             'update_birthdays' => BirthdayService::add(),
             'task_notify'      => TaskService::notify(),
+            'update_tasks'     => TaskService::add(),
             'clean_logs'       => LoggerService::cleanLogs(),
 
             default => throw new \RuntimeException('Cron task name not configured'),

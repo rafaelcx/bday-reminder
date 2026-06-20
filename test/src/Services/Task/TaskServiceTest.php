@@ -8,9 +8,11 @@ use App\Repository\Task\Task;
 use App\Repository\Task\TaskRepositoryResolver;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
+use App\Services\Messenger\Message;
 use App\Services\Task\TaskService;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Test\CustomTestCase;
 use Test\Support\Services\Messenger\MessengerForTests;
 use Test\Support\Services\Messenger\MessengerResolverForTests;
@@ -106,6 +108,114 @@ class TaskServiceTest extends CustomTestCase {
         // Verify task status is in the message
         $this->assertInstanceOf(Task::class, $task);
         $this->assertStringContainsString($task->status->value, $received_message);
+    }
+
+    public function testService_Add_ShouldAddTasksFromAllUsers(): void {
+        $user_1 = $this->createAndGetUser('user1');
+        $user_2 = $this->createAndGetUser('user2');
+
+        $update_1 = new Message(
+            id: '1',
+            message_id: '10',
+            user_uid: $user_1->uid,
+            text: 'task add "Task One"',
+        );
+
+        $update_2 = new Message(
+            id: '2',
+            message_id: '20',
+            user_uid: $user_2->uid,
+            text: 'task add "Task Two"',
+        );
+
+        $get_updates_behavior = fn() => [$update_1, $update_2];
+
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        TaskService::add();
+
+        $user_1_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_1->uid);
+        $user_2_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_2->uid);
+
+        $this->assertCount(1, $user_1_tasks);
+        $this->assertCount(1, $user_2_tasks);
+
+        $user_1_task = array_pop($user_1_tasks);
+        $user_2_task = array_pop($user_2_tasks);
+
+        $this->assertInstanceOf(Task::class, $user_1_task);
+        $this->assertInstanceOf(Task::class, $user_2_task);
+
+        $this->assertSame('Task One', $user_1_task->title);
+        $this->assertSame('Task Two', $user_2_task->title);
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public static function provideSkipableUpdateText(): iterable {
+        yield ['not_task add'];
+        yield ['task not_add'];
+        yield ['not_task not_add'];
+        yield ['task'];
+        yield ['add'];
+    }
+
+    #[DataProvider('provideSkipableUpdateText')]
+    public function testService_Add_ShouldSkip(string $text): void {
+        $user = $this->createAndGetUser('user1');
+
+        $update_1 = new Message(
+            id: '1',
+            message_id: '10',
+            user_uid: $user->uid,
+            text: $text,
+        );
+
+        $get_updates_behavior = fn() => [$update_1];
+
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        TaskService::add();
+
+        $user_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user->uid);
+
+        $this->assertCount(0, $user_tasks);
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public static function provideMalformedUpdateTextParams(): iterable {
+        yield ['task add'];
+        yield ['task add ""'];
+    }
+
+    #[DataProvider('provideMalformedUpdateTextParams')]
+    public function testService_Add_OnMalformedUpdateText_ShouldThrow(string $update_text): void {
+        $user = $this->createAndGetUser('user1');
+
+        $update_1 = new Message(
+            id: '1',
+            message_id: '10',
+            user_uid: $user->uid,
+            text: $update_text,
+        );
+
+        $get_updates_behavior = fn() => [$update_1];
+
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Task service `add` got unexpected params');
+
+        TaskService::add();
     }
 
     private function createAndGetUser(string $user_name): User {
