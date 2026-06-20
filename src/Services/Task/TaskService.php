@@ -21,4 +21,28 @@ class TaskService {
         }
     }
 
+    public static function add(): void {
+        $updates = MessengerResolver::resolve()->getUpdates();
+
+        foreach ($updates as $update) {
+            $parts = str_getcsv($update->text, ' ', '"', '\\');
+            
+            $service = $parts[0] ?? '';
+            $command = $parts[1] ?? '';
+
+            if ($service !== 'task' || $command !== 'add') {
+                continue;
+            }
+
+            $title = $parts[2] ?? '';
+
+            if (empty($title)) {
+                throw new \Exception('Task service `add` got unexpected params');
+            }
+
+            TaskRepositoryResolver::resolve()
+                ->create($update->user_uid, $title);
+        }
+    }
+
 }
