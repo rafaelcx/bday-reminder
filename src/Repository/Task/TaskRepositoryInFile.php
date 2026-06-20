@@ -62,7 +62,8 @@ class TaskRepositoryInFile implements TaskRepository {
                 Clock::at($task->updated_at)
             );
         }
-        return $task_list;
+
+        return $this->orderTasks($task_list);
     }
 
     public function findByUserUidAfterDate(string $user_uid, Clock $date): array {
@@ -74,7 +75,7 @@ class TaskRepositoryInFile implements TaskRepository {
             return $task_created_date > $filter_date;
         });
 
-        return array_values($relevant_tasks);
+        return $this->orderTasks(array_values($relevant_tasks));
     }
 
     public function completeTask(string $task_id): void {
@@ -111,6 +112,26 @@ class TaskRepositoryInFile implements TaskRepository {
         
         $updated_file_as_json = JsonEncoder::safeEncode($file_contents_as_obj, JSON_PRETTY_PRINT);
         $this->file_service->putFileContents(self::FILE_NAME, $updated_file_as_json);
+    }
+
+    /**
+     * @param Task[] $tasks
+     * @return Task[]
+     */
+    private function orderTasks(array $tasks): array {
+        usort($tasks, [$this, 'sortTasks']);
+        return $tasks;
+    }
+
+    private function sortTasks(Task $task_a, Task $task_b): int {
+        if ($task_a->status !== $task_b->status) {
+            if ($task_a->status === TaskStatus::DONE) {
+                return -1;
+            }
+            return 1;
+        }
+
+        return $task_a->created_at->getTimestamp() <=> $task_b->created_at->getTimestamp();
     }
 
     /**
