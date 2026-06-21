@@ -45,7 +45,7 @@ class TaskServiceTest extends CustomTestCase {
         $mock_notifier->setPostBehavior($mock_notifier_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        TaskService::notify();
+        new TaskService()->notify();
 
         $this->assertStringContainsString('user1', $execution_proof);
         $this->assertStringContainsString('user2', $execution_proof);
@@ -75,7 +75,7 @@ class TaskServiceTest extends CustomTestCase {
         $mock_notifier->setPostBehavior($mock_notifier_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        TaskService::notify();
+        new TaskService()->notify();
 
         // Verify task ID is in the message
         $this->assertInstanceOf(Task::class, $task);
@@ -103,7 +103,7 @@ class TaskServiceTest extends CustomTestCase {
         $mock_notifier->setPostBehavior($mock_notifier_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        TaskService::notify();
+        new TaskService()->notify();
 
         // Verify task status is in the message
         $this->assertInstanceOf(Task::class, $task);
@@ -134,7 +134,7 @@ class TaskServiceTest extends CustomTestCase {
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        TaskService::add();
+        new TaskService()->processInteractions();
 
         $user_1_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_1->uid);
         $user_2_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_2->uid);
@@ -180,7 +180,7 @@ class TaskServiceTest extends CustomTestCase {
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        TaskService::add();
+        new TaskService()->processInteractions();
 
         $user_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user->uid);
 
@@ -215,7 +215,7 @@ class TaskServiceTest extends CustomTestCase {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Task service `add` got unexpected params');
 
-        TaskService::add();
+        new TaskService()->processInteractions();
     }
 
     private function createAndGetUser(string $user_name): User {

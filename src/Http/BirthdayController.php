@@ -82,7 +82,7 @@ class BirthdayController {
 
         $user_uid = $parsed_body['user_uid'];
 
-        BirthdayService::notify();
+        new BirthdayService()->notify();
 
         return $response
             ->withStatus(302)
