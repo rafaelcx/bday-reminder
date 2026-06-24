@@ -6,12 +6,14 @@ namespace App\Services\Birthday;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Repository\User\UserRepositoryResolver;
+use App\Services\Interaction\Interactor;
 use App\Services\Messenger\MessengerResolver;
+use App\Services\Notification\Notifier;
 use App\Utils\Clock;
 
-class BirthdayService {
+class BirthdayService implements Notifier, Interactor {
 
-    public static function notify(): void {
+    public function notify(): void {
         $user_list = UserRepositoryResolver::resolve()->findAll();
         
         foreach ($user_list as $user) {
@@ -23,7 +25,7 @@ class BirthdayService {
         }
     }
 
-    public static function add(): void {
+    public function processInteractions(): void {
         $updates = MessengerResolver::resolve()->getUpdates();
 
         foreach ($updates as $update) {

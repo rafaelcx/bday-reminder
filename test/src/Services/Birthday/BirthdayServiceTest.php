@@ -46,7 +46,7 @@ class BirthdayServiceTest extends CustomTestCase {
         $mock_notifier->setPostBehavior($mock_notifier_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        BirthdayService::notify();
+        new BirthdayService()->notify();
 
         $this->assertStringContainsString('user1', $execution_proof);
         $this->assertStringContainsString('user2', $execution_proof);
@@ -77,7 +77,7 @@ class BirthdayServiceTest extends CustomTestCase {
         $mock_notifier->setPostBehavior($mock_notifier_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        BirthdayService::notify();
+        new BirthdayService()->notify();
 
         // Verify only birthdays in the next 30 days are included
         $this->assertStringContainsString('today_bday', $received_birthdays);
@@ -115,7 +115,7 @@ class BirthdayServiceTest extends CustomTestCase {
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        BirthdayService::add();
+        new BirthdayService()->processInteractions();
 
         $user_1_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_1->uid);
         $user_2_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_2->uid);
@@ -175,7 +175,7 @@ class BirthdayServiceTest extends CustomTestCase {
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
-        BirthdayService::add();
+        new BirthdayService()->processInteractions();
 
         $user_1_birthdays = BirthdayRepositoryResolver::resolve()->findByUserUid($user_1->uid);
 
@@ -212,7 +212,7 @@ class BirthdayServiceTest extends CustomTestCase {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Birthday service `add` got unexpected params');
         
-        BirthdayService::add();
+        new BirthdayService()->processInteractions();
     }
 
     private function createAndGetUser(string $user_name): User {

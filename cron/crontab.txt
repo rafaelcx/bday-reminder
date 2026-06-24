@@ -1,14 +1,8 @@
-# Run birthday notify script every day at 10:00 UTC
-0 10 * * * /usr/local/bin/php /app/cron/cron_dispatcher.php birthday_notify >> /var/log/cron.log 2>&1
+# Process all relevant services notification logic every day at 10:00 UTC
+0 10 * * * /usr/local/bin/php /app/cron/cron_dispatcher.php process_notifications >> /var/log/cron.log 2>&1
 
-# Run task notify script every day at 10:00 UTC
-0 10 * * * /usr/local/bin/php /app/cron/cron_dispatcher.php task_notify >> /var/log/cron.log 2>&1
-
-# Run add script every 5 minutes
-*/5 * * * * /usr/local/bin/php /app/cron/cron_dispatcher.php update_birthdays >> /var/log/cron.log 2>&1
-
-# Run add script every 5 minutes
-*/5 * * * * /usr/local/bin/php /app/cron/cron_dispatcher.php update_tasks >> /var/log/cron.log 2>&1
+# Run all relevant services interaction process logic every 1 minute
+*/1 * * * * /usr/local/bin/php /app/cron/cron_dispatcher.php process_interactions >> /var/log/cron.log 2>&1
 
 # Run log cleaner script every 5 days
 0 0 */5 * * /usr/local/bin/php /app/cron/cron_dispatcher.php clean_logs >> /var/log/cron.log 2>&1

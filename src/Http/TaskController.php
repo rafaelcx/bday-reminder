@@ -78,7 +78,7 @@ class TaskController {
 
         $user_uid = $parsed_body['user_uid'];
 
-        TaskService::notify();
+        new TaskService()->notify();
 
         return $this->buildRedirectResponse($response, $user_uid);
     }
