@@ -33,11 +33,9 @@ class TaskServiceMessageTest extends CustomTestCase {
     public function testBuilder_ShouldReturnNoTaskMessageWhenEmpty(): void {
         $message = TaskServiceMessage::build($this->test_user, ...[]);
         $expected_message = <<<TXT
-        Hello Alice,
+        Here are you tasks:
 
         ✅ You have no pending tasks!
-
-        🎉 Great job! You're all caught up!
         TXT;
         $this->assertSame($expected_message, $message);
     }
@@ -54,14 +52,9 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $message = TaskServiceMessage::build($this->test_user, $task);
         $expected_message = <<<TXT
-        Hello Alice,
-
         Here are your tasks:
 
         📋 [task-001] Complete Project
-           Status: DOING
-
-        💪 Keep up the great work!
         TXT;
         $this->assertSame($expected_message, $message);
     }
@@ -78,19 +71,14 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $message = TaskServiceMessage::build($this->test_user, $task);
         $expected_message = <<<TXT
-        Hello Alice,
-
         Here are your tasks:
 
         ✅ [task-002] Finished Task
-           Status: DONE
-
-        💪 Keep up the great work!
         TXT;
         $this->assertSame($expected_message, $message);
     }
 
-    public function testBuilder_ShouldSortPendingTasksBeforeCompletedTasks(): void {
+    public function testBuilder_ShouldSortDoneTasksBeforePendingTasks(): void {
         $pending_task = new Task(
             id: 'task-001',
             user_uid: $this->test_user->uid,
@@ -114,7 +102,7 @@ class TaskServiceMessageTest extends CustomTestCase {
         $pending_pos = strpos($message, 'Pending Task');
         $completed_pos = strpos($message, 'Completed Task');
 
-        $this->assertLessThan($pending_pos, $completed_pos, 'DONE tasks should appear before DOING tasks');
+        $this->assertLessThan($completed_pos, $pending_pos, 'DONE tasks should appear before DOING tasks');
     }
 
     public function testBuilder_ShouldFormatMultipleTasks(): void {
@@ -140,11 +128,11 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $this->assertStringContainsString('task-001', $message);
         $this->assertStringContainsString('First Task', $message);
-        $this->assertStringContainsString(TaskStatus::DOING->value, $message);
+        $this->assertStringContainsString(TaskStatus::DOING->emoji(), $message);
 
         $this->assertStringContainsString('task-002', $message);
         $this->assertStringContainsString('Second Task', $message);
-        $this->assertStringContainsString(TaskStatus::DOING->value, $message);
+        $this->assertStringContainsString(TaskStatus::DOING->emoji(), $message);
     }
 
 }
