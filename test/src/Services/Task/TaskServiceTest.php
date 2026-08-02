@@ -6,6 +6,7 @@ namespace Test\Src\Services\Task;
 
 use App\Repository\Task\Task;
 use App\Repository\Task\TaskRepositoryResolver;
+use App\Repository\Task\TaskStatus;
 use App\Repository\User\User;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Messenger\Message;
@@ -107,7 +108,7 @@ class TaskServiceTest extends CustomTestCase {
 
         // Verify task status is in the message
         $this->assertInstanceOf(Task::class, $task);
-        $this->assertStringContainsString($task->status->value, $received_message);
+        $this->assertStringContainsString(TaskStatus::DOING->emoji(), $received_message);
     }
 
     public function testService_Add_ShouldAddTasksFromAllUsers(): void {
