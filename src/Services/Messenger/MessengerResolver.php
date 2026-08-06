@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Messenger;
 
+use App\Services\Messenger\Cached\CachedMessenger;
 use App\Services\Messenger\Telegram\TelegramMessenger;
 use App\Utils\StaticScope;
 
@@ -14,7 +15,9 @@ class MessengerResolver {
     }
 
     private static function createInstance(): Messenger {
-        return new TelegramMessenger();
+        return new CachedMessenger(
+            new TelegramMessenger()
+        );
     }
 
 }
