@@ -7,6 +7,7 @@ namespace App\Services\Task;
 use App\Repository\Task\TaskRepositoryResolver;
 use App\Repository\User\UserRepositoryResolver;
 use App\Services\Interaction\Interactor;
+use App\Services\Messenger\Message;
 use App\Services\Messenger\MessengerResolver;
 use App\Services\Notification\Notifier;
 
@@ -31,20 +32,33 @@ class TaskService implements Notifier, Interactor {
             
             $service = $parts[0] ?? '';
             $command = $parts[1] ?? '';
+            $params = $parts[2] ?? '';
 
-            if ($service !== 'task' || $command !== 'add') {
+            if ($service !== 'task') {
                 continue;
             }
 
-            $title = $parts[2] ?? '';
-
-            if (empty($title)) {
-                throw new \Exception('Task service `add` got unexpected params');
-            }
-
-            TaskRepositoryResolver::resolve()
-                ->create($update->user_uid, $title);
+            switch ($command) {
+                case 'add':
+                    $this->addTask($update, $params);
+                case 'complete':
+                    $this->completeTask($params);
+            };
         }
+    }
+
+    private function addTask(Message $m, string $params): void {
+        if (empty($params)) {
+            throw new \Exception('Task service `add` got unexpected params');
+        }
+        TaskRepositoryResolver::resolve()->create($m->user_uid, $params);
+    }
+
+    private function completeTask(string $params): void {
+        if (empty($params)) {
+            throw new \Exception('Task service `complete` got unexpected params');
+        }
+        TaskRepositoryResolver::resolve()->completeTask($params);
     }
 
 }

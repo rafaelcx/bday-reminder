@@ -115,22 +115,10 @@ class TaskServiceTest extends CustomTestCase {
         $user_1 = $this->createAndGetUser('user1');
         $user_2 = $this->createAndGetUser('user2');
 
-        $update_1 = new Message(
-            id: '1',
-            message_id: '10',
-            user_uid: $user_1->uid,
-            text: 'task add "Task One"',
-        );
-
-        $update_2 = new Message(
-            id: '2',
-            message_id: '20',
-            user_uid: $user_2->uid,
-            text: 'task add "Task Two"',
-        );
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user_1->uid, text: 'task add "Task One"');
+        $update_2 = new Message(id: '2', message_id: '20', user_uid: $user_2->uid, text: 'task add "Task Two"');
 
         $get_updates_behavior = fn() => [$update_1, $update_2];
-
         $mock_notifier = new MessengerForTests();
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
@@ -156,7 +144,7 @@ class TaskServiceTest extends CustomTestCase {
     /**
      * @return iterable<array{string}>
      */
-    public static function provideSkipableUpdateText(): iterable {
+    public static function provideSkipableTaskAddText(): iterable {
         yield ['not_task add'];
         yield ['task not_add'];
         yield ['not_task not_add'];
@@ -164,19 +152,12 @@ class TaskServiceTest extends CustomTestCase {
         yield ['add'];
     }
 
-    #[DataProvider('provideSkipableUpdateText')]
+    #[DataProvider('provideSkipableTaskAddText')]
     public function testService_Add_ShouldSkip(string $text): void {
         $user = $this->createAndGetUser('user1');
-
-        $update_1 = new Message(
-            id: '1',
-            message_id: '10',
-            user_uid: $user->uid,
-            text: $text,
-        );
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user->uid, text: $text);
 
         $get_updates_behavior = fn() => [$update_1];
-
         $mock_notifier = new MessengerForTests();
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
@@ -191,31 +172,112 @@ class TaskServiceTest extends CustomTestCase {
     /**
      * @return iterable<array{string}>
      */
-    public static function provideMalformedUpdateTextParams(): iterable {
+    public static function provideMalformedTaskAddTextParams(): iterable {
         yield ['task add'];
         yield ['task add ""'];
     }
 
-    #[DataProvider('provideMalformedUpdateTextParams')]
+    #[DataProvider('provideMalformedTaskAddTextParams')]
     public function testService_Add_OnMalformedUpdateText_ShouldThrow(string $update_text): void {
         $user = $this->createAndGetUser('user1');
-
-        $update_1 = new Message(
-            id: '1',
-            message_id: '10',
-            user_uid: $user->uid,
-            text: $update_text,
-        );
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user->uid, text: $update_text);
 
         $get_updates_behavior = fn() => [$update_1];
-
         $mock_notifier = new MessengerForTests();
         $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
         MessengerResolverForTests::override($mock_notifier);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Task service `add` got unexpected params');
+        new TaskService()->processInteractions();
+    }
 
+    public function testService_Complete_ShouldCompleteTasksFromAllUsers(): void {
+        $user_1 = $this->createAndGetUser('user1');
+        $user_2 = $this->createAndGetUser('user2');
+
+        $task_1 = $this->createTaskForUser($user_1, 'Task Title One');
+        $task_2 = $this->createTaskForUser($user_2, 'Task Title Two');
+
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user_1->uid, text: "task complete {$task_1->id}");
+        $update_2 = new Message(id: '2', message_id: '20', user_uid: $user_2->uid, text: "task complete {$task_2->id}");
+
+        $get_updates_behavior = fn() => [$update_1, $update_2];
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        new TaskService()->processInteractions();
+
+        $user_1_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_1->uid);
+        $user_2_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user_2->uid);
+
+        $this->assertCount(1, $user_1_tasks);
+        $this->assertCount(1, $user_2_tasks);
+
+        $user_1_task = array_pop($user_1_tasks);
+        $user_2_task = array_pop($user_2_tasks);
+
+        $this->assertInstanceOf(Task::class, $user_1_task);
+        $this->assertInstanceOf(Task::class, $user_2_task);
+
+        $this->assertSame(TaskStatus::DONE, $user_1_task->status);
+        $this->assertSame(TaskStatus::DONE, $user_2_task->status);
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public static function provideSkipableTaskCompleteText(): iterable {
+        yield ['not_task complete '];
+        yield ['task not_complete '];
+        yield ['not_task not_complete '];
+        yield ['task '];
+        yield ['complete '];
+    }
+
+    #[DataProvider('provideSkipableTaskCompleteText')]
+    public function testService_Complete_ShouldSkip(string $text): void {
+        $user = $this->createAndGetUser('user1');
+        $task = $this->createTaskForUser($user, 'Task Title');
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user->uid, text: $text . $task->id);
+
+        $get_updates_behavior = fn() => [$update_1];
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        new TaskService()->processInteractions();
+
+        $user_tasks = TaskRepositoryResolver::resolve()->findByUserUid($user->uid);
+
+        $this->assertCount(1, $user_tasks);
+        $user_task = array_pop($user_tasks) ?? null;
+        $this->assertNotNull($user_task);
+        $this->assertSame(TaskStatus::DOING, $user_task->status);
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public static function provideMalformedTaskCompleteTextParams(): iterable {
+        yield ['task complete'];
+        yield ['task complete ""'];
+    }
+
+    #[DataProvider('provideMalformedTaskCompleteTextParams')]
+    public function testService_Complete_OnMalformedUpdateText_ShouldThrow(string $update_text): void {
+        $user = $this->createAndGetUser('user1');
+        $this->createTaskForUser($user, 'Task Title');
+        $update_1 = new Message(id: '1', message_id: '10', user_uid: $user->uid, text: $update_text);
+
+        $get_updates_behavior = fn() => [$update_1];
+        $mock_notifier = new MessengerForTests();
+        $mock_notifier->setGetUpdatesBehavior($get_updates_behavior);
+        MessengerResolverForTests::override($mock_notifier);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Task service `complete` got unexpected params');
         new TaskService()->processInteractions();
     }
 
@@ -231,8 +293,15 @@ class TaskServiceTest extends CustomTestCase {
         throw new \RuntimeException("User '$user_name' was not created.");
     }
 
-    private function createTaskForUser(User $user, string $task_title): void {
-        TaskRepositoryResolver::resolve()->create($user->uid, $task_title);
+    private function createTaskForUser(User $user, string $task_title): Task {
+        $task_repo = TaskRepositoryResolver::resolve();
+        $task_repo->create($user->uid, $task_title);
+        $tasks = $task_repo->findByUserUid($user->uid);
+
+        if (empty($tasks)) {
+            throw new \Exception('Could not create a Task for tests');
+        }
+        return array_pop($tasks);
     }
 
 }
