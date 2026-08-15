@@ -17,20 +17,31 @@ class TaskServiceMessage {
         $sorted_tasks = iterator_to_array($tasks);
         uasort($sorted_tasks, self::sortTasks(...));
 
-        if (empty($sorted_tasks)) {
-            return <<<TXT
-            Here are you tasks:
+        $intro_text = <<<TXT
+        Here are you tasks {$user_name}.
 
-            ✅ You have no pending tasks!
-            TXT;
+        The first ones are pending while the things you done in the last two weeks shows on the botton.
+        TXT;
+
+        $doing_tasks = array_filter($sorted_tasks, fn($task) => $task->status === TaskStatus::DOING);
+        $done_tasks = array_filter($sorted_tasks, fn($task) => $task->status === TaskStatus::DONE);;
+
+        if (empty($doing_tasks)) {
+            $no_tasks_text = "\n\n✅ You have no pending tasks though, congrats!";
+            return $intro_text . $no_tasks_text;
         }
 
-        $message_lines[] = "Here are your tasks:";
+        $message_lines[] = $intro_text;
         $message_lines[] = '';
 
-        foreach ($sorted_tasks as $task) {
-            $status_icon = $task->status === TaskStatus::DONE ? '✅' : '📋';
-            $message_lines[] = "{$status_icon} [{$task->id}] {$task->title}";
+        foreach ($doing_tasks as $task) {
+            $message_lines[] = "📋 [{$task->id}] {$task->title}";
+        }
+
+        $message_lines[] = '';
+
+        foreach ($done_tasks as $task) {
+            $message_lines[] = "✅ [{$task->id}] {$task->title}";
         }
 
         return implode("\n", $message_lines);

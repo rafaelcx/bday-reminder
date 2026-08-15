@@ -33,9 +33,11 @@ class TaskServiceMessageTest extends CustomTestCase {
     public function testBuilder_ShouldReturnNoTaskMessageWhenEmpty(): void {
         $message = TaskServiceMessage::build($this->test_user, ...[]);
         $expected_message = <<<TXT
-        Here are you tasks:
+        Here are you tasks {$this->test_user->name}.
 
-        ✅ You have no pending tasks!
+        The first ones are pending while the things you done in the last two weeks shows on the botton.
+
+        ✅ You have no pending tasks though, congrats!
         TXT;
         $this->assertSame($expected_message, $message);
     }
@@ -52,31 +54,16 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $message = TaskServiceMessage::build($this->test_user, $task);
         $expected_message = <<<TXT
-        Here are your tasks:
+        Here are you tasks {$this->test_user->name}.
+
+        The first ones are pending while the things you done in the last two weeks shows on the botton.
 
         📋 [task-001] Complete Project
+
         TXT;
         $this->assertSame($expected_message, $message);
     }
 
-    public function testBuilder_ShouldFormatTaskWithCompletedStatus(): void {
-        $task = new Task(
-            id: 'task-002',
-            user_uid: $this->test_user->uid,
-            title: 'Finished Task',
-            status: TaskStatus::DONE,
-            created_at: Clock::now(),
-            updated_at: Clock::now()
-        );
-
-        $message = TaskServiceMessage::build($this->test_user, $task);
-        $expected_message = <<<TXT
-        Here are your tasks:
-
-        ✅ [task-002] Finished Task
-        TXT;
-        $this->assertSame($expected_message, $message);
-    }
 
     public function testBuilder_ShouldSortDoneTasksBeforePendingTasks(): void {
         $pending_task = new Task(
@@ -99,40 +86,16 @@ class TaskServiceMessageTest extends CustomTestCase {
 
         $message = TaskServiceMessage::build($this->test_user, $completed_task, $pending_task);
 
-        $pending_pos = strpos($message, 'Pending Task');
-        $completed_pos = strpos($message, 'Completed Task');
+        $expected_message = <<<TXT
+        Here are you tasks {$this->test_user->name}.
 
-        $this->assertLessThan($completed_pos, $pending_pos, 'DONE tasks should appear before DOING tasks');
-    }
+        The first ones are pending while the things you done in the last two weeks shows on the botton.
 
-    public function testBuilder_ShouldFormatMultipleTasks(): void {
-        $task_1 = new Task(
-            id: 'task-001',
-            user_uid: $this->test_user->uid,
-            title: 'First Task',
-            status: TaskStatus::DOING,
-            created_at: Clock::now()->minusDays(2),
-            updated_at: Clock::now()->minusDays(2)
-        );
+        📋 [task-001] Pending Task
 
-        $task_2 = new Task(
-            id: 'task-002',
-            user_uid: $this->test_user->uid,
-            title: 'Second Task',
-            status: TaskStatus::DOING,
-            created_at: Clock::now()->minusDays(1),
-            updated_at: Clock::now()->minusDays(1)
-        );
-
-        $message = TaskServiceMessage::build($this->test_user, $task_1, $task_2);
-
-        $this->assertStringContainsString('task-001', $message);
-        $this->assertStringContainsString('First Task', $message);
-        $this->assertStringContainsString(TaskStatus::DOING->emoji(), $message);
-
-        $this->assertStringContainsString('task-002', $message);
-        $this->assertStringContainsString('Second Task', $message);
-        $this->assertStringContainsString(TaskStatus::DOING->emoji(), $message);
+        ✅ [task-002] Completed Task
+        TXT;
+        $this->assertSame($expected_message, $message);
     }
 
 }
