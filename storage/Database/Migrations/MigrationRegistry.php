@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Storage\Database\Migrations;
 
+use App\Storage\Database\DatabaseAction;
+
 class MigrationRegistry {
 
     /**
-     * @return MigrationInterface[]
+     * @return DatabaseAction[]
      */
     public function getRegisteredMigrations(): array {
         return [
