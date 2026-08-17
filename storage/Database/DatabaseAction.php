@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Storage\Database\Migrations;
+namespace App\Storage\Database;
 
-interface MigrationInterface {
+interface DatabaseAction {
 
     public function up(): void;
 

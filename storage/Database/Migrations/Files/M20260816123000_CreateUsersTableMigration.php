@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Storage\Database\Migrations\Files;
 
+use App\Storage\Database\DatabaseAction;
 use App\Storage\Database\DatabaseResolver;
-use App\Storage\Database\Migrations\MigrationInterface;
 
-class M20260816123000_CreateUsersTableMigration implements MigrationInterface {
+class M20260816123000_CreateUsersTableMigration implements DatabaseAction {
 
     public function up(): void {
         $db = DatabaseResolver::resolve();

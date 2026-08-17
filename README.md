@@ -21,14 +21,16 @@ It will not start the cron service tough. To enable cron for testing purposes or
 
 ## Storage
 
-This project uses json files as persistent storage. Files are stored at `storage/Files`. For local testing you will need to set then up. 
+This project uses SQLite as its persistent storage layer. The database file lives at `db/database.sqlite` and is provisioned from the database migration and seed scripts.
 
-There are versioned sample files under the `/storage/Files/Templates` namespace, to copy then to
-a working directory and seed them with arbitrary values you can run:
+To create the required tables and seed the initial records, run:
 
 ```
-docker compose exec bday-reminder php /app/bin/storage-seed.php
+docker compose exec bday-reminder php bin/db-migrate.php
+docker compose exec bday-reminder php bin/db-seed.php
 ```
+
+The migration script is intended for local setup and production provisioning alike. The migration script creates all app tables, and the seed script (for local development) inserts the initial default data. Running them again is safe for schema creation and should not duplicate rows when the underlying database action is idempotent.
 
 ## Tests
 
