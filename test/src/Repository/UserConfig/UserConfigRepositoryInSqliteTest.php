@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Test\Src\Repository\UserConfig;
+
+use App\Repository\UserConfig\UserConfigException;
+use App\Repository\UserConfig\UserConfigRepositoryInSqlite;
+use App\Utils\Clock;
+use PHPUnit\Framework\Attributes\Before;
+use Test\DbCustomTestCase;
+
+class UserConfigRepositoryInSqliteTest extends DbCustomTestCase {
+
+    #[Before]
+    public function freezeClockForTests(): void {
+        Clock::freeze('2025-01-01 12:00:00');
+    }
+
+    public function testRepository_CreateAndFind(): void {
+        $repository = new UserConfigRepositoryInSqlite();
+        $repository->create('user_uid', 'test_name', 'test_value');
+
+        $found_user_config = $repository->findByUserUidAndName('user_uid', 'test_name');
+
+        $this->assertSame('user_uid', $found_user_config->user_uid);
+        $this->assertSame('test_name', $found_user_config->name);
+        $this->assertSame('test_value', $found_user_config->value);
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->created_at->asDateTimeString());
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->updated_at->asDateTimeString());
+
+        $found_user_config = $repository->findByNameAndValue('test_name', 'test_value');
+
+        $this->assertSame('user_uid', $found_user_config->user_uid);
+        $this->assertSame('test_name', $found_user_config->name);
+        $this->assertSame('test_value', $found_user_config->value);
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->created_at->asDateTimeString());
+        $this->assertSame('2025-01-01 12:00:00', $found_user_config->updated_at->asDateTimeString());
+    }
+
+    public function testRepository_FindByUserUidAndName_WhenConfigDoesNotExistForUser(): void {
+        $repository = new UserConfigRepositoryInSqlite();
+        $repository->create('user_uid', 'test_name', 'test_value');
+
+        $this->expectException(UserConfigException::class);
+        $this->expectExceptionMessage('Config not found for user with uid `other_user_uid` and name `test_name`');
+        $repository->findByUserUidAndName('other_user_uid', 'test_name');
+    }
+}
