@@ -5,6 +5,7 @@
 
 # Storage files
 /storage/Files/*.json
+/db/*
 
 # MacOS files
 .DS_Store
