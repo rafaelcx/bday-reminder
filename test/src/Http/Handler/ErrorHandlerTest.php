@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Src\Http\Handler;
 
-use App\Storage\FileServiceResolver;
+use App\Storage\Files\Service\FileServiceResolver;
 use Test\CustomTestCase;
 
 class ErrorHandlerTest extends CustomTestCase {

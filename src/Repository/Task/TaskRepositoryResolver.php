@@ -13,7 +13,7 @@ class TaskRepositoryResolver {
     }
 
     private static function createInstance(): TaskRepository {
-        return new TaskRepositoryInFile();
+        return new TaskRepositoryInSqlite();
     }
 
 }

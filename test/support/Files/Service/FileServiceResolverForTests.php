@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Test\Support;
+namespace Test\Support\Files\Service;
 
-use App\Storage\FileServiceDefault;
-use App\Storage\FileServiceResolver;
+use App\Storage\Files\Service\FileServiceDefault;
+use App\Storage\Files\Service\FileServiceResolver;
 use App\Utils\StaticScope;
 
 class FileServiceResolverForTests extends FileServiceResolver {

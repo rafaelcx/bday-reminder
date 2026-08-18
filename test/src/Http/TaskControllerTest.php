@@ -8,9 +8,9 @@ use App\Repository\Task\TaskRepositoryResolver;
 use App\Repository\Task\TaskStatus;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TaskControllerTest extends CustomTestCase {
+class TaskControllerTest extends DbCustomTestCase {
 
     #[Before]
     public function freezeClockForTests(): void {

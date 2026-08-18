@@ -6,9 +6,9 @@ namespace Test\Src\Services\Messenger\Telegram\Get;
 
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Services\Messenger\Telegram\Get\TelegramGetRequestBuilder;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TelegramGetRequestBuilderTest extends CustomTestCase {
+class TelegramGetRequestBuilderTest extends DbCustomTestCase {
 
     public function testBuildWithoutOffset_ReturnsRequestToGetUpdates(): void {
         $this->mockValidCredentials();

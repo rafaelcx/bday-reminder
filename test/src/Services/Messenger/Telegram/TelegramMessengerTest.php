@@ -13,10 +13,10 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 use Test\Support\Http\Client\HttpClientForTests;
 
-class TelegramMessengerTest extends CustomTestCase {
+class TelegramMessengerTest extends DbCustomTestCase {
 
     public function testMessenger_Post(): void {
         $user = $this->createAndGetUser('user1');

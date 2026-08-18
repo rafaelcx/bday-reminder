@@ -9,9 +9,9 @@ use App\Repository\User\User;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Telegram\Post\TelegramPostRequestBuilder;
 use App\Utils\Clock;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TelegramPostRequestBuilderTest extends CustomTestCase {
+class TelegramPostRequestBuilderTest extends DbCustomTestCase {
 
     public function testBuild_ReturnsPostRequestWithExpectedBodyAndHeaders(): void {
         $user = new User('uid-1', 'user1', Clock::now());

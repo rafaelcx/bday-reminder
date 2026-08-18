@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Test\Src\Http;
 
 use App\Repository\User\UserRepositoryResolver;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class LoginControllerTest extends CustomTestCase {
+class LoginControllerTest extends DbCustomTestCase {
 
     public function testController_WhenSuccessful(): void {
         $user_respository = UserRepositoryResolver::resolve();

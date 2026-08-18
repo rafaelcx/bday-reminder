@@ -6,7 +6,7 @@ namespace Test\Src\Http\Middleware;
 
 use App\Http\Middleware\LogMiddleware;
 use App\Logger\ProcessLogContext;
-use App\Storage\FileServiceResolver;
+use App\Storage\Files\Service\FileServiceResolver;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;

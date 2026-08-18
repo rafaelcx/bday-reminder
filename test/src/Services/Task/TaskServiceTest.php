@@ -14,11 +14,11 @@ use App\Services\Task\TaskService;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 use Test\Support\Services\Messenger\MessengerForTests;
 use Test\Support\Services\Messenger\MessengerResolverForTests;
 
-class TaskServiceTest extends CustomTestCase {
+class TaskServiceTest extends DbCustomTestCase {
 
     #[Before]
     public function freezeClockForTests(): void {

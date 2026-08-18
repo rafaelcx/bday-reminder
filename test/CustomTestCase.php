@@ -9,7 +9,7 @@ use App\Utils\StaticScope;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
-use Test\Support\FileServiceResolverForTests;
+use Test\Support\Files\Service\FileServiceResolverForTests;
 use Test\Support\Http\Client\HttpClientForTests;
 use Test\Support\Http\RequestSimulator;
 use Test\Support\Logger\ProcessLogContextForTests;

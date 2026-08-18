@@ -13,7 +13,7 @@ class CredentialRepositoryResolver {
     }
 
     private static function createInstance(): CredentialRepository {
-        return new CredentialRepositoryInFile();
+        return new CredentialRepositoryInSqlite();
     }
 
 }

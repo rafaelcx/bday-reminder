@@ -13,7 +13,7 @@ class UserRepositoryResolver {
     }
 
     private static function createInstance(): UserRepository {
-        return new UserRepositoryInFile();
+        return new UserRepositoryInSqlite();
     }
 
 }
