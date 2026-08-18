@@ -6,9 +6,9 @@ namespace App\Http;
 
 use App\Repository\Birthday\BirthdayRepositoryResolver;
 use App\Utils\Clock;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class BirthdayControllerTest extends CustomTestCase {
+class BirthdayControllerTest extends DbCustomTestCase {
 
     public function testController_Show_WhenSuccessful(): void {
         $birthday_repository = BirthdayRepositoryResolver::resolve();

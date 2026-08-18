@@ -13,7 +13,7 @@ class BirthdayRepositoryResolver {
     }
 
     private static function createInstance(): BirthdayRepository {
-        return new BirthdayRepositoryInFile();
+        return new BirthdayRepositoryInSqlite();
     }
 
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Logger;
 
-use App\Storage\FileServiceResolver;
+use App\Storage\Files\Service\FileServiceResolver;
 use App\Utils\Clock;
 use App\Utils\JsonEncoder;
 use Psr\Log\LoggerInterface;

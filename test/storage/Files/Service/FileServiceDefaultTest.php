@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Test\Storage;
+namespace Test\Storage\Files\Service;
 
-use App\Storage\FileServiceDefault;
+use App\Storage\Files\Service\FileServiceDefault;
 use PHPUnit\Framework\Attributes\After;
 use Test\CustomTestCase;
 

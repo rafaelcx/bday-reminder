@@ -7,9 +7,9 @@ namespace Test\Src\Services\Messenger\Telegram;
 use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Services\Birthday\BirthdayServiceException;
 use App\Services\Messenger\Telegram\TelegramCredentials;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TelegramCredentialsTest extends CustomTestCase {
+class TelegramCredentialsTest extends DbCustomTestCase {
 
     public function testTelegramCredentials(): void {
         $credential_data = '{"bot_token": "some_token"}';

@@ -13,7 +13,7 @@ class UserConfigRepositoryResolver {
     }
 
     private static function createInstance(): UserConfigRepository {
-        return new UserConfigRepositoryInFile();
+        return new UserConfigRepositoryInSqlite();
     }
 
 }

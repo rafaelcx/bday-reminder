@@ -8,9 +8,9 @@ use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Telegram\Delete\TelegramDeleteRequestBuilder;
 use App\Services\Messenger\Message;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TelegramDeleteRequestBuilderTest extends CustomTestCase {
+class TelegramDeleteRequestBuilderTest extends DbCustomTestCase {
 
     public function testBuild_ReturnsDeleteRequestWithEncodedMessageIds(): void {
         CredentialRepositoryResolver::resolve()->create('telegram-credential', '{"bot_token": "some_token"}');

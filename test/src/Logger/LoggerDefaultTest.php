@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Src\Logger;
 
 use App\Logger\LoggerDefault;
-use App\Storage\FileServiceResolver;
+use App\Storage\Files\Service\FileServiceResolver;
 use App\Utils\Clock;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;

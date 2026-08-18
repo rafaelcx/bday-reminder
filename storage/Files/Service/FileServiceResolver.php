@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storage;
+namespace App\Storage\Files\Service;
 
 use App\Utils\StaticScope;
 
@@ -13,7 +13,7 @@ class FileServiceResolver {
     }
 
     private static function createInstance(): FileService {
-        $files_location = __DIR__ . '/Files/';
+        $files_location = __DIR__ . '/../';
         return new FileServiceDefault($files_location);
     }
 

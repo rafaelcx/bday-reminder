@@ -7,9 +7,9 @@ namespace Test\Src\Services\Messenger\Telegram\Get;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Telegram\Get\TelegramGetResponseParser;
 use GuzzleHttp\Psr7\Response;
-use Test\CustomTestCase;
+use Test\DbCustomTestCase;
 
-class TelegramGetResponseParserTest extends CustomTestCase {
+class TelegramGetResponseParserTest extends DbCustomTestCase {
 
     public function testParse_ReturnsMessagesWhenResultsExist(): void {
         UserConfigRepositoryResolver::resolve()->create('user-1', 'telegram-chat-id', '42');
