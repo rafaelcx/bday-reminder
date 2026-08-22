@@ -6,6 +6,7 @@ namespace App\Storage\Database\Seed\Files;
 
 use App\Storage\Database\DatabaseAction;
 use App\Storage\Database\DatabaseResolver;
+use App\Utils\JsonEncoder;
 
 class S20260817000000_SeedStorageData implements DatabaseAction {
 
@@ -39,7 +40,7 @@ class S20260817000000_SeedStorageData implements DatabaseAction {
             'credentials' => [
                 [
                     'id' => 'telegram-credential',
-                    'data' => json_encode(['bot_token' => 'your-token']),
+                    'data' => JsonEncoder::safeEncode(['bot_token' => 'your-token']),
                     'created_at' => '2025-07-06 20:22:00',
                 ],
             ],

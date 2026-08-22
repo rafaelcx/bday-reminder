@@ -7,6 +7,7 @@ namespace Test\Src\Logger;
 use App\Logger\LoggerDefault;
 use App\Storage\Files\Service\FileServiceResolver;
 use App\Utils\Clock;
+use App\Utils\JsonEncoder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Test\CustomTestCase;
@@ -62,7 +63,7 @@ class LoggerDefaultTest extends CustomTestCase {
     public function testLogger_CleanLogFile(): void {
         Clock::freeze('2025-09-13 12:00:00');
 
-        $logs = json_encode([
+        $logs = JsonEncoder::safeEncode([
             [
                 'timestamp' => '2025-08-01 10:00:00', // 43 days old → should be deleted
                 'level' => 'info',
@@ -74,10 +75,6 @@ class LoggerDefaultTest extends CustomTestCase {
                 'message' => 'Recent log entry',
             ],
         ]);
-
-        if ($logs === false) {
-            $this->fail('Unable to encode test logs.');
-        }
 
         FileServiceResolver::resolve()->putFileContents(self::FILE_NAME, $logs);
 
