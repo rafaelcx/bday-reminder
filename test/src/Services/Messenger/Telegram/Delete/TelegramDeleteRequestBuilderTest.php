@@ -8,6 +8,7 @@ use App\Repository\Credential\CredentialRepositoryResolver;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Telegram\Delete\TelegramDeleteRequestBuilder;
 use App\Services\Messenger\Message;
+use App\Utils\JsonEncoder;
 use Test\DbCustomTestCase;
 
 class TelegramDeleteRequestBuilderTest extends DbCustomTestCase {
@@ -28,7 +29,7 @@ class TelegramDeleteRequestBuilderTest extends DbCustomTestCase {
 
         parse_str($request->getUri()->getQuery(), $query);
         $this->assertSame('42', $query['chat_id']);
-        $this->assertSame(json_encode(['101', '102']), $query['message_ids']);
+        $this->assertSame(JsonEncoder::safeEncode(['101', '102']), $query['message_ids']);
     }
 
 }

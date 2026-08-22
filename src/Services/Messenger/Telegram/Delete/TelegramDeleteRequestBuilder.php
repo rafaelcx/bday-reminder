@@ -7,6 +7,7 @@ namespace App\Services\Messenger\Telegram\Delete;
 use App\Repository\UserConfig\UserConfigRepositoryResolver;
 use App\Services\Messenger\Message;
 use App\Services\Messenger\Telegram\TelegramCredentials;
+use App\Utils\JsonEncoder;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
@@ -48,7 +49,7 @@ class TelegramDeleteRequestBuilder {
     private static function buildHttpQuery(string $chat_id, array $message_ids): string {
         return http_build_query([
             'chat_id'     => $chat_id,
-            'message_ids' => json_encode($message_ids),
+            'message_ids' => JsonEncoder::safeEncode($message_ids),
         ]);
     }
 

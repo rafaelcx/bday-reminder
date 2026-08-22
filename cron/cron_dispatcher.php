@@ -8,6 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Cron\CronRunner;
 use App\Logger\LoggerResolver;
 use App\Logger\ProcessLogContext;
+use App\Utils\JsonEncoder;
 
 $task_name = $argv[1];
 
@@ -26,5 +27,5 @@ try {
     $message = 'Process Finished';
     $process_context = ProcessLogContext::getAll();
     LoggerResolver::resolve()->info($message, $process_context);
-    echo json_encode($process_context);
+    echo JsonEncoder::safeEncode($process_context);
 }

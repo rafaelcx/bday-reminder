@@ -56,8 +56,8 @@ final class RequireStrictTypesRule implements Rule {
         $error_msg = sprintf('File "%s" must declare strict types: declare(strict_types=1);', $file);
         return [
             RuleErrorBuilder::message($error_msg)
-		    ->identifier('myCustomRules.declareStrictTypes')
-		    ->build()
+                ->identifier('myCustomRules.declareStrictTypes')
+                ->build()
         ];
     }
 

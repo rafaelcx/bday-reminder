@@ -4,5 +4,8 @@ parameters:
 services:
     -
         class: Test\Support\PhpStan\Rules\RequireStrictTypesRule
-        tags:
-            - phpstan.rules.rule
+        tags: [phpstan.rules.rule]
+
+    -
+        class: Test\Support\PhpStan\Rules\NoNativeJsonEncodeRule
+        tags: [phpstan.rules.rule]
