@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Src\Repository\Task;
 
+use App\Repository\Task\Task;
 use App\Repository\Task\TaskRepositoryInSqlite;
 use App\Repository\Task\TaskStatus;
 use App\Utils\Clock;
@@ -80,22 +81,44 @@ class TaskRepositoryInSqliteTest extends DbCustomTestCase {
 
     public function testRepository_FindByUserUidAfterDate(): void {
         Clock::freeze('2026-05-01 12:00:00');
-        $this->task_repository->create('user_uid_1', 'Task from May');
+        $task_1 = $this->createAndReturnTask('user_uid_1', 'Task One');
+
+        Clock::freeze('2026-05-01 12:00:00');
+        $task_2 = $this->createAndReturnTask('user_uid_1', 'Task Two');
+        $this->task_repository->completeTask($task_2->id);
 
         Clock::freeze('2026-05-15 12:00:00');
-        $this->task_repository->create('user_uid_1', 'Task from mid May');
+        $task_3 = $this->createAndReturnTask('user_uid_1', 'Task Three');
 
-        Clock::freeze('2026-06-01 12:00:00');
-        $this->task_repository->create('user_uid_1', 'Task from June');
-        $this->task_repository->create('user_uid_1', 'Another task from June');
+        Clock::freeze('2026-05-15 12:00:00');
+        $task_4 = $this->createAndReturnTask('user_uid_1', 'Task Four');
+        $this->task_repository->completeTask($task_4->id);
 
-        $tasks_after_may_10 = $this->task_repository->findByUserUidAfterDate('user_uid_1', Clock::at('2026-05-10'));
+        Clock::freeze('2026-05-16 12:00:00');
+        $task_5 = $this->createAndReturnTask('user_uid_1', 'Task Five');
+        $this->task_repository->completeTask($task_5->id);
 
-        $this->assertCount(3, $tasks_after_may_10);
-        $task_titles = array_map(fn($t) => $t->title, $tasks_after_may_10);
-        $this->assertContains('Task from mid May', $task_titles);
-        $this->assertContains('Task from June', $task_titles);
-        $this->assertContains('Another task from June', $task_titles);
-        $this->assertNotContains('Task from May', $task_titles);
+        Clock::freeze('2026-05-16 12:00:00');
+        $task_6 = $this->createAndReturnTask('user_uid_2', 'Task Six');
+
+        $found_tasks = $this->task_repository->findByUserUidAfterDate('user_uid_1', Clock::at('2026-05-10'));
+
+        $this->assertCount(4, $found_tasks);
+        $this->assertSame($task_1->id, $found_tasks[0]->id);
+        $this->assertSame($task_3->id, $found_tasks[1]->id);
+        $this->assertSame($task_4->id, $found_tasks[2]->id);
+        $this->assertSame($task_5->id, $found_tasks[3]->id);
     }
+
+    private function createAndReturnTask(string $user_uid, string $title): Task {
+        $this->task_repository->create($user_uid, $title);
+        $tasks = $this->task_repository->findByUserUid($user_uid);
+        foreach ($tasks as $task) {
+            if ($task->title === $title) {
+                return $task;
+            }
+        }
+        throw new \Exception('Could not create or find task to return');
+    }
+
 }

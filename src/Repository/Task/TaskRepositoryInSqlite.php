@@ -59,15 +59,26 @@ class TaskRepositoryInSqlite implements TaskRepository {
      */
     public function findByUserUidAfterDate(string $user_uid, Clock $date): array {
         $sql = <<<SQL
-            SELECT * FROM tasks
-            WHERE user_uid = :user_uid AND created_at > :filter_date
-            ORDER BY CASE WHEN status = 'DONE' THEN 0 ELSE 1 END ASC, created_at ASC, id ASC;
+            SELECT id, user_uid, title, status, created_at, updated_at
+            FROM tasks
+            WHERE user_uid = :user_uid
+                AND (
+                    status = 'DOING'
+                    OR (status = 'DONE' AND created_at > :filter_date)
+                )
+            ORDER BY 
+                CASE status
+                    WHEN 'DOING' THEN 1
+                    WHEN 'DONE' THEN 2
+                    ELSE 3
+                END ASC,
+                created_at ASC;
             SQL;
 
         $stmt = DatabaseResolver::resolve()->prepare($sql);
         $stmt->execute([
-            'user_uid' => $user_uid,
-            'filter_date' => $date->format('Y-m-d'),
+            ':user_uid' => $user_uid,
+            ':filter_date' => $date->format('Y-m-d'),
         ]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
