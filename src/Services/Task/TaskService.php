@@ -10,6 +10,7 @@ use App\Services\Interaction\Interactor;
 use App\Services\Messenger\Message;
 use App\Services\Messenger\MessengerResolver;
 use App\Services\Notification\Notifier;
+use App\Utils\Clock;
 
 class TaskService implements Notifier, Interactor {
 
@@ -17,7 +18,8 @@ class TaskService implements Notifier, Interactor {
         $user_list = UserRepositoryResolver::resolve()->findAll();
 
         foreach ($user_list as $user) {
-            $task_list = TaskRepositoryResolver::resolve()->findByUserUid($user->uid);
+            $task_list = TaskRepositoryResolver::resolve()
+                ->findByUserUidAfterDate($user->uid, Clock::now()->minusDays(30));
 
             $message = TaskServiceMessage::build($user, ...$task_list);
             MessengerResolver::resolve()->post($user, $message);

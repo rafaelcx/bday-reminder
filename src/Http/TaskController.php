@@ -6,6 +6,7 @@ namespace App\Http;
 
 use App\Repository\Task\TaskRepositoryResolver;
 use App\Services\Task\TaskService;
+use App\Utils\Clock;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -16,7 +17,7 @@ class TaskController {
         $user_uid = $request->getQueryParams()['user_uid'];
 
         $task_list = TaskRepositoryResolver::resolve()
-            ->findByUserUid($user_uid);
+            ->findByUserUidAfterDate($user_uid, Clock::now()->minusDays(30));
 
         $view = Twig::fromRequest($request);
         return $view->render($response, 'task.html.twig', [
